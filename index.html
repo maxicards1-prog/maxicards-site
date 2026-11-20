@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; font-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>MAXICARDS — Studio d'applications et de contenus vidéo</title>
+<meta name="description" content="MAXICARDS, studio français d'applications et de contenus vidéo : éditeur de l'application sportive DROMA et de chaînes YouTube et TikTok.">
+<meta property="og:title" content="MAXICARDS — Studio d'applications et de contenus vidéo">
+<meta property="og:description" content="Éditeur de l'application sportive DROMA et de chaînes YouTube et TikTok. Conçu en France.">
+<meta property="og:url" content="https://maxicards.net/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0b0c10">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b0c10'/%3E%3Cpath d='M14 46V18l18 16 18-16v28' fill='none' stroke='%23F2602E' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+@font-face{font-family:"Space Grotesk";src:url(fonts/space-grotesk.woff2) format("woff2");font-weight:500 700;font-display:swap}
+@font-face{font-family:"Inter";src:url(fonts/inter.woff2) format("woff2");font-weight:400 700;font-display:swap}
+:root{
+  --bg:#0b0c10;--bg2:#111319;--card:#14161d;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  --txt:#f4f5f7;--mute:#9ba1ad;--orange:#F2602E;--orange2:#ff8a4c;--violet:#7c5cff;--cyan:#2ec5f2;
+  --yt:#ff4e45;--tt:#25f4ee;
+  --titre:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --corps:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 var(--corps);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.w{max-width:1120px;margin:0 auto;padding:0 20px}
+::selection{background:var(--orange);color:#fff}
+
+/* Lumières de fond */
+.halo{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.halo i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+.halo i:nth-child(1){width:520px;height:520px;background:var(--orange);top:-180px;left:-120px;opacity:.35;animation:flotte 16s ease-in-out infinite}
+.halo i:nth-child(2){width:460px;height:460px;background:var(--violet);top:-80px;right:-160px;opacity:.32;animation:flotte 19s ease-in-out infinite reverse}
+.halo i:nth-child(3){width:380px;height:380px;background:var(--cyan);top:340px;left:40%;opacity:.14;animation:flotte 22s ease-in-out infinite}
+@keyframes flotte{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+.grille{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);opacity:.6}
+
+/* En-tête */
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(11,12,16,.72);border-bottom:1px solid var(--line)}
+header .w{display:flex;justify-content:space-between;align-items:center;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--titre);font-weight:700;letter-spacing:.14em;font-size:17px;text-decoration:none}
+.logo svg{width:30px;height:30px}
+nav{display:flex;gap:26px}
+nav a{color:var(--mute);text-decoration:none;font-size:14.5px;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--txt)}
+
+/* Héros */
+.hero{position:relative;padding:110px 0 90px;text-align:center}
+.hero .w{position:relative;z-index:1}
+.puce{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line2);border-radius:999px;background:rgba(255,255,255,.04);font-size:13.5px;color:var(--mute);margin-bottom:28px}
+.puce b{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 12px var(--orange)}
+h1{font-family:var(--titre);font-weight:700;font-size:clamp(40px,7.4vw,84px);line-height:1.02;letter-spacing:-.035em;margin:0 auto 24px;max-width:900px}
+.degrade{background:linear-gradient(100deg,var(--orange2) 0%,var(--orange) 35%,#ff4f8b 65%,var(--violet) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mute);font-size:clamp(17px,2.2vw,20px);max-width:640px;margin:0 auto 38px}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:12px;font-weight:600;font-size:15.5px;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s}
+.btn.plein{background:var(--orange);color:#fff;box-shadow:0 10px 30px -10px rgba(242,96,46,.7)}
+.btn.plein:hover{transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(242,96,46,.85)}
+.btn.vide{border:1px solid var(--line2);background:rgba(255,255,255,.03)}
+.btn.vide:hover{background:rgba(255,255,255,.08);transform:translateY(-2px)}
+.btn svg{width:16px;height:16px}
+
+/* Piliers */
+.piliers{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:84px;text-align:left}
+.pilier{background:rgba(17,19,25,.85);padding:26px 24px}
+.pilier small{display:block;font-family:var(--titre);color:var(--orange);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.pilier strong{font-family:var(--titre);font-size:19px;font-weight:600}
+.pilier p{margin:6px 0 0;color:var(--mute);font-size:14.5px}
+
+/* Sections */
+section{position:relative;padding:96px 0;border-top:1px solid var(--line)}
+.surtitre{font-family:var(--titre);color:var(--orange);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px}
+h2{font-family:var(--titre);font-weight:700;font-size:clamp(30px,4.6vw,48px);line-height:1.08;letter-spacing:-.025em;margin:0 0 16px}
+.intro{color:var(--mute);font-size:18px;max-width:620px;margin:0 0 48px}
+
+/* DROMA */
+.droma{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:56px;border-radius:28px;border:1px solid rgba(242,96,46,.35);background:radial-gradient(120% 120% at 0% 0%,rgba(242,96,46,.22),transparent 55%),radial-gradient(90% 90% at 100% 100%,rgba(124,92,255,.18),transparent 60%),var(--bg2);overflow:hidden}
+.droma .nom{font-family:var(--titre);font-weight:700;font-size:clamp(46px,7vw,76px);letter-spacing:-.04em;line-height:1;margin:6px 0 18px}
+.droma .nom span{color:var(--orange)}
+.droma p{color:#c8ccd4;font-size:17.5px;margin:0 0 22px;max-width:480px}
+.sports{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px;padding:0;list-style:none}
+.sports li{padding:7px 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.04);font-size:14px;font-weight:500}
+.lancement{display:inline-block;font-size:13px;font-weight:600;color:var(--orange2);margin-left:14px}
+
+/* Téléphone en CSS */
+.tel{justify-self:center;width:250px;height:510px;border-radius:42px;padding:12px;background:linear-gradient(160deg,#2a2d36,#15171d);box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.08) inset;transform:rotate(4deg);transition:transform .5s}
+.droma:hover .tel{transform:rotate(0deg) translateY(-6px)}
+.ecran{height:100%;border-radius:32px;background:linear-gradient(180deg,#16181f,#0d0e12);padding:30px 18px 18px;position:relative;overflow:hidden}
+.ecran:before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:76px;height:20px;border-radius:12px;background:#000}
+.e-haut{font-family:var(--titre);font-size:12px;color:var(--mute);margin:12px 0 2px}
+.e-grand{font-family:var(--titre);font-size:36px;font-weight:700;letter-spacing:-.03em}
+.e-grand small{font-size:14px;color:var(--mute);font-weight:500;margin-left:4px}
+.trace{margin:14px 0;height:150px;border-radius:16px;background:radial-gradient(circle at 30% 30%,rgba(242,96,46,.15),transparent 60%),#1a1d25;position:relative;overflow:hidden}
+.trace svg{position:absolute;inset:0;width:100%;height:100%}
+.trace path{stroke-dasharray:420;stroke-dashoffset:420;animation:dessine 3.2s ease forwards .4s}
+@keyframes dessine{to{stroke-dashoffset:0}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats div{background:#1a1d25;border-radius:12px;padding:10px}
+.stats b{display:block;font-family:var(--titre);font-size:17px}
+.stats span{font-size:11px;color:var(--mute)}
+.e-btn{margin-top:12px;text-align:center;background:var(--orange);border-radius:12px;padding:10px;font-weight:700;font-size:13px}
+
+/* Chaînes */
+.chaines{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.ch{position:relative;display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));text-decoration:none;transition:transform .25s,border-color .25s,background .25s;overflow:hidden}
+.ch:after{content:"";position:absolute;inset:auto -40% -60% auto;width:180px;height:180px;border-radius:50%;background:var(--c,var(--orange));filter:blur(60px);opacity:0;transition:opacity .3s}
+.ch:hover{transform:translateY(-4px);border-color:var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.015))}
+.ch:hover:after{opacity:.35}
+.plat{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.plat i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.yt{--c:var(--yt)}.tt{--c:var(--tt)}
+.ch h3{font-family:var(--titre);font-size:21px;font-weight:600;letter-spacing:-.01em;margin:0}
+.ch p{margin:0;color:var(--mute);font-size:14.5px;line-height:1.55;flex:1}
+.ch .poignee{font-size:13.5px;color:#c8ccd4;display:flex;align-items:center;gap:6px}
+.ch .poignee svg{width:14px;height:14px;transition:transform .25s}
+.ch:hover .poignee svg{transform:translate(3px,-3px)}
+
+/* Contact */
+.contact{display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;padding:48px;border-radius:24px;border:1px solid var(--line);background:radial-gradient(80% 140% at 100% 0%,rgba(124,92,255,.18),transparent 60%),var(--bg2)}
+.contact h2{margin:0 0 8px}
+.contact p{margin:0;color:var(--mute);font-size:17px}
+
+/* Mentions */
+.legal{padding:72px 0}
+.legal h2{font-size:26px;margin-bottom:22px}
+.legal .bloc{border:1px solid var(--line);border-radius:18px;padding:26px 28px;background:rgba(255,255,255,.02)}
+.legal p{color:var(--mute);margin:5px 0;font-size:14.5px}
+.legal strong{color:#d5d8de;font-weight:600}
+footer{padding:28px 0 44px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
+footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* Téléphone */
+@media(max-width:900px){
+  .droma{grid-template-columns:1fr;padding:36px 26px}
+  .tel{transform:none;width:240px;height:auto}
+  .ecran{height:auto;padding-bottom:22px}
+  .trace{height:120px}
+  .piliers{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  nav{display:none}
+  .hero{padding:72px 0 64px}
+  section{padding:72px 0}
+  .contact{padding:30px 24px}
+  .lancement{display:block;margin:12px 0 0}
+  .halo i:nth-child(1){width:340px;height:340px}
+  .halo i:nth-child(2){width:300px;height:300px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.trace path{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<header><div class="w">
+  <a class="logo" href="#haut" aria-label="MAXICARDS, accueil"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#16181f"/><path d="M14 46V18l18 16 18-16v28" fill="none" stroke="#F2602E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>MAXICARDS</a>
+  <nav><a href="#droma">DROMA</a><a href="#chaines">Chaînes</a><a href="#contact">Contact</a><a href="#mentions">Mentions légales</a></nav>
+</div></header>
+
+<main id="haut">
+<div class="hero">
+  <div class="halo" aria-hidden="true"><i></i><i></i><i></i><div class="grille"></div></div>
+  <div class="w">
+    <div class="puce"><b></b>Studio indépendant · Paris</div>
+    <h1>Des applications et des vidéos <span class="degrade">conçues en France.</span></h1>
+    <p>MAXICARDS édite l'application sportive DROMA et produit des chaînes YouTube et TikTok : jeux vidéo, mystères, histoire, faits divers, cartes Pokémon, animaux et sport.</p>
+    <div class="actions">
+      <a class="btn plein" href="#droma">Découvrir DROMA<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn vide" href="#chaines">Nos chaînes</a>
+    </div>
+    <div class="piliers">
+      <div class="pilier"><small>Application</small><strong>DROMA</strong><p>Course, vélo, natation et triathlon dans une seule appli.</p></div>
+      <div class="pilier"><small>Vidéo</small><strong>Chaînes YouTube et TikTok</strong><p>Documentaires, actualité et formats courts, en français.</p></div>
+      <div class="pilier"><small>Jeux</small><strong>Créations Roblox</strong><p>Des jeux Roblox conçus et présentés par le studio.</p></div>
+    </div>
+  </div>
+</div>
+
+<section id="droma"><div class="w">
+  <div class="droma">
+    <div>
+      <p class="surtitre">Notre application</p>
+      <div class="nom">DROMA<span>.</span></div>
+      <p>L'application pour enregistrer, analyser et partager course, vélo, natation et triathlon.</p>
+      <ul class="sports"><li>🏃 Course</li><li>🚴 Vélo</li><li>🏊 Natation</li><li>🏅 Triathlon</li></ul>
+      <a class="btn plein" href="https://joindroma.app" rel="noopener">Découvrir DROMA<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      <span class="lancement">Lancement prévu en 2027</span>
+    </div>
+    <div class="tel" aria-hidden="true"><div class="ecran">
+      <div class="e-haut">Sortie du matin</div>
+      <div class="e-grand">10,4<small>km</small></div>
+      <div class="trace"><svg viewBox="0 0 220 150" preserveAspectRatio="none"><path d="M18 120 C 40 60, 70 130, 95 80 S 140 20, 160 60 S 190 120, 205 40" fill="none" stroke="#F2602E" stroke-width="4" stroke-linecap="round"/></svg></div>
+      <div class="stats"><div><b>4'52"</b><span>allure /km</span></div><div><b>148</b><span>bpm moyen</span></div><div><b>+86 m</b><span>dénivelé</span></div><div><b>50:37</b><span>durée</span></div></div>
+      <div class="e-btn">Démarrer</div>
+    </div></div>
+  </div>
+</div></section>
+
+<section id="chaines"><div class="w">
+  <p class="surtitre">Nos chaînes</p>
+  <h2>Des formats pour chaque curiosité.</h2>
+  <p class="intro">Des documentaires, de l'actualité et des vidéos courtes, produits par le studio en français.</p>
+  <div class="chaines">
+    <a class="ch yt" href="https://www.youtube.com/channel/UCEi-74NtL_AVktTyQ1LFbeg" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>GTA 6 Nine</h3><p>Toute l'actualité et les analyses autour de GTA 6.</p><span class="poignee">Voir la chaîne<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch yt" href="https://www.youtube.com/@CartoucheDocs" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>Cartouche</h3><p>Des documentaires sur les jeux vidéo, avec de vraies images de jeu.</p><span class="poignee">@CartoucheDocs<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch yt" href="https://www.youtube.com/@FroidDansLeDosFR" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>Froid dans le Dos</h3><p>Les mystères du monde en documentaires-enquêtes.</p><span class="poignee">@FroidDansLeDosFR<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch yt" href="https://www.youtube.com/@IlEtaitUneLegendeFR" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>Il Était Une Légende</h3><p>Mythes, dieux et grandes batailles en documentaires 3D.</p><span class="poignee">@IlEtaitUneLegendeFR<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch yt" href="https://www.youtube.com/@DossierAlibi" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>Dossier Alibi</h3><p>Des documentaires criminels sur des affaires vraies.</p><span class="poignee">@DossierAlibi<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch yt" href="https://www.youtube.com/@MaxiCards-POKEMON" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>MaxiCards</h3><p>L'actualité des cartes Pokémon : sorties, prix et nouveautés.</p><span class="poignee">@MaxiCards-POKEMON<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch yt" href="https://www.youtube.com/@BestMapRoblox" rel="noopener"><span class="plat"><i></i>YouTube</span><h3>Best Map Roblox</h3><p>Les jeux Roblox du studio, en guides et en vidéos courtes.</p><span class="poignee">@BestMapRoblox<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch tt" href="https://www.tiktok.com/@droledebetes" rel="noopener"><span class="plat"><i></i>TikTok</span><h3>Drôle de Bête</h3><p>Les animaux les plus étonnants, en vidéos courtes.</p><span class="poignee">@droledebetes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch tt" href="https://www.tiktok.com/@pacecoach.fr" rel="noopener"><span class="plat"><i></i>TikTok</span><h3>PACE Coach</h3><p>Un conseil sport concret par jour : course, vélo, natation, récupération.</p><span class="poignee">@pacecoach.fr<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch tt" href="https://www.tiktok.com/@tutrouves" rel="noopener"><span class="plat"><i></i>TikTok</span><h3>Tu trouves ?</h3><p>Une énigme par jour à résoudre en quelques secondes.</p><span class="poignee">@tutrouves<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch tt" href="https://www.tiktok.com/@maxiifruits" rel="noopener"><span class="plat"><i></i>TikTok</span><h3>Maxiifruits</h3><p>Des histoires de fruits, en épisodes courts.</p><span class="poignee">@maxiifruits<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+    <a class="ch tt" href="https://www.tiktok.com/@gta6_nine" rel="noopener"><span class="plat"><i></i>TikTok</span><h3>GTA 6 Nine</h3><p>L'actualité de GTA 6 en format court.</p><span class="poignee">@gta6_nine<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a>
+  </div>
+</div></section>
+
+<section id="contact"><div class="w">
+  <div class="contact">
+    <div><p class="surtitre">Contact</p><h2>Travaillons ensemble.</h2><p>Partenariats, presse, support : <a href="mailto:contact@maxicards.net">contact@maxicards.net</a></p></div>
+    <a class="btn plein" href="mailto:contact@maxicards.net">Écrire au studio<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</div></section>
+
+<section id="mentions" class="legal"><div class="w">
+  <h2>Mentions légales</h2>
+  <div class="bloc">
+<p><strong>Éditeur :</strong> MAXICARDS, SASU au capital de 1 000 €</p>
+<p><strong>Siège :</strong> 60 rue François Ier, 75008 Paris</p>
+<p><strong>RCS :</strong> Paris B 935 408 351 · <strong>SIRET :</strong> 935 408 351 00010 · <strong>TVA :</strong> FR30935408351</p>
+<p><strong>D-U-N-S :</strong> 283335407</p>
+<p><strong>Directeur de la publication :</strong> Alexandre Fourel, président</p>
+<p><strong>Contact :</strong> contact@maxicards.net</p>
+<p><strong>Hébergeur :</strong> GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis (GitHub Pages)</p>
+<p>Ce site ne dépose aucun cookie et ne collecte aucune donnée personnelle.</p>
+  </div>
+</div></section>
+</main>
+<footer><div class="w"><span>© 2026 MAXICARDS. Tous droits réservés.</span><span>Conçu en France 🇫🇷</span></div></footer>
+</body></html>
