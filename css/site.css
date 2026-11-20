@@ -22,8 +22,8 @@ header{position:fixed;top:0;left:0;right:0;z-index:30;backdrop-filter:blur(14px)
 header .w{display:flex;justify-content:space-between;align-items:center;height:64px}
 .progres{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--orange),var(--rose),var(--violet));transform-origin:0 50%;transform:scaleX(0)}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--titre);font-weight:700;letter-spacing:.14em;font-size:17px;text-decoration:none}
-.logo svg{width:30px;height:30px;transition:transform .5s var(--ease)}
-.logo:hover svg{transform:rotate(-12deg) scale(1.08)}
+.logo img{width:40px;height:40px;object-fit:contain;transition:transform .5s var(--ease)}
+.logo:hover img{transform:rotate(-12deg) scale(1.08)}
 header nav{display:flex;gap:30px}
 header nav a{position:relative;color:var(--mute);text-decoration:none;font-size:14.5px;font-weight:500;transition:color .2s}
 header nav a:after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease)}
@@ -54,7 +54,9 @@ header nav a:hover:after{transform:scaleX(1);transform-origin:left}
 .orbite{position:absolute;right:5%;top:50%;width:460px;height:460px;margin-top:-250px;perspective:1100px;transform-style:preserve-3d}
 .o-sphere{position:absolute;inset:150px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,138,76,.55),rgba(124,92,255,.25) 55%,transparent 72%);filter:blur(6px);animation:pouls2 4s ease-in-out infinite}
 @keyframes pouls2{50%{transform:scale(1.12);opacity:.75}}
-.o-coeur{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;filter:drop-shadow(0 0 18px rgba(242,96,46,.8))}
+.o-coeur{position:absolute;left:50%;top:50%;width:160px;height:auto;margin:-80px 0 0 -80px;filter:drop-shadow(0 0 22px rgba(46,200,110,.55));animation:flotte 4s ease-in-out infinite}
+@keyframes flotte{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+@media(prefers-reduced-motion:reduce){.o-coeur{animation:none}}
 .o-anneau{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.16);transform-style:preserve-3d;animation:orb1 16s linear infinite}
 .o-anneau i{position:absolute;left:50%;top:-8px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px rgba(255,255,255,.06),0 0 24px 4px var(--c)}
 .r2{inset:46px;border-color:rgba(124,92,255,.3);animation:orb2 11s linear infinite}
