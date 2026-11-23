@@ -155,7 +155,7 @@ button.mini:hover { background: var(--volt); border-color: var(--volt); color: v
 .tuile.flash { animation: flash .7s ease-out; }
 /* chiffres qui s'animent : le vrai texte reste dans la page, seul un calque visible défile */
 .valeur.anime { color: transparent; }
-.valeur.anime::after { content: attr(data-v); position: absolute; left: 0; top: 0; white-space: nowrap; color: var(--texte); }
+.valeur.anime::after { content: attr(data-v); position: absolute; left: 0; right: 0; top: 0; color: var(--texte); }
 .tuile.forte .valeur.anime::after { color: var(--sur-volt); }
 @keyframes flash { from { box-shadow: 0 0 0 3px var(--volt); } to { box-shadow: 0 0 0 3px rgba(212, 255, 58, 0); } }
 .positif { color: var(--ok); }
@@ -310,8 +310,38 @@ details.faq p { margin-top: 0; }
   h1 { text-transform: none; }
 }
 
+/* Lisibilité (23/11/2026) : H1 court, outil tout de suite, une action principale, résultat en très gros */
+body { line-height: 1.65; }
+main { padding-top: 14px; }
+.fil { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+.chapo.apres-outil { margin: 6px 0 4px; font-size: 1.05rem; }
+.chapo.court { font-size: .98rem; }
+.reponse { background: var(--accent-doux); color: var(--sur-accent-doux); border-left: 6px solid var(--volt); border-radius: 12px; padding: 14px 16px; margin: 10px 0 18px; }
+.reponse strong { display: block; font-family: var(--titre); font-size: 1.25rem; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 4px; }
+.reponse p { margin: 0; font-size: 1.1rem; line-height: 1.55; font-weight: 500; }
+.outil { max-width: 720px; margin-left: auto; margin-right: auto; margin-bottom: 24px; }
+.boutons { margin-top: 18px; }
+.boutons button.principal { width: 100%; min-height: 56px; font-size: 1.15rem; border-radius: 12px; }
+@media (min-width: 560px) { .boutons button.principal { width: auto; min-width: 240px; } }
+.resultats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.tuile.forte { grid-column: 1 / -1; text-align: center; padding: 16px 14px; border-left-width: 0; border-bottom: 5px solid var(--encre); }
+.tuile.forte .valeur { font-size: clamp(3rem, 14vw, 4.2rem); line-height: 1; }
+.tuile.forte .valeur.anime::after { left: 0; right: 0; text-align: center; }
+.tuile.forte .libelle { font-size: .98rem; font-weight: 600; margin-top: 4px; }
+.rapide { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+button.mini { flex: none; min-height: 44px; background: transparent; font-weight: 600; }
+.acces { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 6px; }
+.acces a { min-height: 60px; padding: 10px 14px; font-size: 1.02rem; border-radius: 14px; width: 100%; }
+.acces li:first-child { grid-column: 1 / -1; }
+.acces li:first-child a { min-height: 68px; font-size: 1.15rem; justify-content: center; }
+.acces .ico { width: 24px; height: 24px; }
+.hero h1 { font-size: clamp(2.4rem, 11vw, 3.8rem); }
+.hero .piste { max-height: 150px; }
+@media (min-width: 760px) { .acces { grid-template-columns: repeat(3, 1fr); } .acces li:first-child { grid-column: auto; } .hero .piste { max-height: none; } }
+@media (max-width: 480px) { body { font-size: 17px; } .outil { padding: 14px; } .liste-guides a { padding: 14px; } .encadre-outil a.bouton { min-height: 48px; } }
+
 /* Réserve de hauteur des outils (CLS) */
-/* Hauteurs mesurées le 23/11/2026 (mesure_outils.py) ; à refaire si un outil change. */
-@media (max-width: 480px) { .outil[data-outil="allures-entrainement-vma"]{min-height:1222px} .outil[data-outil="calcul-allure"]{min-height:746px} .outil[data-outil="calcul-temps-course"]{min-height:1329px} .outil[data-outil="calcul-vma"]{min-height:663px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:336px} .outil[data-outil="plan"]{min-height:221px} .outil[data-outil="predicteur-temps-course"]{min-height:1003px} .outil[data-outil="zones-cardiaques"]{min-height:1516px} }
-@media (min-width: 481px) and (max-width: 900px) { .outil[data-outil="allures-entrainement-vma"]{min-height:879px} .outil[data-outil="calcul-allure"]{min-height:421px} .outil[data-outil="calcul-temps-course"]{min-height:935px} .outil[data-outil="calcul-vma"]{min-height:398px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:156px} .outil[data-outil="plan"]{min-height:201px} .outil[data-outil="predicteur-temps-course"]{min-height:638px} .outil[data-outil="zones-cardiaques"]{min-height:1029px} }
-@media (min-width: 901px) { .outil[data-outil="allures-entrainement-vma"]{min-height:855px} .outil[data-outil="calcul-allure"]{min-height:326px} .outil[data-outil="calcul-temps-course"]{min-height:845px} .outil[data-outil="calcul-vma"]{min-height:337px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:156px} .outil[data-outil="plan"]{min-height:201px} .outil[data-outil="predicteur-temps-course"]{min-height:638px} .outil[data-outil="zones-cardiaques"]{min-height:959px} }
+/* Hauteurs mesurées le 23/11/2026 après la passe lisibilité (mesure_outils.py, maximum par plage de largeur, sans réserve) ; à refaire si un outil change. */
+@media (max-width: 480px) { .outil[data-outil="allures-entrainement-vma"]{min-height:1303px} .outil[data-outil="calcul-allure"]{min-height:762px} .outil[data-outil="calcul-temps-course"]{min-height:1355px} .outil[data-outil="calcul-vma"]{min-height:716px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:342px} .outil[data-outil="plan"]{min-height:252px} .outil[data-outil="predicteur-temps-course"]{min-height:996px} .outil[data-outil="zones-cardiaques"]{min-height:1712px} }
+@media (min-width: 481px) and (max-width: 900px) { .outil[data-outil="allures-entrainement-vma"]{min-height:1336px} .outil[data-outil="calcul-allure"]{min-height:692px} .outil[data-outil="calcul-temps-course"]{min-height:1307px} .outil[data-outil="calcul-vma"]{min-height:657px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:328px} .outil[data-outil="plan"]{min-height:238px} .outil[data-outil="predicteur-temps-course"]{min-height:988px} .outil[data-outil="zones-cardiaques"]{min-height:1575px} }
+@media (min-width: 901px) { .outil[data-outil="allures-entrainement-vma"]{min-height:964px} .outil[data-outil="calcul-allure"]{min-height:563px} .outil[data-outil="calcul-temps-course"]{min-height:1158px} .outil[data-outil="calcul-vma"]{min-height:589px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:167px} .outil[data-outil="plan"]{min-height:216px} .outil[data-outil="predicteur-temps-course"]{min-height:676px} .outil[data-outil="zones-cardiaques"]{min-height:1234px} }
