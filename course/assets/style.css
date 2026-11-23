@@ -309,3 +309,9 @@ details.faq p { margin-top: 0; }
   .conteneur { max-width: none; }
   h1 { text-transform: none; }
 }
+
+/* Réserve de hauteur des outils (CLS) */
+/* Hauteurs mesurées le 23/11/2026 (mesure_outils.py) ; à refaire si un outil change. */
+@media (max-width: 480px) { .outil[data-outil="allures-entrainement-vma"]{min-height:1222px} .outil[data-outil="calcul-allure"]{min-height:746px} .outil[data-outil="calcul-temps-course"]{min-height:1329px} .outil[data-outil="calcul-vma"]{min-height:663px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:336px} .outil[data-outil="plan"]{min-height:221px} .outil[data-outil="predicteur-temps-course"]{min-height:1003px} .outil[data-outil="zones-cardiaques"]{min-height:1516px} }
+@media (min-width: 481px) and (max-width: 900px) { .outil[data-outil="allures-entrainement-vma"]{min-height:879px} .outil[data-outil="calcul-allure"]{min-height:421px} .outil[data-outil="calcul-temps-course"]{min-height:935px} .outil[data-outil="calcul-vma"]{min-height:398px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:156px} .outil[data-outil="plan"]{min-height:201px} .outil[data-outil="predicteur-temps-course"]{min-height:638px} .outil[data-outil="zones-cardiaques"]{min-height:1029px} }
+@media (min-width: 901px) { .outil[data-outil="allures-entrainement-vma"]{min-height:855px} .outil[data-outil="calcul-allure"]{min-height:326px} .outil[data-outil="calcul-temps-course"]{min-height:845px} .outil[data-outil="calcul-vma"]{min-height:337px} .outil[data-outil="convertisseur-allure-vitesse"]{min-height:156px} .outil[data-outil="plan"]{min-height:201px} .outil[data-outil="predicteur-temps-course"]{min-height:638px} .outil[data-outil="zones-cardiaques"]{min-height:959px} }
