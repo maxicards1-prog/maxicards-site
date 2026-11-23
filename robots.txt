@@ -7,3 +7,4 @@ Sitemap: https://maxicards.net/foot/sitemap.xml
 Sitemap: https://maxicards.net/calcul/sitemap.xml
 Sitemap: https://maxicards.net/gta6/sitemap.xml
 Sitemap: https://maxicards.net/convertir/sitemap.xml
+Sitemap: https://maxicards.net/ia/sitemap.xml
