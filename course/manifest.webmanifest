@@ -5,8 +5,8 @@
  "start_url": "/course/",
  "scope": "/course/",
  "display": "standalone",
- "background_color": "#ffffff",
- "theme_color": "#0f766e",
+ "background_color": "#0b110d",
+ "theme_color": "#0b110d",
  "icons": [
   {
    "src": "/course/assets/icone-192.png",

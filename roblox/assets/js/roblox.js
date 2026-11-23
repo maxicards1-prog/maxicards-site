@@ -213,8 +213,40 @@
     vals.forEach(function (v) { s.appendChild(h('option', { value: v[0] }, v[1])); });
     return s;
   }
+  // Compteur animé : le nombre de tête monte (ou descend) jusqu'à sa valeur ; le texte final exact est toujours réécrit à la fin.
+  var CALME = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var dernier = {};
+  function animer(el, final) {
+    if (CALME || !window.requestAnimationFrame) return;
+    var m = /^(\d(?:[\d   ]*\d)?)(,(\d+))?/.exec(final);
+    if (!m) return;
+    var dec = m[3] ? m[3].length : 0;
+    var cible = parseFloat(m[1].replace(/[^\d]/g, '') + (dec ? '.' + m[3] : ''));
+    if (!isFinite(cible)) return;
+    var reste = final.slice(m[0].length);
+    var nf = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    requestAnimationFrame(function () {
+      var tu = el.parentNode, sortie = tu && tu.parentNode;
+      if (!sortie) return;
+      var cle = (sortie.parentNode && sortie.parentNode.getAttribute ? sortie.parentNode.getAttribute('data-outil') : '') + ':' + Array.prototype.indexOf.call(sortie.children, tu);
+      var depart = dernier.hasOwnProperty(cle) ? dernier[cle] : 0;
+      dernier[cle] = cible;
+      if (depart === cible) return;
+      sortie.setAttribute('aria-busy', 'true');
+      var t0 = null, duree = 450;
+      (function image(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / duree), e = 1 - Math.pow(1 - p, 3);
+        if (p >= 1 || !el.parentNode) { el.textContent = final; sortie.removeAttribute('aria-busy'); return; }
+        el.textContent = nf.format(depart + (cible - depart) * e) + reste;
+        requestAnimationFrame(image);
+      })(performance.now());
+    });
+  }
   function tuile(valeur, libelle, forte) {
-    return h('div', { 'class': 'tuile' + (forte ? ' forte' : '') }, h('span', { 'class': 'valeur' }, valeur), h('span', { 'class': 'libelle' }, libelle));
+    var v = h('span', { 'class': 'valeur' }, valeur);
+    animer(v, valeur);
+    return h('div', { 'class': 'tuile' + (forte ? ' forte' : '') }, v, h('span', { 'class': 'libelle' }, libelle));
   }
   function vider(e) { while (e.firstChild) e.removeChild(e.firstChild); }
   function packsDe(racine) { try { return JSON.parse(racine.getAttribute('data-packs') || '[]'); } catch (e) { return []; } }

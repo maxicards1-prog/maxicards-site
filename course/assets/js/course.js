@@ -95,9 +95,47 @@
       }
     };
   }
+  /* ---------- micro-interactions ---------- */
+  var REDUIT = !!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var PREV = {};
+  /* Les chiffres défilent vers la valeur finale. Le vrai texte reste dans la page (lecteurs d'écran, copier-coller) :
+     seul un calque visible (data-v, affiché par le CSS) change à chaque image. */
+  function animer(noeud, final, avant) {
+    var cibles = final.match(/\d+/g);
+    if (REDUIT || !cibles || !global.requestAnimationFrame) return;
+    var anciens = avant ? avant.match(/\d+/g) : null;
+    if (!anciens || anciens.length !== cibles.length) anciens = cibles.map(function () { return '0'; });
+    var duree = avant === undefined ? 650 : 420, t0 = null;
+    function texte(p) {
+      var i = 0;
+      return final.replace(/\d+/g, function (m) {
+        var a = +anciens[i], b = +m, v = String(Math.round(a + (b - a) * p));
+        var tour = i++;
+        if (tour > 0 || m.charAt(0) === '0') while (v.length < m.length) v = '0' + v;
+        return v;
+      });
+    }
+    noeud.className += ' anime';
+    noeud.setAttribute('data-v', texte(0));
+    function image(t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / duree), e = 1 - Math.pow(1 - p, 3);
+      if (p >= 1) { noeud.className = noeud.className.replace(' anime', ''); noeud.removeAttribute('data-v'); return; }
+      noeud.setAttribute('data-v', texte(e));
+      global.requestAnimationFrame(image);
+    }
+    global.requestAnimationFrame(image);
+  }
   function tuile(valeur, libelle, forte) {
-    return el('div', { 'class': 'tuile' + (forte ? ' forte' : '') },
-              el('span', { 'class': 'valeur', texte: valeur }), el('span', { 'class': 'libelle', texte: libelle }));
+    var v = el('span', { 'class': 'valeur', texte: valeur });
+    var t = el('div', { 'class': 'tuile' + (forte ? ' forte' : '') }, v, el('span', { 'class': 'libelle', texte: libelle }));
+    var avant = PREV[libelle];
+    PREV[libelle] = valeur;
+    if (avant !== valeur) {
+      animer(v, valeur, avant);
+      if (avant !== undefined && !REDUIT) t.className += ' flash';
+    }
+    return t;
   }
   function vider(n) { while (n.firstChild) n.removeChild(n.firstChild); }
   function tableau(entetes, lignes, classes) {
@@ -267,6 +305,32 @@
     ['Zone 4', 80, 90, 'Seuil : effort difficile, quelques mots'],
     ['Zone 5', 90, 100, 'Effort maximal, par intervalles courts']
   ];
+  /* Barres des zones : créées une fois (elles se remplissent), puis seules les valeurs changent */
+  function barresZones(parent, fcmax, repos) {
+    var b = parent.querySelector('.barres-zones'), cree = !b;
+    if (cree) {
+      b = el('div', { 'class': 'barres-zones', 'aria-hidden': 'true' });
+      ZONES_FC.forEach(function (z, i) {
+        var f = el('i', { 'class': 'zb-fill z' + (i + 1) });
+        f.style.left = ((z[1] - 50) * 2) + '%';
+        f.style.width = ((z[2] - z[1]) * 2) + '%';
+        f.style.transitionDelay = (i * 90) + 'ms';
+        b.appendChild(el('div', { 'class': 'zb' }, el('span', { 'class': 'zb-nom', texte: z[0] }),
+          el('span', { 'class': 'zb-piste' }, f), el('span', { 'class': 'zb-val' })));
+      });
+      parent.appendChild(b);
+    }
+    var vals = b.querySelectorAll('.zb-val');
+    ZONES_FC.forEach(function (z, i) {
+      var lo = repos === null ? fcmax * z[1] / 100 : karvonen(fcmax, repos, z[1] / 100);
+      var hi = repos === null ? fcmax * z[2] / 100 : karvonen(fcmax, repos, z[2] / 100);
+      vals[i].textContent = Math.round(lo) + ' à ' + Math.round(hi) + ' bpm';
+    });
+    if (cree) {
+      if (global.requestAnimationFrame) global.requestAnimationFrame(function () { global.requestAnimationFrame(function () { b.className += ' plein'; }); });
+      else b.className += ' plein';
+    }
+  }
   OUTILS['zones-cardiaques'] = function (racine) {
     var age = champ('Âge (ans)', { value: '35', inputmode: 'numeric' });
     var mes = champ('FC max mesurée (facultatif, bpm)', { value: '', inputmode: 'numeric' }, 'Si vous l\'avez mesurée sur un effort maximal, elle remplace la formule.');
@@ -283,6 +347,7 @@
       if (!haveM && isFinite(fox)) res.appendChild(tuile(Math.round(fox) + ' bpm', 'Avec 220 − âge (moins précis)'));
       if (haveR) res.appendChild(tuile(Math.round(fcmax - r) + ' bpm', 'Réserve cardiaque (FC max − repos)'));
       res.parentNode.querySelectorAll('.tab-zones').forEach(function (n) { n.parentNode.removeChild(n); });
+      barresZones(res.parentNode, fcmax, haveR ? r : null);
       var ent = haveR ? ['Zone', '% FC max', 'FC (% FC max)', 'FC Karvonen (réserve)', 'Ressenti'] : ['Zone', '% FC max', 'FC en bpm', 'Ressenti'];
       var lignes = ZONES_FC.map(function (z) {
         var l = [z[0], z[1] + ' à ' + z[2] + ' %', Math.round(fcmax * z[1] / 100) + ' à ' + Math.round(fcmax * z[2] / 100)];
@@ -347,7 +412,58 @@
     ecoute([vma.input], maj);
   };
 
+  /* Apparition au défilement : seuls les blocs encore hors écran sont masqués puis révélés */
+  function apparitions() {
+    if (REDUIT || !global.IntersectionObserver) return;
+    var cibles = document.querySelectorAll('.categorie, .liste-outils li, .liste-guides li, .plan-sem, details.faq, .pace-coach, .encadre-outil, .tableau-defile');
+    var bas = global.innerHeight || 700;
+    var io = new global.IntersectionObserver(function (liste) {
+      liste.forEach(function (e) {
+        if (e.isIntersecting) { e.target.className += ' vu'; io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    Array.prototype.forEach.call(cibles, function (n) {
+      if (n.getBoundingClientRect().top < bas) return;
+      n.className += ' js-rev';
+      io.observe(n);
+    });
+  }
+
+  /* Hero : le coureur fait le tour de la piste (arrêté si mouvement réduit ou onglet masqué) */
+  function piste() {
+    var svg = document.querySelector('[data-piste]');
+    if (!svg) return;
+    var trace = svg.querySelector('#piste-trace'), pt = svg.querySelector('.pt-coureur'), halo = svg.querySelector('.pt-halo');
+    if (REDUIT || !trace || !trace.getTotalLength || !global.requestAnimationFrame) return;
+    var len = trace.getTotalLength(), tour = 9000, t0 = null, visible = true;
+    function place(f) {
+      var q = trace.getPointAtLength(((f % 1) + 1) % 1 * len);
+      pt.setAttribute('cx', q.x); pt.setAttribute('cy', q.y);
+      halo.setAttribute('cx', q.x); halo.setAttribute('cy', q.y);
+    }
+    function image(t) {
+      if (t0 === null) t0 = t;
+      if (visible && !document.hidden) place((t - t0) / tour);
+      global.requestAnimationFrame(image);
+    }
+    if (global.IntersectionObserver) {
+      new global.IntersectionObserver(function (l) { visible = l[0].isIntersecting; }).observe(svg);
+    }
+    global.setTimeout(function () { global.requestAnimationFrame(image); }, 1400);
+  }
+
+  /* Polices Google : chargées après l'affichage (display=swap, repli aux mêmes proportions), pour ne pas bloquer le rendu */
+  function polices() {
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = document.documentElement.getAttribute('data-polices');
+    if (l.href) document.head.appendChild(l);
+  }
+  if (document.readyState === 'complete') polices(); else global.addEventListener('load', polices);
+
   function init() {
+    apparitions();
+    piste();
     var sections = document.querySelectorAll('[data-outil]');
     Array.prototype.forEach.call(sections, function (s) {
       var f = OUTILS[s.getAttribute('data-outil')];
