@@ -8,8 +8,8 @@
   const MO = 1024 * 1024;
   const MOBILE = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   const LIMITE_PIXELS = MOBILE ? 16000000 : 40000000;
-  const LIMITES = { pdf: 300 * MO, image: 80 * MO, heic: 80 * MO, video: 1024 * MO };
-  const NOMS_TYPES = { pdf: 'PDF', image: 'image', heic: 'photo HEIC', video: 'vidéo ou audio' };
+  const LIMITES = { pdf: 300 * MO, image: 80 * MO, heic: 80 * MO, svg: 20 * MO, video: 1024 * MO };
+  const NOMS_TYPES = { pdf: 'PDF', image: 'image', heic: 'photo HEIC', svg: 'image SVG', video: 'vidéo ou audio' };
 
   // ---------- petites aides ----------
   function el(tag, attrs, ...enfants) {
@@ -38,6 +38,7 @@
     const e = ext(f.name);
     if (t === 'application/pdf' || e === 'pdf') return 'pdf';
     if (t === 'image/heic' || t === 'image/heif' || e === 'heic' || e === 'heif') return 'heic';
+    if (t === 'image/svg+xml' || e === 'svg') return 'svg';
     if (t.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'avif', 'jfif'].includes(e)) return 'image';
     if (t.startsWith('video/') || t.startsWith('audio/') ||
         ['mp4', 'mov', 'm4v', 'm4a', 'webm', 'mp3', 'wav', 'ogg', 'aac', 'flac'].includes(e)) return 'video';
@@ -198,7 +199,9 @@
   }
   function versBlob(c, type, qualite) {
     return new Promise((ok, ko) => c.toBlob((b) => {
-      if (b) ok(b); else ko(new Erreur('Image trop grande pour la mémoire de cet appareil. Essayez sur un ordinateur.'));
+      if (!b) ko(new Erreur('Image trop grande pour la mémoire de cet appareil. Essayez sur un ordinateur.'));
+      else if (type && b.type !== type) ko(new Erreur(type === 'image/webp' ? 'Votre navigateur (Safari) ne sait pas créer d\'images WEBP. Choisissez JPG ou PNG, ou utilisez Chrome, Edge ou Firefox.' : 'Votre navigateur ne sait pas créer ce format d\'image.'));
+      else ok(b);
     }, type, qualite));
   }
   const MIME = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
@@ -554,6 +557,422 @@
     return { sorties };
   }
 
+  // ---------- nouveaux outils (23/11/2026) ----------
+  // Point « visuel » (origine en bas à gauche de la page telle qu'affichée) -> coordonnées PDF, rotation de la page
+  function repere(page) {
+    const b = page.getCropBox ? page.getCropBox() : Object.assign({ x: 0, y: 0 }, page.getSize());
+    const r = (((page.getRotation().angle || 0) % 360) + 360) % 360;
+    const W = b.width; const H = b.height;
+    const VW = r % 180 ? H : W; const VH = r % 180 ? W : H;
+    const vers = (vx, vy) => {
+      if (r === 90) return { x: b.x + W - vy, y: b.y + vx };
+      if (r === 180) return { x: b.x + W - vx, y: b.y + H - vy };
+      if (r === 270) return { x: b.x + vy, y: b.y + H - vx };
+      return { x: b.x + vx, y: b.y + vy };
+    };
+    return { VW, VH, r, vers };
+  }
+  function texteSur(page, police, texte, taille, vx, vy, angle, couleur, opacite, degrees) {
+    const R = repere(page);
+    const p = R.vers(vx, vy);
+    page.drawText(texte, { x: p.x, y: p.y, size: taille, font: police, color: couleur, opacity: opacite, rotate: degrees(R.r + (angle || 0)) });
+  }
+  function verifTexte(police, texte) {
+    try { police.encodeText(texte); } catch (e) {
+      throw new Erreur('Ce texte contient un caractère que la police standard des PDF ne sait pas écrire (emoji, alphabet non latin…). Retirez-le et réessayez.');
+    }
+  }
+
+  async function numeroter(fichiers, o, ui) {
+    const { StandardFonts, rgb, degrees } = await pdfLib();
+    const sorties = [];
+    for (const f of fichiers) {
+      ui.progres(`« ${f.name} »`, 0.3);
+      const doc = await ouvrirPdfLib(f);
+      const police = await doc.embedFont(StandardFonts.Helvetica);
+      const pages = doc.getPages();
+      const debut = Math.max(0, Math.floor(Number(o.debut) || 1));
+      const saut = o.couverture === 'oui' ? 1 : 0;
+      const total = pages.length - saut + debut - 1;
+      const t = Number(o.taillePolice) || 11;
+      const marge = 28;
+      pages.forEach((page, i) => {
+        if (i < saut) return;
+        const k = i - saut + debut;
+        const texte = { n: `${k}`, page: `Page ${k}`, sur: `${k} / ${total}`, pagesur: `Page ${k} sur ${total}` }[o.formatNum] || `${k}`;
+        const R = repere(page);
+        const tw = police.widthOfTextAtSize(texte, t);
+        const [h, v] = (o.position || 'bas-centre').split('-');
+        const vx = v === 'gauche' ? marge : v === 'droite' ? R.VW - marge - tw : (R.VW - tw) / 2;
+        const vy = h === 'haut' ? R.VH - marge - t : marge;
+        texteSur(page, police, texte, t, vx, vy, 0, rgb(0.15, 0.15, 0.15), 1, degrees);
+      });
+      sorties.push({ nom: `${sansExt(f.name)}-numerote.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
+    }
+    return { sorties };
+  }
+
+  async function filigrane(fichiers, o, ui) {
+    const { StandardFonts, rgb, degrees } = await pdfLib();
+    const texte = (o.texteFil || '').trim().slice(0, 60);
+    if (!texte) throw new Erreur('Écrivez le texte du filigrane, par exemple : CONFIDENTIEL');
+    const couleur = { gris: rgb(0.45, 0.45, 0.45), rouge: rgb(0.8, 0.1, 0.1), bleu: rgb(0.12, 0.35, 0.8) }[o.couleurFil] || rgb(0.45, 0.45, 0.45);
+    const opacite = Math.min(0.9, Math.max(0.05, Number(o.opacite) / 100 || 0.25));
+    const sorties = [];
+    for (const f of fichiers) {
+      ui.progres(`« ${f.name} »`, 0.3);
+      const doc = await ouvrirPdfLib(f);
+      const police = await doc.embedFont(StandardFonts.HelveticaBold);
+      verifTexte(police, texte);
+      const pages = doc.getPages();
+      const cibles = o.pages && o.pages.trim() ? plage(o.pages, pages.length) : [...pages.keys()];
+      for (const i of cibles) {
+        const page = pages[i];
+        const R = repere(page);
+        const diag = o.sensFil !== 'horizontal';
+        const a = diag ? Math.atan2(R.VH, R.VW) : 0;
+        const place = diag ? Math.hypot(R.VW, R.VH) * 0.7 : R.VW * 0.8;
+        const t = Math.min(160, place / police.widthOfTextAtSize(texte, 1));
+        const tw = police.widthOfTextAtSize(texte, t);
+        const th = t * 0.7;
+        const cx = R.VW / 2; const cy = R.VH / 2;
+        const vx = cx - (tw / 2) * Math.cos(a) + (th / 2) * Math.sin(a);
+        const vy = cy - (tw / 2) * Math.sin(a) - (th / 2) * Math.cos(a);
+        texteSur(page, police, texte, t, vx, vy, a * 180 / Math.PI, couleur, opacite, degrees);
+      }
+      sorties.push({ nom: `${sansExt(f.name)}-filigrane.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
+    }
+    return { sorties };
+  }
+
+  async function pdfVersTexte(fichiers, o, ui) {
+    const sorties = []; const notes = [];
+    for (const f of fichiers) {
+      const doc = await ouvrirPdfjs(f);
+      const n = doc.numPages;
+      const morceaux = [];
+      let car = 0;
+      for (let i = 1; i <= n; i++) {
+        ui.progres(`« ${f.name} » : page ${i} sur ${n}`, (i - 1) / n);
+        const page = await doc.getPage(i);
+        const contenu = await page.getTextContent();
+        let t = '';
+        for (const it of contenu.items) { if ('str' in it) { t += it.str; if (it.hasEOL) t += '\n'; } }
+        t = t.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+        car += t.replace(/\s/g, '').length;
+        morceaux.push(o.separer === 'non' ? t : `--- Page ${i} ---\n${t}`);
+        page.cleanup();
+        if (i % 10 === 0) await pause();
+      }
+      await doc.destroy();
+      if (car < 20 * n && car < 200) {
+        notes.push(`« ${f.name} » ne contient presque pas de texte : c'est sans doute un document scanné (des photos de pages). Le site ne fait pas de reconnaissance de caractères (OCR).`);
+        if (!car) continue;
+      }
+      notes.push(`« ${f.name} » : ${car.toLocaleString('fr-FR')} caractères extraits de ${n} page${n > 1 ? 's' : ''}.`);
+      sorties.push({ nom: sansExt(f.name) + '.txt', blob: new Blob(['﻿' + morceaux.join('\n\n') + '\n'], { type: 'text/plain;charset=utf-8' }) });
+    }
+    return { sorties, notes };
+  }
+
+  async function extrairePages(fichiers, o, ui) {
+    const { PDFDocument } = await pdfLib();
+    const f = fichiers[0];
+    const src = await ouvrirPdfLib(f);
+    const n = src.getPageCount();
+    if (!(o.pagesExtr || '').trim()) throw new Erreur('Indiquez les pages à extraire, par exemple : 2, 5-7');
+    const pages = plage(o.pagesExtr, n);
+    ui.progres('Création du PDF…', 0.5);
+    if (o.modeExtr === 'chaque') {
+      const sorties = [];
+      for (const i of pages) { sorties.push({ nom: `${sansExt(f.name)}-page-${i + 1}.pdf`, blob: await extraire(src, [i], PDFDocument) }); await pause(); }
+      return { sorties };
+    }
+    return { sorties: [{ nom: `${sansExt(f.name)}-extrait.pdf`, blob: await extraire(src, pages, PDFDocument) }],
+      notes: [`${pages.length} page${pages.length > 1 ? 's' : ''} extraite${pages.length > 1 ? 's' : ''} sur ${n}.`] };
+  }
+
+  async function organiser(fichiers, o, ui) {
+    const { PDFDocument } = await pdfLib();
+    const f = fichiers[0];
+    const etat = o.__ordre;
+    if (!etat || etat.fichier !== f) throw new Erreur('Patientez : les miniatures des pages sont en cours d\'affichage.');
+    const ordre = etat.ordre.filter((x) => !etat.retirees.has(x));
+    if (!ordre.length) throw new Erreur('Vous avez retiré toutes les pages : gardez-en au moins une.');
+    if (!etat.retirees.size && ordre.every((x, i) => x === i)) throw new Erreur('L\'ordre n\'a pas changé : déplacez des pages avec les flèches, ou retirez-en, puis réessayez.');
+    const src = await ouvrirPdfLib(f);
+    ui.progres('Création du PDF réorganisé…', 0.5);
+    return { sorties: [{ nom: `${sansExt(f.name)}-organise.pdf`, blob: await extraire(src, ordre, PDFDocument) }],
+      notes: [`${ordre.length} page${ordre.length > 1 ? 's' : ''} dans le nouvel ordre${etat.retirees.size ? `, ${etat.retirees.size} retirée${etat.retirees.size > 1 ? 's' : ''}` : ''}.`] };
+  }
+
+  // Signature : rogne le dessin aux pixels non transparents
+  function rogner(c) {
+    const ctx = c.getContext('2d');
+    const { data, width, height } = ctx.getImageData(0, 0, c.width, c.height);
+    let x0 = width; let y0 = height; let x1 = -1; let y1 = -1;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (data[(y * width + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    if (x1 < 0) return null;
+    const m = 4;
+    x0 = Math.max(0, x0 - m); y0 = Math.max(0, y0 - m); x1 = Math.min(width - 1, x1 + m); y1 = Math.min(height - 1, y1 + m);
+    const r = document.createElement('canvas');
+    r.width = x1 - x0 + 1; r.height = y1 - y0 + 1;
+    r.getContext('2d').drawImage(c, x0, y0, r.width, r.height, 0, 0, r.width, r.height);
+    return r;
+  }
+
+  async function signer(fichiers, o, ui) {
+    const { degrees } = await pdfLib();
+    const f = fichiers[0];
+    const s = o.__signature;
+    if (!s || s.fichier !== f) throw new Erreur('Patientez : l\'aperçu de la page est en cours d\'affichage.');
+    const sig = rogner(s.pad);
+    if (!sig) throw new Erreur('Dessinez d\'abord votre signature dans le cadre (ou importez une image de signature).');
+    if (!s.pos) throw new Erreur('Touchez l\'aperçu de la page à l\'endroit où placer la signature.');
+    ui.progres('Ajout de la signature…', 0.5);
+    const doc = await ouvrirPdfLib(f);
+    const page = doc.getPage(s.pos.page - 1);
+    const png = await doc.embedPng(await (await versBlob(sig, 'image/png')).arrayBuffer());
+    const vp = s.pos.vp;
+    const w = vp.width * (Number(s.largeur) || 30) / 100;
+    const h = w * sig.height / sig.width;
+    const cx = s.pos.fx * vp.width; const cy = s.pos.fy * vp.height;
+    const [x, y] = vp.convertToPdfPoint(cx - w / 2, cy + h / 2);
+    page.drawImage(png, { x, y, width: w, height: h, rotate: degrees(vp.rotation || 0) });
+    return { sorties: [{ nom: `${sansExt(f.name)}-signe.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) }],
+      notes: ['Signature ajoutée en page ' + s.pos.page + '. Pour signer à un autre endroit, recommencez avec le fichier obtenu.'] };
+  }
+
+  async function svgVersImage(fichiers, o, ui) {
+    const sorties = [];
+    for (let i = 0; i < fichiers.length; i++) {
+      const f = fichiers[i];
+      ui.progres(`« ${f.name} »`, i / fichiers.length);
+      const texte = await f.text();
+      const d = new DOMParser().parseFromString(texte, 'image/svg+xml');
+      const svg = d.documentElement;
+      if (!svg || svg.nodeName.toLowerCase() !== 'svg' || d.getElementsByTagName('parsererror').length) throw new Erreur(`« ${f.name} » n'est pas un SVG valide.`);
+      const nb = (v) => { const m = /^\s*([\d.]+)\s*(px)?\s*$/.exec(v || ''); return m ? parseFloat(m[1]) : 0; };
+      let w = nb(svg.getAttribute('width')); let h = nb(svg.getAttribute('height'));
+      const vb = (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+      if ((!w || !h) && vb.length === 4 && vb[2] > 0 && vb[3] > 0) { if (w) h = w * vb[3] / vb[2]; else if (h) w = h * vb[2] / vb[3]; else { w = vb[2]; h = vb[3]; } }
+      if (!w || !h) { w = 300; h = 150; }
+      const cible = o.largeurSvg || 'x2';
+      const k = cible[0] === 'x' ? Number(cible.slice(1)) : Number(cible) / w;
+      const W = Math.max(1, Math.round(w * k)); const H = Math.max(1, Math.round(h * k));
+      if (!svg.getAttribute('viewBox')) svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width', W); svg.setAttribute('height', H);
+      const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' }));
+      try {
+        const img = new Image(); img.src = url;
+        await img.decode().catch(() => { throw new Erreur(`Votre navigateur n'arrive pas à afficher « ${f.name} ».`); });
+        const type = o.format === 'jpg' ? 'image/jpeg' : 'image/png';
+        const c = toile({ source: img, w: W, h: H }, W, H, type === 'image/jpeg' || o.fond === 'blanc');
+        sorties.push({ nom: `${sansExt(f.name)}.${EXT[type]}`, blob: await versBlob(c, type, 0.92) });
+        c.width = c.height = 0;
+      } finally { URL.revokeObjectURL(url); }
+    }
+    return { sorties };
+  }
+
+  async function versIco(fichiers, o, ui) {
+    const tailles = o.taillesIco === 'complet' ? [16, 24, 32, 48, 64, 128, 256] : [16, 32, 48];
+    const sorties = [];
+    for (const f of fichiers) {
+      ui.progres(`« ${f.name} »`, 0.3);
+      const im = await decoderImage(f);
+      const pngs = [];
+      for (const t of tailles) {
+        const c = document.createElement('canvas'); c.width = c.height = t;
+        const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high';
+        const k = o.cadrage === 'remplir' ? Math.max(t / im.w, t / im.h) : Math.min(t / im.w, t / im.h);
+        const w = im.w * k; const h = im.h * k;
+        ctx.drawImage(im.source, (t - w) / 2, (t - h) / 2, w, h);
+        pngs.push(new Uint8Array(await (await versBlob(c, 'image/png')).arrayBuffer()));
+      }
+      im.liberer();
+      const tete = new DataView(new ArrayBuffer(6 + 16 * tailles.length));
+      tete.setUint16(2, 1, true); tete.setUint16(4, tailles.length, true);
+      let pos = tete.byteLength;
+      tailles.forEach((t, i) => {
+        const e = 6 + 16 * i;
+        tete.setUint8(e, t >= 256 ? 0 : t); tete.setUint8(e + 1, t >= 256 ? 0 : t);
+        tete.setUint16(e + 4, 1, true); tete.setUint16(e + 6, 32, true);
+        tete.setUint32(e + 8, pngs[i].length, true); tete.setUint32(e + 12, pos, true);
+        pos += pngs[i].length;
+      });
+      sorties.push({ nom: sansExt(f.name) + '.ico', blob: new Blob([tete.buffer, ...pngs], { type: 'image/x-icon' }) });
+    }
+    return { sorties, notes: [`Icône créée en ${tailles.join(', ')} px.`] };
+  }
+
+  async function noirEtBlanc(fichiers, o, ui) {
+    const sorties = [];
+    const seuil = Number(o.seuil) || 128;
+    for (let i = 0; i < fichiers.length; i++) {
+      const f = fichiers[i];
+      ui.progres(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, i / fichiers.length);
+      const im = await decoderImage(f);
+      const type = formatDe(f);
+      const c = toile(im, 0, 0, type === 'image/jpeg');
+      im.liberer();
+      const ctx = c.getContext('2d');
+      const bande = 256;
+      for (let y = 0; y < c.height; y += bande) {
+        const hh = Math.min(bande, c.height - y);
+        const d = ctx.getImageData(0, y, c.width, hh);
+        const p = d.data;
+        for (let j = 0; j < p.length; j += 4) {
+          let g = 0.299 * p[j] + 0.587 * p[j + 1] + 0.114 * p[j + 2];
+          if (o.modeNb === 'seuil') g = g >= seuil ? 255 : 0;
+          p[j] = p[j + 1] = p[j + 2] = g;
+        }
+        ctx.putImageData(d, 0, y);
+        if ((y / bande) % 8 === 0) await pause();
+      }
+      sorties.push({ nom: `${sansExt(f.name)}-noir-et-blanc.${EXT[type]}`, blob: await versBlob(c, type, 0.92) });
+      c.width = c.height = 0;
+    }
+    return { sorties };
+  }
+
+  // ---------- panneaux spéciaux (signature, ordre des pages) ----------
+  async function panneauSignature(f, zone, valeurs) {
+    const etat = { fichier: f, pad: null, pos: null, largeur: valeurs.__largeur || 30 };
+    valeurs.__signature = etat;
+    const pad = el('canvas', { class: 'signature-pad', width: 900, height: 300, 'aria-label': 'Cadre pour dessiner votre signature' });
+    const pctx = pad.getContext('2d');
+    etat.pad = pad;
+    let encre = '#111111';
+    let trace = false;
+    const point = (e) => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
+    pad.addEventListener('pointerdown', (e) => { trace = true; pad.setPointerCapture(e.pointerId); const [x, y] = point(e); pctx.beginPath(); pctx.moveTo(x, y); pctx.lineTo(x + 0.1, y); pctx.strokeStyle = encre; pctx.lineWidth = 6; pctx.lineCap = 'round'; pctx.lineJoin = 'round'; pctx.stroke(); });
+    pad.addEventListener('pointermove', (e) => { if (!trace) return; const [x, y] = point(e); pctx.lineTo(x, y); pctx.stroke(); });
+    const fin = () => { if (trace) { trace = false; dessiner(); } };
+    pad.addEventListener('pointerup', fin); pad.addEventListener('pointercancel', fin);
+    const effacer = el('button', { type: 'button', texte: 'Effacer la signature', onclick: () => { pctx.clearRect(0, 0, pad.width, pad.height); dessiner(); } });
+    const couleur = el('select', { 'aria-label': 'Couleur de l\'encre' }, el('option', { value: '#111111', texte: 'Encre noire' }), el('option', { value: '#1d3f9e', texte: 'Encre bleue' }));
+    couleur.addEventListener('change', () => { encre = couleur.value; });
+    const imp = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp', class: 'visuellement-cache', id: 'sig-' + Math.random().toString(36).slice(2) });
+    imp.addEventListener('change', async () => {
+      const fi = imp.files[0]; imp.value = '';
+      if (!fi) return;
+      try {
+        const im = await decoderNatif(fi);
+        const k = Math.min(pad.width / im.w, pad.height / im.h);
+        pctx.clearRect(0, 0, pad.width, pad.height);
+        pctx.drawImage(im.source, (pad.width - im.w * k) / 2, (pad.height - im.h * k) / 2, im.w * k, im.h * k);
+        im.liberer();
+        // fond blanc d'une photo de signature -> transparent
+        const d = pctx.getImageData(0, 0, pad.width, pad.height);
+        for (let j = 0; j < d.data.length; j += 4) if (d.data[j] > 225 && d.data[j + 1] > 225 && d.data[j + 2] > 225) d.data[j + 3] = 0;
+        pctx.putImageData(d, 0, 0);
+        dessiner();
+      } catch (e) { /* image illisible : rien */ }
+    });
+    const importer = el('label', { class: 'bouton', for: imp.id, texte: 'Importer une image' });
+    const choixPage = el('input', { type: 'number', min: 1, value: 1, inputmode: 'numeric', id: 'sigp-' + Math.random().toString(36).slice(2, 7) });
+    const tailleSig = el('input', { type: 'range', min: 10, max: 60, step: 1, value: etat.largeur, id: 'sigt-' + Math.random().toString(36).slice(2, 7) });
+    const sortieT = el('output', { texte: etat.largeur + ' %' });
+    tailleSig.addEventListener('input', () => { etat.largeur = valeurs.__largeur = Number(tailleSig.value); sortieT.textContent = tailleSig.value + ' %'; dessiner(); });
+    const apercu = el('canvas', { class: 'apercu-page', 'aria-label': 'Aperçu de la page : touchez pour placer la signature' });
+    const aide = el('p', { class: 'aide', texte: 'Chargement de l\'aperçu…' });
+    zone.replaceChildren(
+      el('p', { class: 'etiquette', texte: '1. Dessinez votre signature (souris, doigt ou stylet)' }), pad,
+      el('div', { class: 'boutons' }, effacer, couleur, importer, imp),
+      el('div', { class: 'grille options' },
+        el('div', { class: 'champ' }, el('label', { for: choixPage.id, texte: 'Page à signer' }), choixPage),
+        el('div', { class: 'champ' }, el('label', { for: tailleSig.id }, 'Largeur de la signature : ', sortieT), tailleSig)),
+      el('p', { class: 'etiquette', texte: '2. Touchez la page à l\'endroit de la signature' }), aide, apercu);
+    let doc; let fond = null; let vp = null; let numero = 0;
+    try { doc = await ouvrirPdfjs(f); } catch (e) { aide.textContent = e.message; aide.classList.add('erreur'); return; }
+    if (valeurs.__signature !== etat) { doc.destroy(); return; }
+    choixPage.max = doc.numPages; choixPage.value = doc.numPages;
+    async function afficherPage() {
+      const n = Math.min(doc.numPages, Math.max(1, Math.floor(Number(choixPage.value) || 1)));
+      if (n === numero) return;
+      numero = n; etat.pos = null;
+      const page = await doc.getPage(n);
+      vp = page.getViewport({ scale: 1 });
+      const k = Math.min(2, 1000 / vp.width);
+      const vpr = page.getViewport({ scale: k });
+      const c = document.createElement('canvas'); c.width = Math.floor(vpr.width); c.height = Math.floor(vpr.height);
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      await page.render({ canvasContext: ctx, viewport: vpr }).promise;
+      fond = c; apercu.width = c.width; apercu.height = c.height;
+      aide.textContent = `Page ${n} sur ${doc.numPages}. Touchez l'endroit où doit aller le centre de la signature.`;
+      dessiner();
+    }
+    function dessiner() {
+      if (!fond) return;
+      const ctx = apercu.getContext('2d');
+      ctx.drawImage(fond, 0, 0);
+      if (!etat.pos) return;
+      const sig = rogner(pad);
+      if (!sig) return;
+      const w = apercu.width * etat.largeur / 100; const h = w * sig.height / sig.width;
+      ctx.drawImage(sig, etat.pos.fx * apercu.width - w / 2, etat.pos.fy * apercu.height - h / 2, w, h);
+      ctx.strokeStyle = 'rgba(31,111,235,.8)'; ctx.setLineDash([8, 6]); ctx.lineWidth = 2;
+      ctx.strokeRect(etat.pos.fx * apercu.width - w / 2, etat.pos.fy * apercu.height - h / 2, w, h); ctx.setLineDash([]);
+    }
+    apercu.addEventListener('click', (e) => {
+      if (!vp) return;
+      const r = apercu.getBoundingClientRect();
+      etat.pos = { page: numero, vp, fx: (e.clientX - r.left) / r.width, fy: (e.clientY - r.top) / r.height };
+      dessiner();
+      aide.textContent = `Signature placée en page ${numero}. Cliquez sur « Signer le PDF », ou touchez ailleurs pour la déplacer.`;
+    });
+    choixPage.addEventListener('change', afficherPage);
+    await afficherPage();
+  }
+
+  async function panneauOrdre(f, zone, valeurs) {
+    const etat = { fichier: f, ordre: [], retirees: new Set() };
+    valeurs.__ordre = etat;
+    const grille = el('ol', { class: 'pages-grille' });
+    const aide = el('p', { class: 'aide', texte: 'Chargement des miniatures…' });
+    zone.replaceChildren(el('p', { class: 'etiquette', texte: 'Déplacez les pages avec ◀ ▶, retirez-les avec ✕' }), aide, grille);
+    let doc;
+    try { doc = await ouvrirPdfjs(f); } catch (e) { aide.textContent = e.message; aide.classList.add('erreur'); return; }
+    if (valeurs.__ordre !== etat) { doc.destroy(); return; }
+    const n = doc.numPages;
+    etat.ordre = [...Array(n).keys()];
+    const cases = [];
+    for (let i = 0; i < n; i++) {
+      const c = el('canvas', { class: 'miniature', width: 1, height: 1 });
+      const li = el('li', { class: 'page-case' }, c, el('span', { class: 'num', texte: 'Page ' + (i + 1) }),
+        el('span', { class: 'actions' },
+          el('button', { type: 'button', class: 'mini', 'aria-label': `Déplacer la page ${i + 1} avant`, texte: '◀', onclick: () => bouger(i, -1) }),
+          el('button', { type: 'button', class: 'mini', 'aria-label': `Retirer ou remettre la page ${i + 1}`, texte: '✕', onclick: () => { if (etat.retirees.has(i)) etat.retirees.delete(i); else etat.retirees.add(i); rang(); } }),
+          el('button', { type: 'button', class: 'mini', 'aria-label': `Déplacer la page ${i + 1} après`, texte: '▶', onclick: () => bouger(i, 1) })));
+      cases.push({ li, c });
+    }
+    function bouger(i, d) {
+      const p = etat.ordre.indexOf(i); const q = p + d;
+      if (q < 0 || q >= etat.ordre.length) return;
+      [etat.ordre[p], etat.ordre[q]] = [etat.ordre[q], etat.ordre[p]];
+      rang();
+    }
+    function rang() {
+      grille.replaceChildren(...etat.ordre.map((i) => { cases[i].li.classList.toggle('retiree', etat.retirees.has(i)); return cases[i].li; }));
+      aide.textContent = `${n} page${n > 1 ? 's' : ''}${etat.retirees.size ? `, ${etat.retirees.size} retirée${etat.retirees.size > 1 ? 's' : ''}` : ''}. Les miniatures servent seulement à repérer les pages : le PDF obtenu garde la qualité d'origine.`;
+    }
+    rang();
+    const maxApercus = MOBILE ? 150 : 400;
+    for (let i = 0; i < Math.min(n, maxApercus); i++) {
+      if (valeurs.__ordre !== etat) break;
+      const page = await doc.getPage(i + 1);
+      const v1 = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: 220 / Math.max(v1.width, v1.height) });
+      const c = cases[i].c; c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+      page.cleanup();
+    }
+    if (n > maxApercus) aide.textContent += ` Miniatures affichées pour les ${maxApercus} premières pages.`;
+    doc.destroy();
+  }
+
   // ---------- options ----------
   const OPT = {
     resolution: { label: 'Qualité des images', type: 'select', val: '150', choix: [['96', 'Écran (96 ppp, léger)'], ['150', 'Bonne (150 ppp)'], ['300', 'Impression (300 ppp, lourd)']] },
@@ -576,6 +995,25 @@
     pagesSuppr: { id: 'pages', label: 'Pages à supprimer', type: 'text', val: '', aide: 'Exemple : 2, 5-7' },
     angle: { label: 'Rotation', type: 'select', val: '90', choix: [['90', '90° vers la droite'], ['180', '180° (à l\'envers)'], ['270', '90° vers la gauche']] },
     niveau: { label: 'Compression', type: 'select', val: 'moyen', choix: [['leger', 'Légère (150 ppp)'], ['moyen', 'Moyenne (110 ppp, conseillée)'], ['fort', 'Forte (80 ppp, le plus léger)']] },
+    position: { label: 'Position du numéro', type: 'select', val: 'bas-centre', choix: [['bas-centre', 'En bas, au centre'], ['bas-droite', 'En bas, à droite'], ['bas-gauche', 'En bas, à gauche'], ['haut-centre', 'En haut, au centre'], ['haut-droite', 'En haut, à droite']] },
+    formatNum: { label: 'Texte', type: 'select', val: 'n', choix: [['n', '1, 2, 3…'], ['page', 'Page 1'], ['sur', '1 / 10'], ['pagesur', 'Page 1 sur 10']] },
+    debut: { label: 'Premier numéro', type: 'number', val: '1', min: 0 },
+    couverture: { label: 'Première page', type: 'select', val: 'non', choix: [['non', 'Numérotée'], ['oui', 'Sans numéro (couverture)']] },
+    taillePolice: { label: 'Taille du texte', type: 'select', val: '11', choix: [['9', 'Petite'], ['11', 'Normale'], ['14', 'Grande']] },
+    texteFil: { label: 'Texte du filigrane', type: 'text', val: 'CONFIDENTIEL', aide: '60 caractères au plus. Exemple : COPIE, BROUILLON, « Pour dossier de location uniquement ».' },
+    sensFil: { label: 'Sens', type: 'select', val: 'diagonale', choix: [['diagonale', 'En diagonale'], ['horizontal', 'Horizontal']] },
+    couleurFil: { label: 'Couleur', type: 'select', val: 'gris', choix: [['gris', 'Gris'], ['rouge', 'Rouge'], ['bleu', 'Bleu']] },
+    opacite: { label: 'Opacité', type: 'range', val: '25', min: 10, max: 60, step: 5, unite: ' %' },
+    separer: { label: 'Repères de pages', type: 'select', val: 'oui', choix: [['oui', 'Indiquer « --- Page 1 --- »'], ['non', 'Texte continu']] },
+    pagesExtr: { label: 'Pages à extraire', type: 'text', val: '', aide: 'Exemple : 2, 5-7' },
+    modeExtr: { label: 'Résultat', type: 'select', val: 'un', choix: [['un', 'Un seul PDF avec ces pages'], ['chaque', 'Un PDF par page']] },
+    largeurSvg: { label: 'Taille de l\'image', type: 'select', val: 'x2', choix: [['x1', 'Taille d\'origine'], ['x2', '2 × (net sur écran Retina)'], ['x4', '4 ×'], ['512', '512 px de large'], ['1024', '1024 px de large'], ['2048', '2048 px de large']] },
+    formatSvg: { id: 'format', label: 'Format', type: 'select', val: 'png', choix: [['png', 'PNG (garde la transparence)'], ['jpg', 'JPG (fond blanc)']] },
+    fond: { label: 'Fond', type: 'select', val: 'transparent', choix: [['transparent', 'Transparent'], ['blanc', 'Blanc']], si: (o) => o.format !== 'jpg' },
+    taillesIco: { label: 'Tailles', type: 'select', val: 'favicon', choix: [['favicon', '16, 32 et 48 px (favicon)'], ['complet', '16 à 256 px (icône Windows)']] },
+    cadrage: { label: 'Image pas carrée', type: 'select', val: 'contenir', choix: [['contenir', 'Garder toute l\'image (bords transparents)'], ['remplir', 'Remplir le carré (recadrer au centre)']] },
+    modeNb: { label: 'Rendu', type: 'select', val: 'gris', choix: [['gris', 'Niveaux de gris'], ['seuil', 'Noir et blanc pur (deux couleurs)']] },
+    seuil: { label: 'Seuil', type: 'range', val: '128', min: 20, max: 235, step: 1, aide: 'Plus haut = plus de noir.', si: (o) => o.modeNb === 'seuil' },
     debit: { label: 'Qualité du MP3', type: 'select', val: '192', choix: [['128', '128 kb/s (léger)'], ['192', '192 kb/s (conseillé)'], ['256', '256 kb/s'], ['320', '320 kb/s (maximum)']] },
   };
 
@@ -594,7 +1032,17 @@
     'supprimer-pages-pdf': { titre: 'Supprimer des pages d\'un PDF', k: ['pdf'], multi: false, btn: 'Supprimer ces pages', opts: ['pagesSuppr'], run: supprimerPages },
     'pivoter-pdf': { titre: 'Pivoter un PDF', k: ['pdf'], multi: true, btn: 'Pivoter', opts: ['angle', 'pages'], run: pivoter },
     'compresser-pdf': { titre: 'Compresser un PDF', k: ['pdf'], multi: true, btn: 'Compresser', opts: ['niveau'], run: compresserPdf },
-    'mp4-en-mp3': { titre: 'MP4 en MP3', k: ['video'], multi: true, btn: 'Extraire le MP3', opts: ['debit'], run: videoVersMp3 },
+    'mp4-en-mp3': { titre: 'Extraire le son en MP3', k: ['video'], multi: true, btn: 'Extraire le MP3', opts: ['debit'], run: videoVersMp3 },
+    'audio-en-mp3': { titre: 'Audio en MP3', k: ['video'], multi: true, btn: 'Convertir en MP3', opts: ['debit'], run: videoVersMp3 },
+    'signer-pdf': { titre: 'Signer un PDF', k: ['pdf'], multi: false, btn: 'Signer le PDF', opts: [], panneau: panneauSignature, run: signer },
+    'numeroter-pages-pdf': { titre: 'Numéroter les pages', k: ['pdf'], multi: true, btn: 'Numéroter', opts: ['position', 'formatNum', 'debut', 'couverture', 'taillePolice'], run: numeroter },
+    'filigrane-pdf': { titre: 'Ajouter un filigrane', k: ['pdf'], multi: true, btn: 'Ajouter le filigrane', opts: ['texteFil', 'sensFil', 'couleurFil', 'opacite', 'pages'], run: filigrane },
+    'pdf-en-texte': { titre: 'PDF en texte', k: ['pdf'], multi: true, btn: 'Extraire le texte', opts: ['separer'], run: pdfVersTexte },
+    'extraire-pages-pdf': { titre: 'Extraire des pages', k: ['pdf'], multi: false, btn: 'Extraire', opts: ['pagesExtr', 'modeExtr'], run: extrairePages },
+    'organiser-pdf': { titre: 'Changer l\'ordre des pages', k: ['pdf'], multi: false, btn: 'Créer le PDF', opts: [], panneau: panneauOrdre, run: organiser },
+    'svg-en-png': { titre: 'SVG en PNG', k: ['svg'], multi: true, btn: 'Convertir', opts: ['largeurSvg', 'formatSvg', 'fond'], run: svgVersImage },
+    'png-en-ico': { titre: 'Créer une icône ICO', k: IMG, multi: true, btn: 'Créer le fichier ICO', opts: ['taillesIco', 'cadrage'], run: versIco },
+    'image-noir-et-blanc': { titre: 'Noir et blanc', k: IMG, multi: true, btn: 'Passer en noir et blanc', opts: ['modeNb', 'seuil'], run: noirEtBlanc },
   };
   // Pages qui réutilisent un outil avec un réglage par défaut différent
   const ALIAS = {
@@ -603,14 +1051,16 @@
     'png-en-jpg': ['convertir-image', { format: 'jpg' }], 'webp-en-jpg': ['convertir-image', { format: 'jpg' }],
     'jpg-en-png': ['convertir-image', { format: 'png' }], 'webp-en-png': ['convertir-image', { format: 'png' }],
     'jpg-en-webp': ['convertir-image', { format: 'webp' }],
+    'wav-en-mp3': ['audio-en-mp3', { debit: '320' }], 'm4a-en-mp3': ['audio-en-mp3', {}],
   };
   const PAR_GENRE = {
-    pdf: ['pdf-en-jpg', 'compresser-pdf', 'fusionner-pdf', 'diviser-pdf', 'supprimer-pages-pdf', 'pivoter-pdf', 'pdf-en-png'],
-    image: ['jpg-en-pdf', 'convertir-image', 'compresser-image', 'redimensionner-image'],
+    pdf: ['pdf-en-jpg', 'compresser-pdf', 'fusionner-pdf', 'signer-pdf', 'diviser-pdf', 'extraire-pages-pdf', 'supprimer-pages-pdf', 'organiser-pdf', 'pivoter-pdf', 'numeroter-pages-pdf', 'filigrane-pdf', 'pdf-en-texte', 'pdf-en-png'],
+    image: ['jpg-en-pdf', 'convertir-image', 'compresser-image', 'redimensionner-image', 'image-noir-et-blanc', 'png-en-ico'],
     heic: ['heic-en-jpg', 'jpg-en-pdf', 'compresser-image', 'redimensionner-image'],
+    svg: ['svg-en-png'],
     video: ['mp4-en-mp3'],
   };
-  const ACCEPT = { pdf: '.pdf,application/pdf', image: 'image/*', heic: '.heic,.heif,image/heic,image/heif', video: 'video/*,audio/*,.mp4,.mov,.m4a' };
+  const ACCEPT = { pdf: '.pdf,application/pdf', image: 'image/*', heic: '.heic,.heif,image/heic,image/heif', svg: '.svg,image/svg+xml', video: 'video/*,audio/*,.mp4,.mov,.m4a,.wav' };
 
   function resoudre(id) {
     if (OUTILS[id]) return { id, outil: OUTILS[id], defaut: {} };
@@ -634,13 +1084,15 @@
     const liste = el('ul', { class: 'fichiers' });
     const choix = el('div', { class: 'choix', hidden: true });
     const options = el('div', { class: 'grille options' });
+    const extra = el('div', { class: 'extra' });
+    let fichierPanneau = null;
     const lancer = el('button', { type: 'button', class: 'principal', disabled: true, texte: 'Convertir' });
     const vider = el('button', { type: 'button', texte: 'Tout effacer', hidden: true });
     const barre = el('progress', { max: '1', value: '0' });
     const prog = el('div', { class: 'progression', hidden: true }, barre, el('span'));
     const etat = el('div', { class: 'message', role: 'status', 'aria-live': 'polite' });
     const sortie = el('div', { class: 'sorties' });
-    section.replaceChildren(depot, choix, liste, options, el('div', { class: 'boutons' }, lancer, vider), prog, etat, sortie);
+    section.replaceChildren(depot, choix, liste, options, extra, el('div', { class: 'boutons' }, lancer, vider), prog, etat, sortie);
 
     const valeurs = {};
     function nettoyer() { urls.forEach((u) => URL.revokeObjectURL(u)); urls = []; sortie.replaceChildren(); }
@@ -652,9 +1104,10 @@
       entree.accept = o ? o.k.map((k) => ACCEPT[k]).join(',') : '';
       depot.querySelector('.depot-aide').textContent = o
         ? `${o.k.map((k) => NOMS_TYPES[k]).filter((x, i, a) => a.indexOf(x) === i).join(' ou ')}${o.multi ? ' (plusieurs à la fois possible)' : ''} · rien n'est envoyé sur Internet`
-        : 'PDF, images (JPG, PNG, WEBP, HEIC), vidéos MP4 · tout reste sur votre appareil';
+        : 'PDF, images (JPG, PNG, WEBP, HEIC, SVG), vidéos et sons · tout reste sur votre appareil';
       lancer.textContent = o ? o.btn : 'Convertir';
       options.replaceChildren();
+      extra.replaceChildren(); fichierPanneau = null;
       if (!o) return;
       for (const cle of o.opts) {
         const d = OPT[cle];
@@ -698,6 +1151,11 @@
       });
       lancer.disabled = !actuel || !fichiers.length || occupe;
       vider.hidden = !fichiers.length;
+      if (o && o.panneau && fichiers[0] !== fichierPanneau) {
+        fichierPanneau = fichiers[0] || null;
+        if (fichierPanneau) o.panneau(fichierPanneau, extra, valeurs).catch((e) => { if (!(e instanceof Erreur)) console.error(e); });
+        else { extra.replaceChildren(); delete valeurs.__signature; delete valeurs.__ordre; }
+      }
     }
 
     function proposer() {

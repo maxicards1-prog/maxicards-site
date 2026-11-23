@@ -1,0 +1,22 @@
+{
+ "name": "Convertir : outils PDF, images et MP3 sans envoi de fichier",
+ "short_name": "Convertir",
+ "lang": "fr",
+ "start_url": "/convertir/",
+ "scope": "/convertir/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#1f6feb",
+ "icons": [
+  {
+   "src": "/convertir/assets/icone-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/convertir/assets/icone-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

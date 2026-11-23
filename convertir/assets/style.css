@@ -55,10 +55,12 @@ img, svg { max-width: 100%; height: auto; }
 .entete .conteneur { display: flex; align-items: center; justify-content: space-between; min-height: 60px; gap: 12px; }
 .marque { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; color: var(--texte); text-decoration: none; }
 .marque:hover { color: var(--texte); }
-.logo { width: 30px; height: 30px; flex: none; }
+.logo { width: 36px; height: 36px; flex: none; border-radius: 9px; box-shadow: 0 2px 6px rgba(29, 78, 216, .25); }
+.marque .nom { display: flex; flex-direction: column; line-height: 1.1; font-size: 1.2rem; letter-spacing: -.2px; }
+.marque small { font-weight: 600; font-size: .72rem; color: var(--ok); letter-spacing: 0; }
 .menu summary { list-style: none; cursor: pointer; padding: 8px 12px; border: 1px solid var(--bord); border-radius: 10px; font-weight: 600; font-size: .95rem; }
 .menu summary::-webkit-details-marker { display: none; }
-.menu nav { position: absolute; right: 16px; top: 58px; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre); padding: 8px; min-width: 260px; }
+.menu nav { position: absolute; right: 16px; top: 58px; max-height: 75vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre); padding: 8px; min-width: 260px; }
 .menu nav a { display: block; padding: 10px 12px; border-radius: 8px; color: var(--texte); text-decoration: none; }
 .menu nav a:hover, .menu nav a[aria-current="page"] { background: var(--surface-2); color: var(--accent); }
 
@@ -169,3 +171,27 @@ button.mini { min-height: 38px; min-width: 38px; padding: 4px 8px; font-size: .9
 .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
 .badges li { margin: 0; background: var(--accent-doux); color: var(--accent-fonce); border-radius: 999px; padding: 4px 12px; font-size: .88rem; font-weight: 700; }
 .categorie { margin-top: 26px; }
+
+/* menu par catégories (23/11) */
+.menu nav .rubrique { display: block; padding: 10px 12px 4px; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--texte-doux); }
+/* outils liés et guides */
+.liste-guides { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 10px; }
+.liste-guides a { display: block; padding: 12px 14px; background: var(--surface); border: 1px solid var(--bord); border-radius: 12px; text-decoration: none; color: var(--texte); }
+.liste-guides a:hover { border-color: var(--accent); }
+.liste-guides strong { display: block; color: var(--accent-fonce); }
+.liste-guides span { font-size: .9rem; color: var(--texte-doux); }
+.encadre-outil { background: var(--accent-doux); border: 1px solid var(--bord); border-radius: var(--rayon); padding: 14px 16px; margin: 18px 0; }
+.encadre-outil a.bouton { display: inline-block; margin: 6px 8px 0 0; }
+.maj { font-size: .85rem; color: var(--texte-doux); }
+/* panneaux signature et ordre des pages */
+.extra:empty { display: none; }
+.extra { margin: 14px 0; }
+.signature-pad { display: block; width: 100%; max-width: 600px; aspect-ratio: 3 / 1; height: auto; background: #fff; border: 2px dashed var(--bord); border-radius: 12px; touch-action: none; cursor: crosshair; }
+.apercu-page { display: block; width: 100%; max-width: 600px; height: auto; border: 1px solid var(--bord); border-radius: 8px; box-shadow: var(--ombre); cursor: crosshair; background: #fff; }
+.pages-grille { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+.page-case { background: var(--surface); border: 1px solid var(--bord); border-radius: 10px; padding: 8px; text-align: center; }
+.page-case.retiree { opacity: .35; }
+.page-case.retiree .num { text-decoration: line-through; }
+.miniature { display: block; max-width: 100%; height: auto; margin: 0 auto 6px; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .2); }
+.page-case .num { display: block; font-size: .85rem; font-weight: 600; }
+.page-case .actions { display: flex; justify-content: center; gap: 4px; margin-top: 4px; }
