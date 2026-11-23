@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://maxicards.net/sitemap.xml
+Sitemap: https://maxicards.net/outils/sitemap.xml
