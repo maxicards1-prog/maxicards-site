@@ -28,6 +28,7 @@
 <link rel="apple-touch-icon" href="/foot/apple-touch-icon.png">
 <link rel="manifest" href="/foot/site.webmanifest">
 <link rel="preload" href="/foot/assets/polices/barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/foot/assets/polices/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <style>:root {
 --fond: #f6f7fb;
 --surface: #ffffff;
@@ -205,7 +206,7 @@ main figcaption { font-size: .9rem; color: var(--texte-doux); margin-top: 8px; }
 @media (max-width: 400px) { .nom-site { font-size: 1.08rem; } .logo { width: 32px; height: 32px; } }
 @font-face { font-family: "Barlow Condensed"; font-weight: 700; font-style: normal; font-display: optional; src: url(/foot/assets/polices/barlow-condensed-700.woff2) format("woff2"); }
 @font-face { font-family: "Barlow Condensed"; font-weight: 800; font-style: normal; font-display: optional; src: url(/foot/assets/polices/barlow-condensed-800.woff2) format("woff2"); }
-@font-face { font-family: "Inter"; font-weight: 400 700; font-style: normal; font-display: swap; src: url(/foot/assets/polices/inter-var.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 400 700; font-style: normal; font-display: optional; src: url(/foot/assets/polices/inter-var.woff2) format("woff2"); }
 @font-face { font-family: "Inter repli"; src: local("Arial"), local("ArialMT"); size-adjust: 104.7%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
 @font-face { font-family: "Titre repli"; font-weight: 700 800; src: local("Arial Bold"), local("Arial-BoldMT"); size-adjust: 66.1%; ascent-override: 150%; descent-override: 30%; line-gap-override: 0%; }
 :root {
@@ -346,6 +347,29 @@ details.faq[open] summary::after { transform: rotate(45deg); }
 .pied a:hover { color: var(--citron); }
 .a-voir { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--doux) var(--d, 0ms), transform .6s var(--doux) var(--d, 0ms); }
 .a-voir.vu { opacity: 1; transform: none; }
+.bandeau .chapo { font-size: 1.12rem; font-weight: 500; color: #eef7f0; }
+.en-bref { background: var(--surface); border: 1px solid var(--bord); border-left: 6px solid var(--citron); border-radius: var(--rayon);
+box-shadow: var(--ombre); padding: 16px 18px; margin: 0 0 26px; font-size: 1.14rem; line-height: 1.55; }
+.en-bref p { margin: 0; }
+.en-bref .en-bref-titre { font-family: var(--titre); font-weight: 800; font-size: .95rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.outil .champ:first-child input, .outil .champ:first-child select { font-size: 1.15rem; min-height: 52px; font-weight: 600; }
+button.principal { font-size: 1.05rem; min-height: 52px; padding: 12px 22px; }
+.tuile.forte .valeur, .resultats .tuile:first-child .valeur { font-size: 2.3rem; }
+@media (max-width: 600px) {
+body { font-size: 17px; }
+.aide, .tuile .libelle, .carte-outil span:not(.ico), .sources, .pied, table, .message, details.faq, .champ label, .etiquette,
+.ligne-case, .noms-compo label, .menu nav a, .chiffres { font-size: 16px; }
+.fil { font-size: 15px; }
+.boutons button.principal { width: 100%; }
+.hero .conteneur { padding-bottom: 26px; }
+.terrain-hero { position: absolute; right: -150px; bottom: -40px; width: 380px; max-width: none; opacity: .22; pointer-events: none; margin: 0; filter: none; }
+.hero .conteneur > div { position: relative; z-index: 1; }
+.surtitre { margin-bottom: 10px; }
+.hero h1 { font-size: 2.45rem; }
+.cta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cta .bouton { justify-content: center; padding: 0 8px; white-space: nowrap; font-size: 16px; }
+.cta .bouton svg { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
 *, *::before, *::after { animation: none !important; transition: none !important; }
 .a-voir { opacity: 1; transform: none; }
@@ -371,10 +395,11 @@ details.faq[open] summary::after { transform: rotate(45deg); }
 <div class="conteneur">
 <nav class="fil" aria-label="Fil d'Ariane"><a href="/foot/">Accueil</a> › <a href="/foot/foot-amateur-club/">Club, licence et organisation</a> › <span aria-current="page">Licence foot : âge et certificat</span></nav>
 <h1><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16c.6-1.5 1.8-2.3 3.2-2.3s2.6.8 3.2 2.3M14 10h4M14 13h3"/></svg></span><span>Licence de foot : à partir de quel âge, et quel certificat médical ?</span></h1>
-<p class="chapo">Un enfant peut prendre une licence de foot dès 5 ans, dans la catégorie U6. Pour un mineur, aucun certificat médical n'est exigé si toutes les réponses au questionnaire de santé sont « non » ; une seule réponse « oui » impose un certificat, valable une saison.</p>
+
 </div>
 </div>
 <div class="conteneur">
+<section class="en-bref" aria-label="La réponse en bref"><p class="en-bref-titre">En bref</p><p>Un enfant peut prendre une licence de foot dès 5 ans, dans la catégorie U6. Pour un mineur, aucun certificat médical n'est exigé si toutes les réponses au questionnaire de santé sont « non » ; une seule réponse « oui » impose un certificat, valable une saison.</p></section>
 
 <h2>Licence foot : l'âge minimum</h2>
 <p>Le règlement de la FFF classe les joueurs par catégories d'âge. La plus jeune, la catégorie U6, accueille les enfants <strong>dès l'âge de 5 ans</strong> (article 66 des Règlements généraux, édition 2025-2026). Il n'existe donc pas de licence « bébé » : à partir de 5 ans, un enfant peut être licencié dans un club affilié.</p>

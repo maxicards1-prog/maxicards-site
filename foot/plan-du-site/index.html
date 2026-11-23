@@ -28,6 +28,7 @@
 <link rel="apple-touch-icon" href="/foot/apple-touch-icon.png">
 <link rel="manifest" href="/foot/site.webmanifest">
 <link rel="preload" href="/foot/assets/polices/barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/foot/assets/polices/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <style>:root {
 --fond: #f6f7fb;
 --surface: #ffffff;
@@ -205,7 +206,7 @@ main figcaption { font-size: .9rem; color: var(--texte-doux); margin-top: 8px; }
 @media (max-width: 400px) { .nom-site { font-size: 1.08rem; } .logo { width: 32px; height: 32px; } }
 @font-face { font-family: "Barlow Condensed"; font-weight: 700; font-style: normal; font-display: optional; src: url(/foot/assets/polices/barlow-condensed-700.woff2) format("woff2"); }
 @font-face { font-family: "Barlow Condensed"; font-weight: 800; font-style: normal; font-display: optional; src: url(/foot/assets/polices/barlow-condensed-800.woff2) format("woff2"); }
-@font-face { font-family: "Inter"; font-weight: 400 700; font-style: normal; font-display: swap; src: url(/foot/assets/polices/inter-var.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 400 700; font-style: normal; font-display: optional; src: url(/foot/assets/polices/inter-var.woff2) format("woff2"); }
 @font-face { font-family: "Inter repli"; src: local("Arial"), local("ArialMT"); size-adjust: 104.7%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
 @font-face { font-family: "Titre repli"; font-weight: 700 800; src: local("Arial Bold"), local("Arial-BoldMT"); size-adjust: 66.1%; ascent-override: 150%; descent-override: 30%; line-gap-override: 0%; }
 :root {
@@ -346,6 +347,29 @@ details.faq[open] summary::after { transform: rotate(45deg); }
 .pied a:hover { color: var(--citron); }
 .a-voir { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--doux) var(--d, 0ms), transform .6s var(--doux) var(--d, 0ms); }
 .a-voir.vu { opacity: 1; transform: none; }
+.bandeau .chapo { font-size: 1.12rem; font-weight: 500; color: #eef7f0; }
+.en-bref { background: var(--surface); border: 1px solid var(--bord); border-left: 6px solid var(--citron); border-radius: var(--rayon);
+box-shadow: var(--ombre); padding: 16px 18px; margin: 0 0 26px; font-size: 1.14rem; line-height: 1.55; }
+.en-bref p { margin: 0; }
+.en-bref .en-bref-titre { font-family: var(--titre); font-weight: 800; font-size: .95rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.outil .champ:first-child input, .outil .champ:first-child select { font-size: 1.15rem; min-height: 52px; font-weight: 600; }
+button.principal { font-size: 1.05rem; min-height: 52px; padding: 12px 22px; }
+.tuile.forte .valeur, .resultats .tuile:first-child .valeur { font-size: 2.3rem; }
+@media (max-width: 600px) {
+body { font-size: 17px; }
+.aide, .tuile .libelle, .carte-outil span:not(.ico), .sources, .pied, table, .message, details.faq, .champ label, .etiquette,
+.ligne-case, .noms-compo label, .menu nav a, .chiffres { font-size: 16px; }
+.fil { font-size: 15px; }
+.boutons button.principal { width: 100%; }
+.hero .conteneur { padding-bottom: 26px; }
+.terrain-hero { position: absolute; right: -150px; bottom: -40px; width: 380px; max-width: none; opacity: .22; pointer-events: none; margin: 0; filter: none; }
+.hero .conteneur > div { position: relative; z-index: 1; }
+.surtitre { margin-bottom: 10px; }
+.hero h1 { font-size: 2.45rem; }
+.cta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cta .bouton { justify-content: center; padding: 0 8px; white-space: nowrap; font-size: 16px; }
+.cta .bouton svg { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
 *, *::before, *::after { animation: none !important; transition: none !important; }
 .a-voir { opacity: 1; transform: none; }
@@ -375,6 +399,7 @@ details.faq[open] summary::after { transform: rotate(45deg); }
 </div>
 </div>
 <div class="conteneur">
+
 <h2>Outils</h2><ul><li><a href="/foot/categorie-foot-2026-2027/">Catégories foot 2026-2027</a></li><li><a href="/foot/regles-foot-par-categorie/">Durée, terrain et buts par catégorie</a></li><li><a href="/foot/taille-ballon-foot/">Taille de ballon par âge</a></li><li><a href="/foot/createur-composition-foot/">Créer sa compo de foot</a></li><li><a href="/foot/generateur-equipes-aleatoires/">Faire des équipes équilibrées</a></li><li><a href="/foot/generateur-tournoi-foot/">Générateur de tournoi de foot</a></li><li><a href="/foot/calculateur-classement-foot/">Calculateur de classement</a></li><li><a href="/foot/calculateur-temps-de-jeu-foot/">Temps de jeu équitable</a></li><li><a href="/foot/calculateur-taxe-ea-fc/">Calculateur de taxe EA FC 27</a></li></ul><h2><a href="/foot/regles-du-foot/">Règles du foot expliquées</a></h2><ul><li><a href="/foot/regle-hors-jeu-foot/">Règle du hors-jeu au foot : explication simple et schéma</a></li><li><a href="/foot/hors-jeu-foot-a-8/">Hors-jeu en foot à 8 : règle U11 et U13</a></li><li><a href="/foot/var-football/">VAR au foot : définition, 4 situations, protocole et date</a></li><li><a href="/foot/temps-additionnel-foot/">Temps additionnel au foot : comment est-il calculé ?</a></li><li><a href="/foot/prolongation-foot/">Prolongation au foot : durée et règle</a></li><li><a href="/foot/tirs-au-but-regles/">Tirs au but : règles d&#x27;une séance, étape par étape</a></li><li><a href="/foot/but-en-or-football/">Règle du but en or au foot : histoire et fin</a></li><li><a href="/foot/remplacements-foot/">Combien de remplacements au foot ? Lois du jeu, Ligue 1, coupes et amateur</a></li><li><a href="/foot/carton-jaune-carton-rouge/">Carton jaune et carton rouge au foot : ce que dit la règle</a></li><li><a href="/foot/penalty-regles/">Règles du penalty au foot : gardien, tireur et joueurs</a></li><li><a href="/foot/main-au-foot/">La règle de la main au foot, expliquée simplement</a></li><li><a href="/foot/coup-franc-direct-indirect/">Coup franc direct ou indirect : la différence au foot</a></li><li><a href="/foot/regle-touche-foot/">Touche au foot : la règle et les fautes de touche</a></li><li><a href="/foot/regle-corner-foot/">Règle du corner au foot, et sortie de but (Loi 16)</a></li><li><a href="/foot/regles-gardien-de-but/">Règles du gardien de but : 8 secondes et passe en retrait</a></li></ul><h2><a href="/foot/classements-et-competitions/">Classements et compétitions</a></h2><ul><li><a href="/foot/egalite-de-points-championnat/">En cas d&#x27;égalité de points : Ligue 1, Premier League, Liga, Serie A et Bundesliga</a></li><li><a href="/foot/egalite-de-points-coupe-du-monde/">Coupe du monde : que se passe-t-il en cas d&#x27;égalité de points ?</a></li><li><a href="/foot/format-ligue-des-champions/">Ligue des champions : le nouveau format expliqué</a></li><li><a href="/foot/coefficient-uefa/">Coefficient UEFA : comment il se calcule (pays sur 5 ans et clubs)</a></li><li><a href="/foot/classement-fifa-calcul/">Classement FIFA : comment les points sont calculés (méthode SUM)</a></li><li><a href="/foot/egalite-points-foot-amateur/">Égalité de points en foot amateur : district et goal-average particulier</a></li></ul><h2><a href="/foot/tactique-foot/">Tactique et schémas de jeu</a></h2><ul><li><a href="/foot/schema-4-3-3/">Le 4-3-3 au foot : placement, rôles, variantes</a></li><li><a href="/foot/schema-4-4-2/">Le 4-4-2 au foot : à plat ou en losange ?</a></li><li><a href="/foot/schema-4-2-3-1/">La formation 4-2-3-1 au foot : le guide</a></li><li><a href="/foot/schema-3-5-2/">Le 3-5-2 au foot : placement, pistons et 3-5-2 vs 4-3-3</a></li><li><a href="/foot/postes-foot-numeros/">Les postes au foot à 11 et leur numéro</a></li><li><a href="/foot/tactique-foot-a-8/">Foot à 8 : tactique, composition et postes</a></li></ul><h2><a href="/foot/foot-amateur-club/">Club, licence et organisation</a></h2><ul><li><a href="/foot/licence-foot-age-certificat/">Licence de foot : à partir de quel âge, et quel certificat médical ?</a></li><li><a href="/foot/surclassement-foot/">Surclassement au foot : simple, double, et qui décide ?</a></li><li><a href="/foot/mutation-foot/">Mutation au foot : périodes, cachet, hors période et jeunes</a></li><li><a href="/foot/devenir-arbitre-foot/">Comment devenir arbitre de foot (et viser le haut niveau) ?</a></li><li><a href="/foot/echauffement-foot-avant-match/">Échauffement foot avant match : un déroulé type avec ballon</a></li><li><a href="/foot/organiser-tournoi-foot/">Organiser un tournoi de foot : étapes, format et nombre de matchs</a></li></ul><h2>Informations</h2><ul><li><a href="/foot/a-propos/">À propos</a></li><li><a href="/foot/contact/">Contact</a></li><li><a href="/foot/mentions-legales/">Mentions légales</a></li><li><a href="/foot/confidentialite/">Confidentialité</a></li></ul>
 
 
