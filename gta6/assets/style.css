@@ -257,7 +257,6 @@ h2::before { content: ""; position: absolute; left: 0; top: .2em; bottom: .2em; 
 /* Bandeau d'accueil */
 main.accueil { padding-top: 0; }
 .hero { position: relative; color: #fff; background: linear-gradient(180deg, #0b031a 0%, #1d0836 100%); overflow: hidden; margin-bottom: 26px; }
-.hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 50% at 80% 10%, rgba(123, 47, 247, .35), transparent 70%), radial-gradient(40% 40% at 10% 30%, rgba(224, 48, 122, .25), transparent 70%); pointer-events: none; }
 .hero-contenu { position: relative; padding-top: 34px; padding-bottom: 8px; z-index: 1; }
 .hero-sur { display: inline-flex; align-items: center; gap: 8px; font-size: .82rem; font-weight: 600; letter-spacing: .02em; color: #ffd6e7; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; padding: 4px 12px; margin: 0 0 14px; }
 .hero-sur .point { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; position: relative; }
