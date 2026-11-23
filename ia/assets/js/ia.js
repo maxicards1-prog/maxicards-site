@@ -91,15 +91,42 @@
       var v = fournir();
       if (!v) return;
       var p = html ? copierHtml(v.html, v.brut) : copierTexte(v);
-      p.then(function () {
-        b.textContent = "Copié ✓";
-        setTimeout(function () { b.textContent = libelle; }, 1600);
-      }, function () { b.textContent = "Copie impossible : sélectionnez le texte"; });
+      p.then(function () { copie(b, libelle); }, function () { b.textContent = "Copie impossible : sélectionnez le texte"; });
     });
     return b;
   }
+  // État « Copié ✓ » animé (classe CSS), puis retour au libellé d'origine.
+  function copie(b, libelle) {
+    clearTimeout(b._minuterie);
+    b.textContent = "Copié ✓";
+    b.classList.remove("copie"); void b.offsetWidth; b.classList.add("copie");
+    b._minuterie = setTimeout(function () { b.textContent = libelle; b.classList.remove("copie"); }, 1600);
+  }
+  // Effet « machine à écrire » court sur une zone de sortie : la valeur est complète tout de suite (copie, lecteurs
+  // d'écran, tests) ; seul un calque décoratif la fait apparaître en ~0,7 s. Sauté si l'utilisateur réduit les animations.
+  var REDUIT = !window.matchMedia || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function frapper(z) {
+    if (REDUIT || !z.parentNode || !window.requestAnimationFrame) return;
+    var boite = z.parentNode;
+    if (!boite.classList.contains("frappe-boite")) {
+      boite = el("div", { classe: "frappe-boite" });
+      z.parentNode.insertBefore(boite, z); boite.appendChild(z);
+    }
+    var ancien = boite.querySelector(".frappe"); if (ancien) ancien.remove();
+    var t = z.value, n = 0, pas = Math.max(3, Math.ceil(t.length / 42));
+    var calque = el("div", { classe: "frappe", "aria-hidden": "true" });
+    boite.appendChild(calque); boite.classList.add("en-frappe"); z.scrollTop = 0;
+    function fin() { calque.remove(); if (!boite.querySelector(".frappe")) boite.classList.remove("en-frappe"); }
+    function tour() {
+      if (!calque.parentNode) return;
+      if (z.value !== t) return fin();
+      n += pas; calque.textContent = t.slice(0, n);
+      if (n < t.length) requestAnimationFrame(tour); else fin();
+    }
+    requestAnimationFrame(tour);
+  }
   function sortie(lignes) {
-    var z = zone({ rows: lignes || 12, readonly: true, classe: "sortie", "aria-live": "polite" });
+    var z = zone({ rows: lignes || 12, readonly: true, classe: "sortie", "aria-live": "polite", "aria-label": "Texte généré, prêt à copier" });
     return z;
   }
   function compteur(z) {
@@ -157,7 +184,7 @@
       role.value = m.role || ""; tache.value = m.tache || ""; contexte.value = m.contexte || ""; pub.value = m.public || "";
       ton.value = m.ton || "neutre"; format.value = m.format || "texte"; longueur.value = m.longueur || "libre";
       exemples.value = m.exemples || ""; contraintes.value = m.contraintes || "";
-      maj();
+      maj(); frapper(out);
     }
     function maj() {
       var b = [];
@@ -306,7 +333,7 @@
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "Version enrichie" }));
     racine.appendChild(out); racine.appendChild(note);
     racine.appendChild(el("div", { classe: "boutons" }, [boutonCopier("Copier la version enrichie", function () { return out.value; }),
-      el("button", { type: "button", texte: "Essayer un exemple", onclick: function () { entree.value = "écris un post sur mon nouveau produit, un truc qui donne envie"; maj(); } })]));
+      el("button", { type: "button", texte: "Essayer un exemple", onclick: function () { entree.value = "écris un post sur mon nouveau produit, un truc qui donne envie"; maj(); frapper(out); } })]));
   }
 
   // ---------------------------------------------------------------- 3. Compteur de tokens + 4. prix API
@@ -672,11 +699,9 @@
       var cible = document.getElementById(b.getAttribute("data-copier"));
       if (!cible) return;
       b.hidden = false;
+      var libelle = b.textContent;
       b.addEventListener("click", function () {
-        copierTexte(cible.textContent).then(function () {
-          var t = b.textContent; b.textContent = "Copié ✓";
-          setTimeout(function () { b.textContent = t; }, 1600);
-        });
+        copierTexte(cible.textContent).then(function () { copie(b, libelle); });
       });
     });
   }
@@ -691,6 +716,7 @@
       try { f(s); } catch (e) { s.appendChild(el("p", { classe: "message", texte: "L'outil n'a pas pu démarrer dans ce navigateur. Essayez avec un navigateur à jour." })); }
     });
     boutonsCopierPrompts();
+    document.documentElement.classList.add("outils-prets");
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", demarrer); else demarrer();
 })();
