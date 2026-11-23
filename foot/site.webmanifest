@@ -4,8 +4,8 @@
  "start_url": "/foot/",
  "scope": "/foot/",
  "display": "standalone",
- "background_color": "#0b5e33",
- "theme_color": "#138a4a",
+ "background_color": "#062b1a",
+ "theme_color": "#062b1a",
  "lang": "fr",
  "icons": [
   {
