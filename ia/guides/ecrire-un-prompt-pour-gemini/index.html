@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr" data-base="/ia">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écrire un prompt pour Gemini : stratégies et exemples</title>
+<meta name="description" content="Les stratégies de Google pour mieux prompter Gemini : instructions, exemples, contexte, contraintes, début de réponse. Prompts complets à copier.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://maxicards.net/ia/guides/ecrire-un-prompt-pour-gemini/">
+<meta name="theme-color" content="#5b2ee6">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Outils IA">
+<meta property="og:title" content="Écrire un prompt pour Gemini : stratégies et exemples">
+<meta property="og:description" content="Les stratégies de Google pour mieux prompter Gemini : instructions, exemples, contexte, contraintes, début de réponse. Prompts complets à copier.">
+<meta property="og:url" content="https://maxicards.net/ia/guides/ecrire-un-prompt-pour-gemini/">
+<meta property="og:image" content="https://maxicards.net/ia/assets/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Outils IA gratuits : prompts, tokens et prix pour ChatGPT, Claude et Gemini">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Écrire un prompt pour Gemini : stratégies et exemples">
+<meta name="twitter:description" content="Les stratégies de Google pour mieux prompter Gemini : instructions, exemples, contexte, contraintes, début de réponse. Prompts complets à copier.">
+<meta name="twitter:image" content="https://maxicards.net/ia/assets/partage.png">
+<link rel="icon" href="/ia/favicon.ico" sizes="32x32">
+<link rel="icon" href="/ia/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/ia/apple-touch-icon.png">
+<link rel="stylesheet" href="/ia/assets/style.css?v=f4c3247cc6">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net https://*.googleadservices.com https://adservice.google.com https://www.googletagservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; frame-src https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2308397761739264" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Comment écrire un bon prompt pour Gemini","description":"Les stratégies de Google pour mieux prompter Gemini : instructions, exemples, contexte, contraintes, début de réponse. Prompts complets à copier.","inLanguage":"fr-FR","datePublished":"2026-11-23","dateModified":"2026-11-23","url":"https://maxicards.net/ia/guides/ecrire-un-prompt-pour-gemini/","image":"https://maxicards.net/ia/assets/partage.png","mainEntityOfPage":"https://maxicards.net/ia/guides/ecrire-un-prompt-pour-gemini/","author":{"@type":"Organization","name":"MAXICARDS"},"publisher":{"@type":"Organization","name":"MAXICARDS"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Comment écrire un bon prompt pour Gemini","description":"Les stratégies de Google pour mieux prompter Gemini : instructions, exemples, contexte, contraintes, début de réponse. Prompts complets à copier.","inLanguage":"fr-FR","step":[{"@type":"HowToStep","position":1,"text":"Formulez des instructions claires et précises. Posez une question explicite, ou décrivez la tâche étape par étape, plutôt que de laisser Gemini deviner."},{"@type":"HowToStep","position":2,"text":"Ajoutez des exemples. La documentation distingue le prompt sans exemple (zero-shot) du prompt avec quelques exemples au même format (few-shot), qui permet de reconnaître le modèle à suivre."},{"@type":"HowToStep","position":3,"text":"Apportez le contexte. Fournissez le document ou les informations utiles, pour que la réponse s'appuie sur du concret et non sur du général."},{"@type":"HowToStep","position":4,"text":"Commencez la réponse à sa place. Google appelle cela la complétion partielle : vous écrivez le début du résultat attendu, Gemini continue dans le même format."},{"@type":"HowToStep","position":5,"text":"Énoncez les contraintes. Ce qu'il faut faire, ce qu'il ne faut pas faire, la longueur limite."},{"@type":"HowToStep","position":6,"text":"Itérez. Reformulez, changez l'ordre des éléments, passez par une tâche analogue ou une question à choix multiples."}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Qu'est-ce que le « few-shot » ?","acceptedAnswer":{"@type":"Answer","text":"C'est un prompt qui contient quelques exemples de ce que vous attendez, au même format. Gemini repère le modèle et le reproduit, ce qui évite de longues explications."}},{"@type":"Question","name":"Faut-il un compte Google pour utiliser Gemini ?","acceptedAnswer":{"@type":"Answer","text":"Selon l'aide de Google, on s'identifie avec un compte Google. Sur certains appareils, des fonctions de texte simples sont possibles sans se connecter, mais l'application Android demande une connexion."}},{"@type":"Question","name":"Que faire si Gemini répond trop vaguement ?","acceptedAnswer":{"@type":"Answer","text":"Ajoutez du contexte (le texte, la situation), des contraintes mesurables et un format de réponse, puis relancez. Reformuler ou changer l'ordre des éléments du prompt aide aussi."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Outils IA","item":"https://maxicards.net/ia/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://maxicards.net/ia/guides/"},{"@type":"ListItem","position":3,"name":"Écrire un prompt pour Gemini","item":"https://maxicards.net/ia/guides/ecrire-un-prompt-pour-gemini/"}]}</script>
+</head>
+<body>
+<header class="entete">
+<div class="conteneur">
+<a class="marque" href="/ia/"><svg class="logo" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><defs><linearGradient id="g-logo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cff"/><stop offset="1" stop-color="#4c1fd1"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g-logo)"/><path d="M17 13h30a7 7 0 0 1 7 7v17a7 7 0 0 1-7 7H29l-9.5 8.2c-.9.8-2.3.1-2.3-1.1V44A7 7 0 0 1 10 37V20a7 7 0 0 1 7-7z" fill="#fff"/><path d="M32 18.5l2.6 7.3 7.4 2.7-7.4 2.7L32 38.5l-2.6-7.3-7.4-2.7 7.4-2.7z" fill="#5b2ee6"/><circle cx="43.5" cy="20.5" r="2.3" fill="#5b2ee6"/></svg><span>Outils IA</span></a>
+<details class="menu"><summary>Outils</summary><nav aria-label="Outils"><a href="/ia/generateur-de-prompt/">Générateur de prompt</a><a href="/ia/ameliorer-un-prompt/">Améliorer un prompt</a><a href="/ia/compteur-de-tokens/">Compteur de tokens</a><a href="/ia/prix-api-ia/">Prix des API</a><a href="/ia/nettoyer-texte-chatgpt/">Nettoyer un texte ChatGPT</a><a href="/ia/markdown-en-html/">Markdown en HTML</a><a href="/ia/generateur-prompt-image/">Prompt d&#x27;image</a><a href="/ia/instructions-personnalisees/">Instructions personnalisées</a><a href="/ia/comparatif-abonnements-ia/">Comparatif des abonnements</a><a href="/ia/prompts/">Prompts par métier</a><a href="/ia/guides/">Guides pratiques</a></nav></details>
+</div>
+</header>
+<main>
+<div class="conteneur">
+<p class="fil"><a href="/ia/">Outils IA</a> › <a href="/ia/guides/">Guides</a> › Écrire un prompt pour Gemini</p>
+<h1>Comment écrire un bon prompt pour Gemini</h1>
+<p class="chapo">Google décrit six stratégies pour mieux interroger Gemini : instructions précises, exemples, contexte, début de réponse, contraintes et itération. Voici comment les appliquer.</p>
+
+<p>La documentation de Google sur les stratégies de prompt pour Gemini repose sur quelques idées simples, qu'on peut appliquer dans l'application comme dans un outil de développement. Cette page les reprend une par une, avec des prompts complets. Pour les bases valables partout, consultez d'abord <a href="/ia/guides/comment-ecrire-un-bon-prompt/">la méthode générale</a>.</p>
+
+<h2>Comment faire</h2>
+<ol>
+<li><strong>Formulez des instructions claires et précises.</strong> Posez une question explicite, ou décrivez la tâche étape par étape, plutôt que de laisser Gemini deviner.</li>
+<li><strong>Ajoutez des exemples.</strong> La documentation distingue le prompt sans exemple (zero-shot) du prompt avec quelques exemples au même format (few-shot), qui permet de reconnaître le modèle à suivre.</li>
+<li><strong>Apportez le contexte.</strong> Fournissez le document ou les informations utiles, pour que la réponse s'appuie sur du concret et non sur du général.</li>
+<li><strong>Commencez la réponse à sa place.</strong> Google appelle cela la complétion partielle : vous écrivez le début du résultat attendu, Gemini continue dans le même format.</li>
+<li><strong>Énoncez les contraintes.</strong> Ce qu'il faut faire, ce qu'il ne faut pas faire, la longueur limite.</li>
+<li><strong>Itérez.</strong> Reformulez, changez l'ordre des éléments, passez par une tâche analogue ou une question à choix multiples.</li>
+</ol>
+
+<h2>Exemple 1 : une consigne en étapes</h2>
+<p>Vous voulez organiser une fête de fin d'année dans votre entreprise de quinze personnes. Plutôt que « Aide-moi pour la fête », donnez un cadre :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-gemini-1">Je dois organiser un déjeuner de fin d'année pour 15 collègues, budget [montant] au total, dans la région de [ville], un [jour de la semaine] en décembre.
+
+Procède en trois étapes :
+1. Propose trois formules différentes (restaurant, traiteur au bureau, activité suivie d'un repas) avec avantages et inconvénients.
+2. Pour la formule la plus économique, liste les questions à poser au prestataire.
+3. Rédige le message d'invitation à envoyer à l'équipe, en moins de 80 mots.
+
+Si une information manque pour répondre, pose-moi d'abord tes questions.</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-gemini-1" hidden>Copier ce prompt</button>
+
+<h2>Exemple 2 : donner des exemples du format voulu</h2>
+<p>La documentation conseille des exemples <em>cohérents entre eux</em> : même structure, même ponctuation. Ici, on veut transformer des notes en tâches :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-gemini-2">Transforme chaque note en tâche au format « Verbe à l'infinitif + objet | responsable | échéance ».
+
+Note : Marc doit penser à rappeler le traiteur avant vendredi.
+Tâche : Rappeler le traiteur | Marc | vendredi
+
+Note : il faudra qu'on imprime les menus la semaine d'avant.
+Tâche : Imprimer les menus | à définir | semaine précédente
+
+Note : [votre note 1]
+Tâche :</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-gemini-2" hidden>Copier ce prompt</button>
+<p>La dernière ligne, qui s'arrête volontairement après « Tâche : », applique aussi la technique du début de réponse : Gemini n'a plus qu'à compléter.</p>
+
+<h2>Exemple 3 : s'appuyer sur un contexte fourni</h2>
+<p>Sans contexte, l'IA répond avec des généralités. Avec un texte de référence, elle peut rester dans votre cadre :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-gemini-3">Voici le règlement intérieur de notre club de sport :
+###
+[collez le texte, sans données personnelles]
+###
+Réponds à la question d'un adhérent en t'appuyant uniquement sur ce texte : « [question de l'adhérent] ».
+Si le règlement ne répond pas, écris-le clairement et propose de transmettre la question au bureau. Ton : cordial, en quatre phrases au plus.</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-gemini-3" hidden>Copier ce prompt</button>
+
+<h2>Exemple 4 : itérer quand le résultat ne convient pas</h2>
+<p>La documentation propose plusieurs pistes quand la réponse est décevante : reformuler, reprendre l'idée sous une autre forme, réordonner les parties du prompt. En pratique, après une première réponse :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-gemini-4">La réponse est trop générale. Reprends en te limitant à une équipe de [nombre] personnes sans budget supplémentaire. Présente le résultat sous forme de tableau à trois colonnes : idée, coût estimé, temps de préparation. Garde seulement les quatre idées les plus réalistes.</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-gemini-4" hidden>Copier ce prompt</button>
+
+<h2>Ce qui change dans l'application Gemini</h2>
+<p>Selon l'aide de Google, l'accès à Gemini passe par un compte Google, et certaines fonctions comme les Gems (des assistants personnalisés), l'envoi de fichiers ou la génération d'images demandent d'être connecté. Pour écrire des instructions durables dans un Gem, l'aide de Google indique qu'on peut saisir quelques mots puis demander à Gemini de les développer ; testez ensuite dans l'aperçu et corrigez. Pour ce que propose l'offre gratuite, voyez <a href="/ia/guides/utiliser-gemini-gratuitement/">notre guide dédié</a>.</p>
+
+<h2>Erreurs fréquentes</h2>
+<ul>
+<li>Une consigne unique pour dix tâches : découpez.</li>
+<li>Des exemples qui se contredisent dans leur format.</li>
+<li>Un document collé sans dire quoi en faire.</li>
+<li>Des données personnelles ou confidentielles collées telles quelles : remplacez-les par des crochets.</li>
+<li>Aucune relecture : vérifiez toujours les faits, surtout les chiffres.</li>
+</ul>
+<p>Pour tester une première version, <a href="/ia/ameliorer-un-prompt/">l'outil d'amélioration de prompt</a> repère ce qui manque.</p>
+<h2>Questions fréquentes</h2><details class="faq"><summary>Qu&#x27;est-ce que le « few-shot » ?</summary><p>C&#x27;est un prompt qui contient quelques exemples de ce que vous attendez, au même format. Gemini repère le modèle et le reproduit, ce qui évite de longues explications.</p></details><details class="faq"><summary>Faut-il un compte Google pour utiliser Gemini ?</summary><p>Selon l&#x27;aide de Google, on s&#x27;identifie avec un compte Google. Sur certains appareils, des fonctions de texte simples sont possibles sans se connecter, mais l&#x27;application Android demande une connexion.</p></details><details class="faq"><summary>Que faire si Gemini répond trop vaguement ?</summary><p>Ajoutez du contexte (le texte, la situation), des contraintes mesurables et un format de réponse, puis relancez. Reformuler ou changer l&#x27;ordre des éléments du prompt aide aussi.</p></details>
+<p class="sources">Sources : <a href="https://aistudio.google.com/docs/prompting-strategies" rel="noopener">Google : stratégies de prompt pour Gemini</a> · <a href="https://support.google.com/gemini/answer/13275745" rel="noopener">Aide Google : utiliser Gemini (compte, accès)</a> · <a href="https://support.google.com/gemini/answer/15146780" rel="noopener">Aide Google : créer et utiliser des Gems</a>. Guide mis à jour le 23/11/2026.</p><h2>Outils gratuits pour aller plus vite</h2><ul class="liste-outils"><li><a class="carte-outil" href="/ia/generateur-de-prompt/"><strong>Générateur de prompt</strong><span>Remplissez quelques champs, choisissez un modèle si vous voulez : le prompt se construit sous vos yeux, prêt à copier.</span></a></li><li><a class="carte-outil" href="/ia/ameliorer-un-prompt/"><strong>Améliorer un prompt</strong><span>Collez votre prompt : l&#x27;outil vérifie 12 points et vous dit quoi ajouter pour obtenir de meilleures réponses.</span></a></li></ul><h2>Sur le même thème</h2><ul><li><a href="/ia/guides/comment-ecrire-un-bon-prompt/">Comment écrire un bon prompt pour une IA</a></li><li><a href="/ia/guides/ecrire-un-prompt-pour-claude/">Comment écrire un bon prompt pour Claude</a></li><li><a href="/ia/guides/exemples-de-prompts-chatgpt/">12 exemples de prompts ChatGPT à copier et adapter</a></li><li><a href="/ia/guides/pourquoi-chatgpt-repond-mal/">Pourquoi ChatGPT répond mal (et comment corriger)</a></li></ul><h2>À lire aussi</h2><ul><li><a href="/ia/guides/comment-utiliser-chatgpt/">Comment utiliser ChatGPT quand on débute</a></li><li><a href="/ia/guides/utiliser-chatgpt-gratuitement/">Utiliser ChatGPT gratuitement : ce que permet l&#x27;offre Free</a></li><li><a href="/ia/guides/utiliser-gemini-gratuitement/">Utiliser Gemini gratuitement : ce qui est inclus</a></li><li><a href="/ia/guides/utiliser-claude/">Comment utiliser Claude, l&#x27;assistant d&#x27;Anthropic</a></li></ul><p><a href="/ia/guides/">Tous les guides</a> · <a href="/ia/">Tous les outils</a></p>
+
+</div>
+</main>
+<footer class="pied">
+<div class="conteneur">
+<nav aria-label="Pages du site"><a href="/ia/">Tous les outils</a><a href="/ia/prompts/">Prompts par métier</a><a href="/ia/guides/">Guides</a><a href="/ia/a-propos/">À propos</a><a href="/ia/contact/">Contact</a><a href="/ia/mentions-legales/">Mentions légales</a><a href="/ia/confidentialite/">Confidentialité</a><a href="/ia/credits/">Crédits et licences</a><a href="https://maxicards.net/">maxicards.net</a></nav>
+<p>Tous les outils fonctionnent dans votre navigateur : aucun texte n'est envoyé à une IA ni à nos serveurs.</p>
+<p>Site indépendant, non affilié à OpenAI, Anthropic, Google, Microsoft ou Mistral. ChatGPT, Claude, Gemini et les autres noms cités sont des marques de leurs propriétaires.</p>
+<p>© 2026 MAXICARDS. Outils gratuits financés par la publicité.</p>
+</div>
+</footer>
+
+<script src="/ia/assets/js/ia.js?v=8756369b77" defer></script>
+</body>
+</html>

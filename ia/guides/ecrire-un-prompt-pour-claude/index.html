@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr" data-base="/ia">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écrire un prompt pour Claude : conseils et exemples</title>
+<meta name="description" content="Comment obtenir de meilleures réponses de Claude : explications claires, contexte, exemples, balises XML, documents longs. Prompts complets à copier.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://maxicards.net/ia/guides/ecrire-un-prompt-pour-claude/">
+<meta name="theme-color" content="#5b2ee6">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Outils IA">
+<meta property="og:title" content="Écrire un prompt pour Claude : conseils et exemples">
+<meta property="og:description" content="Comment obtenir de meilleures réponses de Claude : explications claires, contexte, exemples, balises XML, documents longs. Prompts complets à copier.">
+<meta property="og:url" content="https://maxicards.net/ia/guides/ecrire-un-prompt-pour-claude/">
+<meta property="og:image" content="https://maxicards.net/ia/assets/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Outils IA gratuits : prompts, tokens et prix pour ChatGPT, Claude et Gemini">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Écrire un prompt pour Claude : conseils et exemples">
+<meta name="twitter:description" content="Comment obtenir de meilleures réponses de Claude : explications claires, contexte, exemples, balises XML, documents longs. Prompts complets à copier.">
+<meta name="twitter:image" content="https://maxicards.net/ia/assets/partage.png">
+<link rel="icon" href="/ia/favicon.ico" sizes="32x32">
+<link rel="icon" href="/ia/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/ia/apple-touch-icon.png">
+<link rel="stylesheet" href="/ia/assets/style.css?v=f4c3247cc6">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net https://*.googleadservices.com https://adservice.google.com https://www.googletagservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; frame-src https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2308397761739264" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Comment écrire un bon prompt pour Claude","description":"Comment obtenir de meilleures réponses de Claude : explications claires, contexte, exemples, balises XML, documents longs. Prompts complets à copier.","inLanguage":"fr-FR","datePublished":"2026-11-23","dateModified":"2026-11-23","url":"https://maxicards.net/ia/guides/ecrire-un-prompt-pour-claude/","image":"https://maxicards.net/ia/assets/partage.png","mainEntityOfPage":"https://maxicards.net/ia/guides/ecrire-un-prompt-pour-claude/","author":{"@type":"Organization","name":"MAXICARDS"},"publisher":{"@type":"Organization","name":"MAXICARDS"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Comment écrire un bon prompt pour Claude","description":"Comment obtenir de meilleures réponses de Claude : explications claires, contexte, exemples, balises XML, documents longs. Prompts complets à copier.","inLanguage":"fr-FR","step":[{"@type":"HowToStep","position":1,"text":"Soyez explicite sur le résultat voulu. Anthropic note que si vous voulez que Claude aille plus loin que strictement demandé, il faut le demander clairement plutôt que de compter sur une déduction à partir d'une consigne vague."},{"@type":"HowToStep","position":2,"text":"Expliquez le pourquoi. La documentation donne un exemple parlant : plutôt que « n'utilise jamais de points de suspension », écrire que le texte sera lu à voix haute par un logiciel qui ne sait pas les prononcer. Claude généralise à partir de la raison."},{"@type":"HowToStep","position":3,"text":"Donnez trois à cinq exemples quand le format ou le ton comptent. C'est le nombre recommandé dans la documentation, avec des exemples variés."},{"@type":"HowToStep","position":4,"text":"Séparez les types de contenu avec des balises. Les balises XML (par exemple <contexte>, <texte>) aident à ne pas mélanger instructions, documents et exemples."},{"@type":"HowToStep","position":5,"text":"Placez les longs documents en premier, votre question à la fin, et demandez de citer d'abord les passages utiles."}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Claude comprend-il le français aussi bien que l'anglais ?","acceptedAnswer":{"@type":"Answer","text":"Vous pouvez lui écrire en français sans difficulté. Si un résultat est décevant, précisez la langue de réponse souhaitée dans votre prompt et donnez un exemple dans cette langue."}},{"@type":"Question","name":"Faut-il vraiment utiliser des balises XML ?","acceptedAnswer":{"@type":"Answer","text":"Ce n'est pas obligatoire. La documentation d'Anthropic les recommande surtout pour les prompts qui mélangent instructions, documents et exemples. Pour une demande courte, une phrase claire suffit."}},{"@type":"Question","name":"Combien d'exemples donner à Claude ?","acceptedAnswer":{"@type":"Answer","text":"La documentation officielle recommande trois à cinq exemples pour de meilleurs résultats, en les variant. Un seul exemple risque d'être recopié trop fidèlement."}},{"@type":"Question","name":"Mon prompt marche-t-il aussi sur ChatGPT ou Gemini ?","acceptedAnswer":{"@type":"Answer","text":"Les principes de clarté, de contexte et de format sont communs. Les balises sont une habitude propre à Claude, mais d'autres outils s'en accommodent généralement."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Outils IA","item":"https://maxicards.net/ia/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://maxicards.net/ia/guides/"},{"@type":"ListItem","position":3,"name":"Écrire un prompt pour Claude","item":"https://maxicards.net/ia/guides/ecrire-un-prompt-pour-claude/"}]}</script>
+</head>
+<body>
+<header class="entete">
+<div class="conteneur">
+<a class="marque" href="/ia/"><svg class="logo" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><defs><linearGradient id="g-logo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cff"/><stop offset="1" stop-color="#4c1fd1"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g-logo)"/><path d="M17 13h30a7 7 0 0 1 7 7v17a7 7 0 0 1-7 7H29l-9.5 8.2c-.9.8-2.3.1-2.3-1.1V44A7 7 0 0 1 10 37V20a7 7 0 0 1 7-7z" fill="#fff"/><path d="M32 18.5l2.6 7.3 7.4 2.7-7.4 2.7L32 38.5l-2.6-7.3-7.4-2.7 7.4-2.7z" fill="#5b2ee6"/><circle cx="43.5" cy="20.5" r="2.3" fill="#5b2ee6"/></svg><span>Outils IA</span></a>
+<details class="menu"><summary>Outils</summary><nav aria-label="Outils"><a href="/ia/generateur-de-prompt/">Générateur de prompt</a><a href="/ia/ameliorer-un-prompt/">Améliorer un prompt</a><a href="/ia/compteur-de-tokens/">Compteur de tokens</a><a href="/ia/prix-api-ia/">Prix des API</a><a href="/ia/nettoyer-texte-chatgpt/">Nettoyer un texte ChatGPT</a><a href="/ia/markdown-en-html/">Markdown en HTML</a><a href="/ia/generateur-prompt-image/">Prompt d&#x27;image</a><a href="/ia/instructions-personnalisees/">Instructions personnalisées</a><a href="/ia/comparatif-abonnements-ia/">Comparatif des abonnements</a><a href="/ia/prompts/">Prompts par métier</a><a href="/ia/guides/">Guides pratiques</a></nav></details>
+</div>
+</header>
+<main>
+<div class="conteneur">
+<p class="fil"><a href="/ia/">Outils IA</a> › <a href="/ia/guides/">Guides</a> › Écrire un prompt pour Claude</p>
+<h1>Comment écrire un bon prompt pour Claude</h1>
+<p class="chapo">D&#x27;après la documentation officielle d&#x27;Anthropic, Claude répond mieux à des consignes claires, expliquées et structurées. Voici comment l&#x27;appliquer, avec des prompts à copier.</p>
+
+<p>Claude est l'assistant d'Anthropic. Sa documentation de prompting décrit une série de techniques : être clair et direct, donner du contexte, utiliser des exemples, structurer avec des balises XML, donner un rôle. Cette page les reprend sous un angle pratique pour une personne qui utilise Claude en conversation, sans programmer. Pour les bases communes à toutes les IA, lisez d'abord <a href="/ia/guides/comment-ecrire-un-bon-prompt/">la méthode générale</a>.</p>
+
+<h2>Comment faire</h2>
+<ol>
+<li><strong>Soyez explicite sur le résultat voulu.</strong> Anthropic note que si vous voulez que Claude aille plus loin que strictement demandé, il faut le demander clairement plutôt que de compter sur une déduction à partir d'une consigne vague.</li>
+<li><strong>Expliquez le pourquoi.</strong> La documentation donne un exemple parlant : plutôt que « n'utilise jamais de points de suspension », écrire que le texte sera lu à voix haute par un logiciel qui ne sait pas les prononcer. Claude généralise à partir de la raison.</li>
+<li><strong>Donnez trois à cinq exemples</strong> quand le format ou le ton comptent. C'est le nombre recommandé dans la documentation, avec des exemples variés.</li>
+<li><strong>Séparez les types de contenu avec des balises.</strong> Les balises XML (par exemple <code>&lt;contexte&gt;</code>, <code>&lt;texte&gt;</code>) aident à ne pas mélanger instructions, documents et exemples.</li>
+<li><strong>Placez les longs documents en premier,</strong> votre question à la fin, et demandez de citer d'abord les passages utiles.</li>
+</ol>
+
+<h2>Le test du collègue</h2>
+<p>Anthropic propose un test simple : montrez votre prompt à quelqu'un qui ne connaît pas le sujet et demandez-lui d'exécuter la tâche. S'il hésite, Claude hésitera aussi. Prenons un exemple : vous voulez un texte de présentation pour votre association.</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-claude-1">Écris un texte de présentation pour mon association.</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-claude-1" hidden>Copier ce prompt</button>
+<p>Version améliorée, avec le contexte et la raison des consignes :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-claude-2">Je suis bénévole dans une association de quartier qui organise un repas partagé chaque premier samedi du mois. Le texte sera imprimé sur un petit flyer, glissé dans les boîtes aux lettres : les lecteurs ne nous connaissent pas et le liront en trente secondes.
+
+Écris-le en 80 mots maximum, ton chaleureux, vouvoiement, sans jargon associatif. Commence par la phrase la plus accrocheuse. Termine par l'adresse [adresse] et l'heure [heure]. Propose-moi deux versions différentes pour que je choisisse.</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-claude-2" hidden>Copier ce prompt</button>
+<p>Le point clé est la deuxième phrase : elle explique <em>pourquoi</em> le texte doit être court. Claude peut alors arbitrer lui-même d'autres détails.</p>
+
+<h2>Utiliser des balises pour un document long</h2>
+<p>La documentation recommande de placer les longs documents au début du prompt, au-dessus de la question, et de les entourer de balises. Voici un modèle pour analyser un compte rendu de réunion (sans données sensibles) :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-claude-3">&lt;document&gt;
+[collez ici le compte rendu]
+&lt;/document&gt;
+
+D'abord, cite les trois passages du document qui comptent le plus pour les décisions à prendre, entre guillemets.
+Ensuite, à partir de ces passages seulement, dresse un tableau : décision, responsable, échéance. Si une information manque dans le document, écris « non précisé » au lieu de la déduire.</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-claude-3" hidden>Copier ce prompt</button>
+<p>Demander des citations en premier est une technique citée par Anthropic pour les longs documents : elle aide Claude à se concentrer sur l'essentiel du texte.</p>
+
+<h2>Donner des exemples de ce que vous attendez</h2>
+<p>Les exemples sont décrits comme l'un des moyens les plus fiables de guider le format, le ton et la structure. Supposons que vous classiez des avis de clients :</p>
+<pre class="prompt-texte" id="p-guides-ecrire-un-prompt-pour-claude-4">Classe chaque avis client en « positif », « négatif » ou « mitigé », puis donne le motif principal en trois mots.
+
+Exemples :
+Avis : « Livraison rapide, mais l'emballage était abîmé. » -> mitigé ; emballage abîmé
+Avis : « Je recommande, très bon accueil. » -> positif ; accueil
+Avis : « Jamais reçu ma commande, personne ne répond. » -> négatif ; commande non reçue
+
+Avis à classer :
+1. [avis 1]
+2. [avis 2]
+3. [avis 3]</pre><button type="button" class="principal" data-copier="p-guides-ecrire-un-prompt-pour-claude-4" hidden>Copier ce prompt</button>
+
+<h2>Les pièges à éviter</h2>
+<ul>
+<li><strong>Les consignes tout en majuscules ou en interdictions.</strong> Une raison courte fonctionne mieux qu'un « JAMAIS ».</li>
+<li><strong>Mélanger consigne et document sans séparation.</strong> Les balises ou les le séparateur ### évitent la confusion.</li>
+<li><strong>Un exemple unique et très particulier.</strong> Claude risque de le copier. Variez vos exemples.</li>
+<li><strong>Croire sans vérifier.</strong> Même bien guidé, Claude peut se tromper. Relisez les faits, les chiffres et les citations.</li>
+<li><strong>Données personnelles.</strong> Remplacez noms et adresses par des crochets avant de coller un document.</li>
+</ul>
+
+<h2>Sur l'application</h2>
+<p>Pour des consignes qui valent pour toutes vos conversations (ton, niveau de détail, langue), l'outil <a href="/ia/instructions-personnalisees/">instructions personnalisées</a> vous aide à les rédiger ; cherchez ensuite dans les réglages de l'application l'endroit où les enregistrer, car les menus évoluent. Pour savoir ce que propose l'offre gratuite, voyez <a href="/ia/guides/utiliser-claude/">notre guide sur Claude</a>.</p>
+<h2>Questions fréquentes</h2><details class="faq"><summary>Claude comprend-il le français aussi bien que l&#x27;anglais ?</summary><p>Vous pouvez lui écrire en français sans difficulté. Si un résultat est décevant, précisez la langue de réponse souhaitée dans votre prompt et donnez un exemple dans cette langue.</p></details><details class="faq"><summary>Faut-il vraiment utiliser des balises XML ?</summary><p>Ce n&#x27;est pas obligatoire. La documentation d&#x27;Anthropic les recommande surtout pour les prompts qui mélangent instructions, documents et exemples. Pour une demande courte, une phrase claire suffit.</p></details><details class="faq"><summary>Combien d&#x27;exemples donner à Claude ?</summary><p>La documentation officielle recommande trois à cinq exemples pour de meilleurs résultats, en les variant. Un seul exemple risque d&#x27;être recopié trop fidèlement.</p></details><details class="faq"><summary>Mon prompt marche-t-il aussi sur ChatGPT ou Gemini ?</summary><p>Les principes de clarté, de contexte et de format sont communs. Les balises sont une habitude propre à Claude, mais d&#x27;autres outils s&#x27;en accommodent généralement.</p></details>
+<p class="sources">Sources : <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" rel="noopener">Documentation Anthropic : prompting best practices</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" rel="noopener">Documentation Anthropic : aperçu du prompt engineering</a>. Guide mis à jour le 23/11/2026.</p><h2>Outils gratuits pour aller plus vite</h2><ul class="liste-outils"><li><a class="carte-outil" href="/ia/generateur-de-prompt/"><strong>Générateur de prompt</strong><span>Remplissez quelques champs, choisissez un modèle si vous voulez : le prompt se construit sous vos yeux, prêt à copier.</span></a></li><li><a class="carte-outil" href="/ia/instructions-personnalisees/"><strong>Instructions personnalisées</strong><span>Réglez une fois pour toutes la façon dont l&#x27;IA vous répond : ton, longueur, tutoiement, niveau de détail, ce qu&#x27;il faut éviter.</span></a></li></ul><h2>Sur le même thème</h2><ul><li><a href="/ia/guides/comment-ecrire-un-bon-prompt/">Comment écrire un bon prompt pour une IA</a></li><li><a href="/ia/guides/ecrire-un-prompt-pour-gemini/">Comment écrire un bon prompt pour Gemini</a></li><li><a href="/ia/guides/exemples-de-prompts-chatgpt/">12 exemples de prompts ChatGPT à copier et adapter</a></li><li><a href="/ia/guides/pourquoi-chatgpt-repond-mal/">Pourquoi ChatGPT répond mal (et comment corriger)</a></li></ul><h2>À lire aussi</h2><ul><li><a href="/ia/guides/comment-utiliser-chatgpt/">Comment utiliser ChatGPT quand on débute</a></li><li><a href="/ia/guides/utiliser-chatgpt-gratuitement/">Utiliser ChatGPT gratuitement : ce que permet l&#x27;offre Free</a></li><li><a href="/ia/guides/utiliser-gemini-gratuitement/">Utiliser Gemini gratuitement : ce qui est inclus</a></li><li><a href="/ia/guides/utiliser-claude/">Comment utiliser Claude, l&#x27;assistant d&#x27;Anthropic</a></li></ul><p><a href="/ia/guides/">Tous les guides</a> · <a href="/ia/">Tous les outils</a></p>
+
+</div>
+</main>
+<footer class="pied">
+<div class="conteneur">
+<nav aria-label="Pages du site"><a href="/ia/">Tous les outils</a><a href="/ia/prompts/">Prompts par métier</a><a href="/ia/guides/">Guides</a><a href="/ia/a-propos/">À propos</a><a href="/ia/contact/">Contact</a><a href="/ia/mentions-legales/">Mentions légales</a><a href="/ia/confidentialite/">Confidentialité</a><a href="/ia/credits/">Crédits et licences</a><a href="https://maxicards.net/">maxicards.net</a></nav>
+<p>Tous les outils fonctionnent dans votre navigateur : aucun texte n'est envoyé à une IA ni à nos serveurs.</p>
+<p>Site indépendant, non affilié à OpenAI, Anthropic, Google, Microsoft ou Mistral. ChatGPT, Claude, Gemini et les autres noms cités sont des marques de leurs propriétaires.</p>
+<p>© 2026 MAXICARDS. Outils gratuits financés par la publicité.</p>
+</div>
+</footer>
+
+<script src="/ia/assets/js/ia.js?v=8756369b77" defer></script>
+</body>
+</html>

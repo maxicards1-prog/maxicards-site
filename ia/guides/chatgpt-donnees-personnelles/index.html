@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr" data-base="/ia">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatGPT et données personnelles : réglages et réflexes</title>
+<meta name="description" content="Que ne pas écrire dans ChatGPT, comment désactiver l&#x27;amélioration du modèle, utiliser le chat temporaire et supprimer vos conversations : méthode pas à pas.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://maxicards.net/ia/guides/chatgpt-donnees-personnelles/">
+<meta name="theme-color" content="#5b2ee6">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Outils IA">
+<meta property="og:title" content="ChatGPT et données personnelles : réglages et réflexes">
+<meta property="og:description" content="Que ne pas écrire dans ChatGPT, comment désactiver l&#x27;amélioration du modèle, utiliser le chat temporaire et supprimer vos conversations : méthode pas à pas.">
+<meta property="og:url" content="https://maxicards.net/ia/guides/chatgpt-donnees-personnelles/">
+<meta property="og:image" content="https://maxicards.net/ia/assets/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Outils IA gratuits : prompts, tokens et prix pour ChatGPT, Claude et Gemini">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ChatGPT et données personnelles : réglages et réflexes">
+<meta name="twitter:description" content="Que ne pas écrire dans ChatGPT, comment désactiver l&#x27;amélioration du modèle, utiliser le chat temporaire et supprimer vos conversations : méthode pas à pas.">
+<meta name="twitter:image" content="https://maxicards.net/ia/assets/partage.png">
+<link rel="icon" href="/ia/favicon.ico" sizes="32x32">
+<link rel="icon" href="/ia/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/ia/apple-touch-icon.png">
+<link rel="stylesheet" href="/ia/assets/style.css?v=f4c3247cc6">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net https://*.googleadservices.com https://adservice.google.com https://www.googletagservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; frame-src https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2308397761739264" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"ChatGPT et vos données personnelles : ce qu'il faut savoir","description":"Que ne pas écrire dans ChatGPT, comment désactiver l'amélioration du modèle, utiliser le chat temporaire et supprimer vos conversations : méthode pas à pas.","inLanguage":"fr-FR","datePublished":"2026-11-23","dateModified":"2026-11-23","url":"https://maxicards.net/ia/guides/chatgpt-donnees-personnelles/","image":"https://maxicards.net/ia/assets/partage.png","mainEntityOfPage":"https://maxicards.net/ia/guides/chatgpt-donnees-personnelles/","author":{"@type":"Organization","name":"MAXICARDS"},"publisher":{"@type":"Organization","name":"MAXICARDS"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"ChatGPT garde-t-il mes conversations ?","acceptedAnswer":{"@type":"Answer","text":"Avec un compte, vos conversations apparaissent dans l'historique jusqu'à ce que vous les supprimiez. Le chat temporaire n'apparaît pas dans l'historique mais peut être conservé jusqu'à 30 jours pour des raisons de sécurité, selon l'aide d'OpenAI."}},{"@type":"Question","name":"Comment empêcher ChatGPT d'utiliser mes conversations ?","acceptedAnswer":{"@type":"Answer","text":"Dans les paramètres, rubrique Data controls, désactivez « Improve the model for everyone ». Ce réglage n'efface pas les conversations existantes ; supprimez-les séparément."}},{"@type":"Question","name":"Peut-on donner son nom ou son adresse à ChatGPT ?","acceptedAnswer":{"@type":"Answer","text":"Il vaut mieux l'éviter : la CNIL recommande de ne pas saisir de données personnelles dans un service grand public. Remplacez les noms par des repères neutres."}},{"@type":"Question","name":"Le chat temporaire est-il totalement privé ?","acceptedAnswer":{"@type":"Answer","text":"Non. Il n'apparaît pas dans l'historique, ne crée pas de mémoire et ne sert pas à améliorer les modèles, mais peut être conservé jusqu'à 30 jours pour la sécurité."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Outils IA","item":"https://maxicards.net/ia/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://maxicards.net/ia/guides/"},{"@type":"ListItem","position":3,"name":"ChatGPT et données personnelles","item":"https://maxicards.net/ia/guides/chatgpt-donnees-personnelles/"}]}</script>
+</head>
+<body>
+<header class="entete">
+<div class="conteneur">
+<a class="marque" href="/ia/"><svg class="logo" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><defs><linearGradient id="g-logo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cff"/><stop offset="1" stop-color="#4c1fd1"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g-logo)"/><path d="M17 13h30a7 7 0 0 1 7 7v17a7 7 0 0 1-7 7H29l-9.5 8.2c-.9.8-2.3.1-2.3-1.1V44A7 7 0 0 1 10 37V20a7 7 0 0 1 7-7z" fill="#fff"/><path d="M32 18.5l2.6 7.3 7.4 2.7-7.4 2.7L32 38.5l-2.6-7.3-7.4-2.7 7.4-2.7z" fill="#5b2ee6"/><circle cx="43.5" cy="20.5" r="2.3" fill="#5b2ee6"/></svg><span>Outils IA</span></a>
+<details class="menu"><summary>Outils</summary><nav aria-label="Outils"><a href="/ia/generateur-de-prompt/">Générateur de prompt</a><a href="/ia/ameliorer-un-prompt/">Améliorer un prompt</a><a href="/ia/compteur-de-tokens/">Compteur de tokens</a><a href="/ia/prix-api-ia/">Prix des API</a><a href="/ia/nettoyer-texte-chatgpt/">Nettoyer un texte ChatGPT</a><a href="/ia/markdown-en-html/">Markdown en HTML</a><a href="/ia/generateur-prompt-image/">Prompt d&#x27;image</a><a href="/ia/instructions-personnalisees/">Instructions personnalisées</a><a href="/ia/comparatif-abonnements-ia/">Comparatif des abonnements</a><a href="/ia/prompts/">Prompts par métier</a><a href="/ia/guides/">Guides pratiques</a></nav></details>
+</div>
+</header>
+<main>
+<div class="conteneur">
+<p class="fil"><a href="/ia/">Outils IA</a> › <a href="/ia/guides/">Guides</a> › ChatGPT et données personnelles</p>
+<h1>ChatGPT et vos données personnelles : ce qu&#x27;il faut savoir</h1>
+<p class="chapo">Une conversation avec ChatGPT n&#x27;est pas un échange privé comme un autre. Voici ce qu&#x27;il vaut mieux ne pas y écrire, et les réglages officiels qui limitent l&#x27;usage de vos données.</p>
+
+<p>Quand vous écrivez dans ChatGPT, votre texte est envoyé à un service en ligne. Ce guide explique <strong>deux protections complémentaires</strong> : ce que vous choisissez de ne pas écrire, et les réglages que l'éditeur met à votre disposition. Les informations ci-dessous viennent de l'aide officielle d'OpenAI et des recommandations de la CNIL ; les menus changent régulièrement, cherchez donc les intitulés indiqués dans vos paramètres.</p>
+
+<h2>Le premier réflexe : ne pas écrire certaines informations</h2>
+<p>Les recommandations de la CNIL sur l'IA générative vont dans le même sens : éviter de saisir ses données personnelles, ou celles de tiers, dans un service grand public, et ne jamais partager d'informations confidentielles. Concrètement, évitez d'écrire :</p>
+<ul>
+<li>votre identité complète, adresse, numéro de téléphone, adresse e-mail ;</li>
+<li>des numéros de pièce d'identité, de sécurité sociale, de carte bancaire, des identifiants et mots de passe ;</li>
+<li>des informations de santé, de justice ou de situation familiale ;</li>
+<li>des données sur d'autres personnes (collègues, clients, élèves, proches) qui permettraient de les reconnaître ;</li>
+<li>des documents confidentiels de votre employeur ou de vos clients.</li>
+</ul>
+<p class="encadre">Règle simple : si vous ne publieriez pas ce texte sur un forum, ne le collez pas dans l'IA. Remplacez les éléments sensibles par des repères neutres.</p>
+
+<h2>Anonymiser avant de coller</h2>
+<p>Dans la plupart des cas, l'IA n'a pas besoin des vrais noms pour vous aider. Remplacez-les :</p>
+<pre class="prompt-texte" id="p-guides-chatgpt-donnees-personnelles-1">Avant : « Bonjour, je suis Marie Dupont, 12 rue des Lilas à Lyon, mon client Paul Martin (paul.martin@exemple.fr) conteste la facture 2026-045 de 1 480 €. »
+Après : « Je suis [Prénom A], je gère un client [Prénom B] qui conteste une facture de montant élevé. Rédige une réponse ferme et courtoise qui propose un échange téléphonique. »</pre><button type="button" class="principal" data-copier="p-guides-chatgpt-donnees-personnelles-1" hidden>Copier ce prompt</button>
+<p>Vous obtenez le même brouillon, et vous remettez ensuite les vrais noms vous-même dans votre traitement de texte.</p>
+
+<h2>Comment faire : régler ChatGPT pour limiter l'usage de vos données</h2>
+<ol>
+<li><strong>Ouvrez les réglages.</strong> Sur le web : menu de votre compte, puis « Settings », puis « Data controls ». Sur mobile : barre latérale, icône de profil, « Settings », « Data controls ». Les libellés peuvent changer ; cherchez la rubrique consacrée aux données.</li>
+<li><strong>Désactivez « Improve the model for everyone »</strong> (en français : l'option d'amélioration du modèle pour tous). Selon l'aide officielle d'OpenAI, ce réglage s'applique à un compte connecté sur le web et sur mobile.</li>
+<li><strong>Sans compte connecté</strong>, le même réglage existe dans les paramètres, mais il n'est enregistré que dans ce navigateur.</li>
+<li><strong>Utilisez le « Temporary Chat »</strong> (chat temporaire) pour les sujets sensibles : ces conversations n'apparaissent pas dans l'historique, ne créent pas de mémoires et ne servent pas à améliorer les modèles.</li>
+<li><strong>Supprimez les conversations dont vous n'avez plus besoin.</strong> Désactiver le réglage ne supprime pas les discussions déjà faites : il faut les supprimer ou supprimer le compte.</li>
+</ol>
+
+<h2>Ce que les réglages ne font pas</h2>
+<p>L'aide officielle d'OpenAI précise plusieurs limites qu'il faut connaître :</p>
+<ul>
+<li>Un chat temporaire peut malgré tout être conservé jusqu'à 30 jours pour des raisons de sécurité.</li>
+<li>Si vous envoyez un retour sur une réponse (pouce vers le haut ou vers le bas), la conversation associée peut servir à améliorer les modèles, même si vous avez désactivé le réglage.</li>
+<li>Archiver une conversation ne change pas son éligibilité à l'entraînement : seule la suppression retire le contenu de votre historique.</li>
+<li>Le mode vocal dispose d'un réglage distinct à vérifier séparément.</li>
+<li>Les offres professionnelles (Business, Enterprise, Edu) ont des règles différentes : par défaut, leurs contenus ne sont pas utilisés pour l'entraînement, et les politiques de l'organisation s'appliquent.</li>
+</ul>
+<p>Pour les durées de conservation générales et l'exercice de vos droits (accès, suppression), l'aide d'OpenAI renvoie vers son portail de confidentialité : c'est là qu'il faut aller pour des questions précises.</p>
+
+<h2>La mémoire de ChatGPT</h2>
+<p>La fonction de mémoire permet à l'assistant de retenir des éléments d'une conversation à l'autre. Si vous ne souhaitez pas qu'il retienne des informations sur vous, regardez dans les réglages la rubrique consacrée à la mémoire, consultez ce qui est enregistré et supprimez ce qui ne doit pas rester. Le chat temporaire, lui, ne crée pas de mémoire.</p>
+
+<h2>Vérifier les réponses : un risque différent</h2>
+<p>La CNIL rappelle aussi que les réponses peuvent être inexactes tout en paraissant plausibles : il faut les vérifier et ne jamais les reproduire telles quelles, notamment sans source. Pour un sujet médical, juridique ou financier, ChatGPT peut aider à comprendre le vocabulaire et à préparer vos questions, mais pas remplacer un professionnel.</p>
+
+<h2>Check-list avant d'envoyer un prompt</h2>
+<ol>
+<li>Ai-je retiré noms, adresses, numéros et identifiants ?</li>
+<li>Ce texte appartient-il à quelqu'un d'autre (employeur, client) qui ne m'a pas autorisé à le partager ?</li>
+<li>Le réglage d'amélioration du modèle est-il désactivé ?</li>
+<li>Ce sujet mérite-t-il un chat temporaire ?</li>
+<li>Vais-je vérifier la réponse avant de l'utiliser ?</li>
+</ol>
+<p>Pour des prompts qui évitent de dévoiler des informations inutiles, essayez le <a href="/ia/generateur-de-prompt/">générateur de prompt</a> ou lisez <a href="/ia/guides/pourquoi-chatgpt-repond-mal/">pourquoi ChatGPT répond mal</a>. Si vous cherchez un autre assistant, voyez <a href="/ia/guides/quelle-ia-choisir/">comment choisir une IA</a>. Les <a href="/ia/instructions-personnalisees/">instructions personnalisées</a> aussi doivent éviter toute donnée sensible.</p>
+<h2>Questions fréquentes</h2><details class="faq"><summary>ChatGPT garde-t-il mes conversations ?</summary><p>Avec un compte, vos conversations apparaissent dans l&#x27;historique jusqu&#x27;à ce que vous les supprimiez. Le chat temporaire n&#x27;apparaît pas dans l&#x27;historique mais peut être conservé jusqu&#x27;à 30 jours pour des raisons de sécurité, selon l&#x27;aide d&#x27;OpenAI.</p></details><details class="faq"><summary>Comment empêcher ChatGPT d&#x27;utiliser mes conversations ?</summary><p>Dans les paramètres, rubrique Data controls, désactivez « Improve the model for everyone ». Ce réglage n&#x27;efface pas les conversations existantes ; supprimez-les séparément.</p></details><details class="faq"><summary>Peut-on donner son nom ou son adresse à ChatGPT ?</summary><p>Il vaut mieux l&#x27;éviter : la CNIL recommande de ne pas saisir de données personnelles dans un service grand public. Remplacez les noms par des repères neutres.</p></details><details class="faq"><summary>Le chat temporaire est-il totalement privé ?</summary><p>Non. Il n&#x27;apparaît pas dans l&#x27;historique, ne crée pas de mémoire et ne sert pas à améliorer les modèles, mais peut être conservé jusqu&#x27;à 30 jours pour la sécurité.</p></details>
+<p class="sources">Sources : <a href="https://help.openai.com/en/articles/7730893-data-controls-faq" rel="noopener">Aide OpenAI : contrôle des données (Data controls FAQ)</a> · <a href="https://www.cnil.fr/fr/les-questions-reponses-de-la-cnil-sur-lutilisation-dun-systeme-dia-generative" rel="noopener">CNIL : questions-réponses sur l&#x27;utilisation d&#x27;un système d&#x27;IA générative</a>. Guide mis à jour le 23/11/2026.</p><h2>Outils gratuits pour aller plus vite</h2><ul class="liste-outils"><li><a class="carte-outil" href="/ia/generateur-de-prompt/"><strong>Générateur de prompt</strong><span>Remplissez quelques champs, choisissez un modèle si vous voulez : le prompt se construit sous vos yeux, prêt à copier.</span></a></li><li><a class="carte-outil" href="/ia/instructions-personnalisees/"><strong>Instructions personnalisées</strong><span>Réglez une fois pour toutes la façon dont l&#x27;IA vous répond : ton, longueur, tutoiement, niveau de détail, ce qu&#x27;il faut éviter.</span></a></li></ul><h2>Sur le même thème</h2><ul><li><a href="/ia/guides/comment-utiliser-chatgpt/">Comment utiliser ChatGPT quand on débute</a></li><li><a href="/ia/guides/utiliser-chatgpt-gratuitement/">Utiliser ChatGPT gratuitement : ce que permet l&#x27;offre Free</a></li><li><a href="/ia/guides/utiliser-gemini-gratuitement/">Utiliser Gemini gratuitement : ce qui est inclus</a></li><li><a href="/ia/guides/utiliser-claude/">Comment utiliser Claude, l&#x27;assistant d&#x27;Anthropic</a></li><li><a href="/ia/guides/chatgpt-ou-gemini/">ChatGPT ou Gemini : lequel choisir ?</a></li><li><a href="/ia/guides/quelle-ia-choisir/">Quelle IA choisir : la méthode selon votre besoin</a></li></ul><h2>À lire aussi</h2><ul><li><a href="/ia/guides/comment-ecrire-un-bon-prompt/">Comment écrire un bon prompt pour une IA</a></li><li><a href="/ia/guides/ecrire-un-prompt-pour-claude/">Comment écrire un bon prompt pour Claude</a></li><li><a href="/ia/guides/ecrire-un-prompt-pour-gemini/">Comment écrire un bon prompt pour Gemini</a></li><li><a href="/ia/guides/exemples-de-prompts-chatgpt/">12 exemples de prompts ChatGPT à copier et adapter</a></li></ul><p><a href="/ia/guides/">Tous les guides</a> · <a href="/ia/">Tous les outils</a></p>
+
+</div>
+</main>
+<footer class="pied">
+<div class="conteneur">
+<nav aria-label="Pages du site"><a href="/ia/">Tous les outils</a><a href="/ia/prompts/">Prompts par métier</a><a href="/ia/guides/">Guides</a><a href="/ia/a-propos/">À propos</a><a href="/ia/contact/">Contact</a><a href="/ia/mentions-legales/">Mentions légales</a><a href="/ia/confidentialite/">Confidentialité</a><a href="/ia/credits/">Crédits et licences</a><a href="https://maxicards.net/">maxicards.net</a></nav>
+<p>Tous les outils fonctionnent dans votre navigateur : aucun texte n'est envoyé à une IA ni à nos serveurs.</p>
+<p>Site indépendant, non affilié à OpenAI, Anthropic, Google, Microsoft ou Mistral. ChatGPT, Claude, Gemini et les autres noms cités sont des marques de leurs propriétaires.</p>
+<p>© 2026 MAXICARDS. Outils gratuits financés par la publicité.</p>
+</div>
+</footer>
+
+<script src="/ia/assets/js/ia.js?v=8756369b77" defer></script>
+</body>
+</html>
