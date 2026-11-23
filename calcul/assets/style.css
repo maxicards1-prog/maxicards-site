@@ -427,3 +427,18 @@ details.faq[open] p { animation: descend .3s var(--ease); }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
   .rv { opacity: 1; transform: none; }
 }
+
+/* ===== SIMPLE À COMPRENDRE (23/11) : l'outil d'abord, 16 px minimum sur mobile ===== */
+.chapo.apres-outil { margin: 22px 0 6px; }
+.chapo.apres-outil + .date-mise-a-jour { margin: 0 0 18px; }
+.consigne { margin: 4px 0 10px; font-weight: 700; color: #fff; font-size: 1.02rem; }
+@media (max-width: 760px) {
+  .surtitre { display: none; }
+  nav.fil { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1rem; margin-bottom: 6px; }
+  .tete-page { gap: 12px; }
+  .badge-ico.grand { width: 44px; height: 44px; border-radius: 13px; }
+  .champ label, .etiquette, .ligne-case, .aide, .tuile .libelle, .message, table, .encadre, .sources, .pied,
+  .partage, .partage button, .legende, .date-mise-a-jour, .carte-outil span, .carte-outil .desc, .liste-rubriques span,
+  .puce, .menu summary, .menu nav .groupe-nav a:not(.titre-nav) { font-size: 1rem; }
+  .puce { padding: 8px 13px 8px 10px; }
+}
