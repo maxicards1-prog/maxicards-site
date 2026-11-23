@@ -44,10 +44,11 @@
       if (!el) { return; }
       var avant = el.textContent;
       el.textContent = valeur;
-      if (avant !== String(valeur) && el.classList.contains('valeur') && valeur !== '–') {
-        el.classList.remove('defile');
-        void el.offsetWidth;
-        el.classList.add('defile');
+      // Pas d'animation au premier remplissage (« – »), ni sans Web Animations, ni si l'utilisateur réduit les animations.
+      if (avant !== String(valeur) && avant !== '–' && avant !== '' && valeur !== '–' && el.classList.contains('valeur') &&
+          el.animate && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        el.animate([{ opacity: 0.15, transform: 'translateY(55%)' }, { opacity: 1, transform: 'none' }],
+          { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' });
       }
     },
     // Jauge : position 0 à 1 (NaN = masquée).
