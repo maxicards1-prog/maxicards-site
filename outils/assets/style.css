@@ -221,9 +221,10 @@ fieldset.cases { border: 0; padding: 0; margin: 0 0 12px; }
 .surnom button { width: 100%; text-align: left; }
 
 /* ===== 23/11/2026 (soir) : identité visuelle et motion design léger ===== */
-/* Police des titres : Outfit (Google Fonts, licence SIL OFL), hébergée sur le site, affichée en « swap » */
+/* Police des titres : Outfit (Google Fonts, licence SIL OFL), hébergée sur le site. Chargée en fond après la 1re page
+   (anim.js), puis utilisée dès la page suivante (classe .police posée dans le <head>) : rien ne retarde l'affichage. */
 @font-face {
-  font-family: "Outfit"; font-style: normal; font-weight: 500 800; font-display: swap;
+  font-family: "Outfit"; font-style: normal; font-weight: 500 800; font-display: optional;
   src: url("polices/outfit-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -240,7 +241,7 @@ fieldset.cases { border: 0; padding: 0; margin: 0 0 12px; }
   :root { --violet: #9d88ff; --violet-doux: #26214d; --violet-fonce: #b9a9ff; --ombre-forte: 0 12px 32px rgba(0, 0, 0, .45); }
 }
 body { background: radial-gradient(1200px 420px at 50% -120px, var(--accent-doux), transparent 70%) no-repeat, var(--fond); }
-h1, h2, h3, .marque-nom, .bouton, button, .tuile .valeur, .compteur .chiffre, .carte-outil strong { font-family: var(--titre); }
+.police :is(h1, h2, h3, .marque-nom, .bouton, button, .tuile .valeur, .compteur .chiffre, .carte-outil strong, .hero-chiffres b) { font-family: var(--titre); }
 h1 { font-weight: 800; letter-spacing: -.02em; }
 h2 { font-weight: 700; letter-spacing: -.01em; }
 
@@ -287,7 +288,7 @@ main:has(> .hero) { padding-top: 0; }
 .bouton:focus-visible { outline-color: #ffd98a; }
 .hero-chiffres { display: flex; flex-wrap: wrap; gap: 6px 22px; list-style: none; padding: 0; margin: 0; color: #aab0de; font-size: .92rem; }
 .hero-chiffres li { margin: 0; }
-.hero-chiffres b { font-family: var(--titre); color: #fff; font-size: 1.25rem; margin-right: 4px; }
+.hero-chiffres b { color: #fff; font-size: 1.25rem; margin-right: 4px; }
 
 /* Visuel : trois cartes génériques qui se déploient en éventail, reflet holographique */
 .hero-visuel { position: relative; height: 300px; perspective: 900px; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transform-style: preserve-3d; transition: transform .35s var(--doux); }

@@ -2,6 +2,20 @@
    Rien n'est caché si le script ne tourne pas ; rien ne bouge si l'appareil demande moins d'animations. */
 (function () {
   'use strict';
+  // 0. Police des titres : téléchargée en fond après la 1re page, utilisée dès la suivante (voir style.css)
+  var script = document.currentScript;
+  try {
+    if (!localStorage.getItem('ocp-police') && window.FontFace && document.fonts && script) {
+      window.addEventListener('load', function () {
+        window.setTimeout(function () {
+          var url = new URL('../polices/outfit-latin.woff2', script.src).href;
+          new FontFace('Outfit', 'url(' + url + ')', { weight: '500 800' }).load().then(function () {
+            try { localStorage.setItem('ocp-police', '1'); } catch (e) { /* stockage refusé : police système */ }
+          }, function () {});
+        }, 1200);
+      });
+    }
+  } catch (e) { /* stockage refusé : police système */ }
   var calme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (calme) { return; }
 
