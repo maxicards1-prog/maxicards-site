@@ -291,9 +291,9 @@ h2 { font-weight: 700; letter-spacing: -.015em; }
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M22 17v10M17 22h10' stroke='%23ffffff' stroke-opacity='.07' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"),
     linear-gradient(135deg, #0b1b2b 0%, #0c2c37 50%, #0d4a42 100%); }
 .hero::before, .hero::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; }
-.hero::before, .hero::after { will-change: transform; }
-.hero::before { width: 520px; height: 520px; right: -140px; top: -220px; background: radial-gradient(closest-side, rgba(60, 201, 178, .38), transparent); animation: derive 14s ease-in-out infinite alternate; }
-.hero::after { width: 420px; height: 420px; left: -160px; bottom: -260px; background: radial-gradient(closest-side, rgba(245, 179, 0, .22), transparent); animation: derive 18s ease-in-out infinite alternate-reverse; }
+@media (min-width: 760px) { .hero::before { animation: derive 14s 1.5s ease-in-out infinite alternate; } .hero::after { animation: derive 18s 1.5s ease-in-out infinite alternate-reverse; } }
+.hero::before { width: 520px; height: 520px; right: -140px; top: -220px; background: radial-gradient(closest-side, rgba(60, 201, 178, .38), transparent); }
+.hero::after { width: 420px; height: 420px; left: -160px; bottom: -260px; background: radial-gradient(closest-side, rgba(245, 179, 0, .22), transparent); }
 .hero-in { display: grid; grid-template-columns: 1.3fr .9fr; gap: 28px; align-items: center; }
 .hero h1 { color: #fff; font-size: clamp(1.85rem, 5vw, 2.75rem); line-height: 1.1; margin: 10px 0 12px; }
 .hero .chapo { color: #b9cfd0; font-size: 1.06rem; margin-bottom: 20px; }
@@ -416,11 +416,11 @@ details.faq[open] p { animation: descend .3s var(--ease); }
 .rv { opacity: 0; transform: translateY(16px); transition: opacity .55s ease var(--d, 0ms), transform .55s var(--ease) var(--d, 0ms); }
 .rv.vu { opacity: 1; transform: none; }
 
-@keyframes pop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { transform: scale(.4); } to { opacity: 1; transform: none; } }
 @keyframes tourne { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 @keyframes descend { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-@keyframes monte { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes arrive { from { opacity: 0; transform: translateY(24px) scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes monte { from { transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes arrive { from { transform: translateY(24px) scale(.92); } to { opacity: 1; transform: none; } }
 @keyframes flotte { from { translate: 0 0; } to { translate: 0 -10px; } }
 @keyframes derive { from { transform: translate(0, 0) scale(1); } to { transform: translate(-60px, 40px) scale(1.15); } }
 @media (prefers-reduced-motion: reduce) {
