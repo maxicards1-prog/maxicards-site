@@ -6,7 +6,7 @@
  "scope": "/convertir/",
  "display": "standalone",
  "background_color": "#ffffff",
- "theme_color": "#1f6feb",
+ "theme_color": "#2563eb",
  "icons": [
   {
    "src": "/convertir/assets/icone-192.png",

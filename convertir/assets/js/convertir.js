@@ -1092,11 +1092,14 @@
     const prog = el('div', { class: 'progression', hidden: true }, barre, el('span'));
     const etat = el('div', { class: 'message', role: 'status', 'aria-live': 'polite' });
     const sortie = el('div', { class: 'sorties' });
+    // Passe design 23/11 : icône animée (SVG constant, aucune donnée de l'utilisateur dedans)
+    depot.insertAdjacentHTML('afterbegin', '<svg class="depot-icone" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 35h-3a9 9 0 0 1-1-17.9A12 12 0 0 1 34 13a8 8 0 0 1 2 22h-3"/><g class="depot-fleche"><path d="M24 41V23"/><path d="M17.5 29.5 24 23l6.5 6.5"/></g></svg>');
+    section.classList.add('pret');
     section.replaceChildren(depot, choix, liste, options, extra, el('div', { class: 'boutons' }, lancer, vider), prog, etat, sortie);
 
     const valeurs = {};
     function nettoyer() { urls.forEach((u) => URL.revokeObjectURL(u)); urls = []; sortie.replaceChildren(); }
-    function dire(texte, erreur) { etat.textContent = texte || ''; etat.classList.toggle('erreur', !!erreur); }
+    function dire(texte, erreur) { etat.textContent = texte || ''; etat.classList.toggle('erreur', !!erreur); etat.classList.remove('ok'); }
 
     function preparer() {
       const o = actuel ? actuel.outil : null;
@@ -1248,6 +1251,8 @@
       if (s.length) notes.unshift(`Terminé en ${secondes < 1 ? 'moins d\'une seconde' : Math.round(secondes) + ' s'} : ${s.length} fichier${s.length > 1 ? 's' : ''} prêt${s.length > 1 ? 's' : ''}.`);
       dire(notes.join(' '));
       if (!s.length) return;
+      etat.classList.add('ok');
+      etat.insertAdjacentHTML('afterbegin', '<svg class="coche" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
       const bloc = el('div', { class: 'resultat' });
       if (s.length > 1) {
         const tout = el('button', { type: 'button', class: 'principal', texte: `Tout télécharger (.zip, ${s.length} fichiers)` });
