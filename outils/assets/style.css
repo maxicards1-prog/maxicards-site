@@ -219,3 +219,192 @@ fieldset.cases { border: 0; padding: 0; margin: 0 0 12px; }
 .surnoms { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 14px; }
 .surnom { margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .surnom button { width: 100%; text-align: left; }
+
+/* ===== 23/11/2026 (soir) : identité visuelle et motion design léger ===== */
+/* Police des titres : Outfit (Google Fonts, licence SIL OFL), hébergée sur le site, affichée en « swap » */
+@font-face {
+  font-family: "Outfit"; font-style: normal; font-weight: 500 800; font-display: swap;
+  src: url("polices/outfit-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root {
+  --titre: "Outfit", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --nuit: #12142b; --nuit-2: #22205a;
+  --violet: #6a4cff; --violet-doux: #ece8ff; --violet-fonce: #4b2fd6;
+  --cyan: #22c7d6;
+  --degrade: linear-gradient(120deg, #ff6a3d 0%, #e0301e 45%, #b0186a 100%);
+  --ombre-forte: 0 12px 32px rgba(18, 20, 43, .14);
+  --doux: cubic-bezier(.2, .8, .2, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --violet: #9d88ff; --violet-doux: #26214d; --violet-fonce: #b9a9ff; --ombre-forte: 0 12px 32px rgba(0, 0, 0, .45); }
+}
+body { background: radial-gradient(1200px 420px at 50% -120px, var(--accent-doux), transparent 70%) no-repeat, var(--fond); }
+h1, h2, h3, .marque-nom, .bouton, button, .tuile .valeur, .compteur .chiffre, .carte-outil strong { font-family: var(--titre); }
+h1 { font-weight: 800; letter-spacing: -.02em; }
+h2 { font-weight: 700; letter-spacing: -.01em; }
+
+/* En-tête en verre dépoli + logo qui se pose à l'arrivée */
+.entete { background: color-mix(in srgb, var(--surface) 82%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(12px); backdrop-filter: saturate(1.6) blur(12px); border-bottom: 0; }
+.entete::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--degrade); opacity: .85; }
+.marque-nom { font-weight: 800; letter-spacing: -.015em; }
+.marque-nom b { background: var(--degrade); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.logo { box-shadow: 0 4px 14px rgba(224, 48, 30, .28); }
+.logo g { transform-box: fill-box; transform-origin: 50% 90%; }
+.entete .logo .l-or { animation: logo-or .7s var(--doux) .1s both; }
+.entete .logo .l-blanc { animation: logo-blanc .7s var(--doux) .2s both; }
+.entete .logo .l-eclat { transform-origin: 50% 50%; animation: logo-eclat .6s var(--doux) .55s both; }
+.marque:hover .l-eclat { animation: logo-brille .8s var(--doux); }
+@keyframes logo-or { from { transform: translateY(6px) rotate(10deg); opacity: 0; } }
+@keyframes logo-blanc { from { transform: translateY(8px) rotate(-12deg); opacity: 0; } }
+@keyframes logo-eclat { from { transform: scale(0) rotate(-90deg); opacity: 0; } }
+@keyframes logo-brille { 50% { transform: scale(1.25) rotate(45deg); } }
+.menu summary { transition: border-color .2s, background .2s; }
+.menu summary:hover, .menu[open] summary { border-color: var(--accent); background: var(--accent-doux); }
+.menu[open] nav { animation: menu-ouvre .2s var(--doux); }
+@keyframes menu-ouvre { from { opacity: 0; transform: translateY(-6px) scale(.98); } }
+
+/* Bandeau d'accueil */
+main:has(> .hero) { padding-top: 0; }
+.hero { position: relative; overflow: hidden; color: #fff; padding: 40px 0 48px; margin-bottom: 8px;
+  background: radial-gradient(520px 320px at 85% 30%, rgba(106, 76, 255, .55), transparent 70%),
+              radial-gradient(420px 300px at 0% 100%, rgba(224, 48, 30, .45), transparent 70%),
+              linear-gradient(160deg, var(--nuit) 0%, var(--nuit-2) 100%); }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+  background-image: radial-gradient(rgba(255, 255, 255, .35) 1px, transparent 1.4px); background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 60%); mask-image: linear-gradient(90deg, transparent, #000 60%); }
+.hero-grille { position: relative; z-index: 1; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 24px; }
+.hero h1 { color: #fff; font-size: clamp(1.9rem, 5.6vw, 3rem); line-height: 1.08; margin: 10px 0 12px; }
+.hero .chapo { color: #cdd1f3; font-size: 1.08rem; max-width: 34em; }
+.surtitre { display: inline-block; margin: 0; padding: 5px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; color: #ffd98a; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 18px; }
+.bouton { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 22px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: transform .2s var(--doux), box-shadow .2s, background .2s; }
+.bouton.principal { color: #fff; background: var(--degrade); box-shadow: 0 8px 24px rgba(224, 48, 30, .4); }
+.bouton.secondaire { color: #fff; border: 1px solid rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .06); }
+.bouton:hover { transform: translateY(-2px); color: #fff; }
+.bouton.principal:hover { box-shadow: 0 12px 30px rgba(224, 48, 30, .55); }
+.bouton.secondaire:hover { background: rgba(255, 255, 255, .14); }
+.bouton:focus-visible { outline-color: #ffd98a; }
+.hero-chiffres { display: flex; flex-wrap: wrap; gap: 6px 22px; list-style: none; padding: 0; margin: 0; color: #aab0de; font-size: .92rem; }
+.hero-chiffres li { margin: 0; }
+.hero-chiffres b { font-family: var(--titre); color: #fff; font-size: 1.25rem; margin-right: 4px; }
+
+/* Visuel : trois cartes génériques qui se déploient en éventail, reflet holographique */
+.hero-visuel { position: relative; height: 300px; perspective: 900px; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transform-style: preserve-3d; transition: transform .35s var(--doux); }
+.halo { position: absolute; left: 50%; top: 50%; width: 260px; height: 260px; margin: -130px 0 0 -130px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 186, 73, .45), transparent 65%); animation: halo 4s ease-in-out infinite; }
+@keyframes halo { 50% { transform: scale(1.12); opacity: .7; } }
+.hcarte { position: absolute; left: 50%; top: 50%; width: 150px; height: 210px; margin: -105px 0 0 -75px; border-radius: 12px; padding: 8px; overflow: hidden; box-shadow: 0 18px 40px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .25); animation: deploie .9s var(--doux) both; }
+.hcarte-1 { background: linear-gradient(145deg, #ffe680, #f29d00); transform: translateX(-74px) translateY(10px) rotate(-15deg); animation-delay: .15s; }
+.hcarte-3 { background: linear-gradient(145deg, #ffffff, #dfe3f3); transform: translateX(74px) translateY(10px) rotate(15deg); animation-delay: .25s; }
+.hcarte-2 { z-index: 2; background: var(--degrade); transform: translateY(-12px); animation-delay: .35s; }
+@keyframes deploie { from { transform: translateY(30px) rotate(0) scale(.85); opacity: 0; } }
+.hcarte-int { position: relative; height: 100%; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 7px; background: rgba(255, 255, 255, .16); }
+.hc-tete { display: flex; align-items: center; justify-content: space-between; }
+.hc-tete span { width: 58%; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .8); }
+.hc-tete b { width: 14px; height: 14px; border-radius: 50%; background: rgba(255, 255, 255, .85); }
+.hc-fenetre { height: 46%; border-radius: 6px; display: grid; place-items: center; color: #fff;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .55), transparent 55%), linear-gradient(135deg, var(--cyan), #6a4cff); }
+.hc-fenetre svg { width: 46%; height: auto; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .3)); animation: tourne 9s linear infinite; }
+@keyframes tourne { to { transform: rotate(360deg); } }
+.hcarte-1 .hc-fenetre { background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .6), transparent 55%), linear-gradient(135deg, #ff9b3d, #e0301e); }
+.hcarte-3 .hc-fenetre { background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .6), transparent 55%), linear-gradient(135deg, #7ee0b5, #2b8fd6); }
+.hc-ligne { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .6); }
+.hc-ligne.l1 { width: 92%; } .hc-ligne.l2 { width: 72%; } .hc-ligne.l3 { width: 48%; }
+.hcarte-3 .hc-tete span, .hcarte-3 .hc-tete b, .hcarte-3 .hc-ligne { background: rgba(18, 20, 43, .18); }
+.hcarte-3 .hcarte-int { background: rgba(18, 20, 43, .04); }
+.holo { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit; mix-blend-mode: overlay; }
+.holo::before { content: ""; position: absolute; top: -20%; bottom: -20%; left: -60%; width: 60%; transform: translateX(-100%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .75), rgba(106, 76, 255, .5), rgba(34, 199, 214, .5), transparent);
+  animation: reflet 4.5s ease-in-out 1.2s infinite; }
+.hcarte-2 .holo::before { animation-delay: 1.5s; } .hcarte-3 .holo::before { animation-delay: 2.1s; }
+@keyframes reflet { 0% { transform: translateX(-100%) skewX(-18deg); } 45%, 100% { transform: translateX(420%) skewX(-18deg); } }
+.etincelle { position: absolute; width: 18px; height: 18px; background: #ffe680; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: scintille 2.6s ease-in-out infinite; }
+.etincelle.e1 { left: 12%; top: 14%; } .etincelle.e2 { right: 8%; top: 8%; width: 12px; height: 12px; animation-delay: .9s; background: #fff; }
+.etincelle.e3 { right: 16%; bottom: 6%; width: 14px; height: 14px; animation-delay: 1.6s; }
+@keyframes scintille { 0%, 100% { transform: scale(.4); opacity: .3; } 50% { transform: scale(1) rotate(45deg); opacity: 1; } }
+@media (max-width: 720px) {
+  .hero { padding: 26px 0 30px; }
+  .hero-grille { grid-template-columns: 1fr; gap: 6px; }
+  .hero-visuel { height: 190px; order: -1; }
+  .hcarte { width: 104px; height: 146px; margin: -73px 0 0 -52px; padding: 6px; }
+  .hcarte-1 { transform: translateX(-60px) translateY(8px) rotate(-14deg); }
+  .hcarte-3 { transform: translateX(60px) translateY(8px) rotate(14deg); }
+  .halo { width: 190px; height: 190px; margin: -95px 0 0 -95px; }
+  .hero-actions { margin: 18px 0 14px; }
+  .hero-actions .bouton { flex: 1 1 140px; padding: 12px 14px; white-space: nowrap; font-size: .98rem; }
+}
+
+/* Titre des pages : icône + H1 */
+.titre-page { display: flex; align-items: center; gap: 14px; margin: 4px 0 8px; }
+.titre-page h1 { margin: 0; }
+.titre-icone { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; color: #fff; background: var(--degrade); box-shadow: 0 8px 20px rgba(224, 48, 30, .3); animation: pose .6s var(--doux) both; }
+.titre-icone .icone { width: 26px; height: 26px; }
+@keyframes pose { from { transform: scale(.6) rotate(-12deg); opacity: 0; } }
+@media (max-width: 480px) { .titre-icone { width: 40px; height: 40px; border-radius: 12px; } .titre-icone .icone { width: 22px; height: 22px; } }
+
+/* Cartes de liens : icône, flèche, reflet au survol */
+.carte-outil { position: relative; overflow: hidden; display: grid; grid-template-columns: 44px 1fr; column-gap: 14px; row-gap: 2px; align-content: start; padding: 16px 34px 16px 16px; transition: transform .25s var(--doux), box-shadow .25s, border-color .25s; }
+.carte-outil .carte-icone { grid-row: span 2; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-doux); color: var(--accent-fonce); font-size: inherit; transition: transform .3s var(--doux), background .25s, color .25s; }
+.carte-outil.lien-guide .carte-icone { background: var(--violet-doux); color: var(--violet-fonce); }
+.carte-outil strong { color: var(--texte); font-weight: 700; margin: 0; line-height: 1.3; }
+.carte-outil .carte-texte { font-size: .92rem; color: var(--texte-doux); }
+.carte-outil .carte-fleche { position: absolute; right: 14px; top: 16px; font-size: 1.1rem; color: var(--accent); opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s var(--doux); }
+.carte-outil::after { content: ""; position: absolute; inset: 0; pointer-events: none; transform: translateX(-110%); background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 50%, transparent 70%); }
+.carte-outil:hover { transform: translateY(-3px); box-shadow: var(--ombre-forte); border-color: var(--accent); }
+.carte-outil.lien-guide:hover { border-color: var(--violet); }
+.carte-outil:hover::after { transform: translateX(110%); transition: transform .7s var(--doux); }
+.carte-outil:hover .carte-icone { transform: rotate(-8deg) scale(1.08); background: var(--accent); color: #fff; }
+.carte-outil.lien-guide:hover .carte-icone { background: var(--violet); color: #fff; }
+.carte-outil:hover .carte-fleche, .carte-outil:focus-visible .carte-fleche { opacity: 1; transform: none; }
+.carte-outil.lien-guide .carte-fleche { color: var(--violet); }
+
+/* Outils et boutons : micro-interactions */
+.outil { position: relative; overflow: hidden; }
+.outil::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--degrade); }
+button { transition: transform .15s var(--doux), background .2s, border-color .2s, box-shadow .2s; }
+button:active { transform: scale(.97); }
+button.principal { background: var(--degrade); border-color: transparent; box-shadow: 0 6px 18px rgba(224, 48, 30, .3); }
+button.principal:hover { background: var(--degrade); border-color: transparent; box-shadow: 0 10px 24px rgba(224, 48, 30, .42); filter: brightness(1.06); }
+input[type="number"], input[type="text"], select { transition: border-color .2s, box-shadow .2s; }
+input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-doux); }
+.tuile.forte { background: linear-gradient(135deg, var(--accent-doux), var(--violet-doux)); }
+details.faq { transition: border-color .2s, box-shadow .2s; }
+details.faq[open] { border-color: var(--accent); box-shadow: var(--ombre); }
+details.faq summary { list-style: none; position: relative; padding-right: 28px; }
+details.faq summary::-webkit-details-marker { display: none; }
+details.faq summary::after { content: "+"; position: absolute; right: 2px; top: 9px; font-size: 1.3rem; color: var(--accent); transition: transform .25s var(--doux); }
+details.faq[open] summary::after { transform: rotate(45deg); }
+ol.etapes li::before { background: var(--degrade); }
+.sommaire a { transition: background .2s, border-color .2s, color .2s; }
+.sommaire a:hover { border-color: var(--violet); background: var(--violet-doux); color: var(--violet-fonce); }
+
+/* Apparition au défilement (classes posées par anim.js, seulement sous l'écran) */
+.a-reveler { opacity: 0; transform: translateY(16px); transition: opacity .55s ease, transform .55s var(--doux); }
+.a-reveler.revele { opacity: 1; transform: none; }
+
+/* Simulateur : ouverture de booster animée */
+.boosters { position: relative; }
+.boosters.anime { min-height: 170px; }
+.scene-ouverture { position: absolute; left: 0; right: 0; top: 0; height: 170px; display: grid; place-items: center; pointer-events: none; z-index: 3; animation: scene-fin .35s ease-in 1.05s forwards; }
+.paquet { position: relative; width: 96px; height: 136px; border-radius: 10px; background: linear-gradient(150deg, #ff6a3d, #b0186a 55%, #6a4cff); box-shadow: 0 16px 36px rgba(18, 20, 43, .35); animation: secoue .5s ease-in-out both; }
+.paquet::before { content: ""; position: absolute; inset: 22px 14px 14px; border-radius: 6px; border: 2px dashed rgba(255, 255, 255, .45); }
+.paquet .bande { position: absolute; left: 0; right: 0; top: 0; height: 20px; border-radius: 10px 10px 0 0; background: rgba(255, 255, 255, .3); animation: arrache .45s var(--doux) .5s forwards; }
+.paquet .eclat-paquet { position: absolute; left: 50%; top: 56%; width: 34px; height: 34px; margin: -17px 0 0 -17px; background: #ffe680; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: scintille 1s ease-in-out infinite; }
+@keyframes secoue { 0% { transform: scale(.6); opacity: 0; } 40% { transform: scale(1.05) rotate(-4deg); opacity: 1; } 60% { transform: rotate(4deg); } 80% { transform: rotate(-2deg); } 100% { transform: none; } }
+@keyframes arrache { to { transform: translate(46px, -54px) rotate(28deg); opacity: 0; } }
+@keyframes scene-fin { to { opacity: 0; transform: scale(1.15); } }
+.boosters.anime .carte { animation: retourne .45s var(--doux) both; animation-delay: calc(.95s + var(--i, 0) * 55ms); }
+@keyframes retourne { from { opacity: 0; transform: perspective(400px) rotateY(85deg) translateY(8px); } }
+.carte.r4, .carte.r5 { position: relative; overflow: hidden; }
+.carte.r4::after, .carte.r5::after { content: ""; position: absolute; inset: 0; transform: translateX(-120%); background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .8) 50%, transparent 70%); animation: reflet-carte 2.8s ease-in-out 1.6s infinite; }
+@keyframes reflet-carte { 0% { transform: translateX(-120%); } 50%, 100% { transform: translateX(120%); } }
+
+/* Emplacements publicitaires : bien séparés des boutons (règles AdSense) */
+.pub:not(:empty) { display: block; clear: both; margin: 32px 0; min-height: 100px; }
+
+/* Moins d'animations demandées : tout s'affiche directement */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .scene-ouverture, .holo, .etincelle, .carte-outil::after { display: none; }
+  .hero-visuel { transform: none; }
+}

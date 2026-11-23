@@ -13,9 +13,12 @@
     return liste[0];
   }
 
+  var rangCarte = 0;
+  var calme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function carte(nom, niveau) {
     var s = document.createElement('span');
     s.className = 'carte r' + niveau;
+    s.style.setProperty('--i', String(Math.min(rangCarte++, 14)));
     s.textContent = nom;
     return s;
   }
@@ -39,6 +42,23 @@
     var corps = document.getElementById('recap');
     while (zone.firstChild) { zone.removeChild(zone.firstChild); }
     while (corps.firstChild) { corps.removeChild(corps.firstChild); }
+    // ouverture animée : un paquet qui se secoue et s'ouvre, puis les cartes se retournent
+    rangCarte = 0;
+    zone.classList.remove('anime');
+    if (!calme) {
+      void zone.offsetWidth;
+      zone.classList.add('anime');
+      var scene = document.createElement('div');
+      scene.className = 'scene-ouverture';
+      scene.setAttribute('aria-hidden', 'true');
+      var paquet = document.createElement('div');
+      paquet.className = 'paquet';
+      var bande = document.createElement('span'); bande.className = 'bande';
+      var eclat = document.createElement('span'); eclat.className = 'eclat-paquet';
+      paquet.appendChild(bande); paquet.appendChild(eclat); scene.appendChild(paquet);
+      zone.appendChild(scene);
+      scene.addEventListener('animationend', function (e) { if (e.target === scene && scene.parentNode) { scene.parentNode.removeChild(scene); } });
+    }
     var liste = mode === 'pocket' ? D.pocket : D.megaEvolution;
     var compte = {};
     liste.forEach(function (r) { compte[r.id] = 0; });
@@ -54,7 +74,7 @@
       obtenues.forEach(function (r) { compte[r.id]++; if (r.niveau > meilleur) { meilleur = r.niveau; } });
       if (mode === 'mega' && obtenues.length === 0) { vides++; continue; }
       var div = document.createElement('div');
-      div.className = 'booster apparait';
+      div.className = 'booster';
       var t = document.createElement('div');
       t.className = 'titre';
       t.textContent = 'Booster ' + b;
