@@ -203,13 +203,13 @@ main figure { margin: 18px 0; background: var(--surface); border: 1px solid var(
 main figure svg { display: block; width: 100%; height: auto; max-height: 420px; }
 main figcaption { font-size: .9rem; color: var(--texte-doux); margin-top: 8px; }
 @media (max-width: 400px) { .nom-site { font-size: 1.08rem; } .logo { width: 32px; height: 32px; } }
-@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-style: normal; font-display: swap; src: url(/foot/assets/polices/barlow-condensed-700.woff2) format("woff2"); }
-@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-style: normal; font-display: swap; src: url(/foot/assets/polices/barlow-condensed-800.woff2) format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-style: normal; font-display: optional; src: url(/foot/assets/polices/barlow-condensed-700.woff2) format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-style: normal; font-display: optional; src: url(/foot/assets/polices/barlow-condensed-800.woff2) format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 400 700; font-style: normal; font-display: swap; src: url(/foot/assets/polices/inter-var.woff2) format("woff2"); }
-@font-face { font-family: "Inter repli"; src: local("Arial"); size-adjust: 107%; ascent-override: 90%; descent-override: 22%; line-gap-override: 0%; }
-@font-face { font-family: "Titre repli"; src: local("Arial Narrow"), local("Arial"); size-adjust: 88%; ascent-override: 100%; descent-override: 24%; }
+@font-face { font-family: "Inter repli"; src: local("Arial"), local("ArialMT"); size-adjust: 104.7%; ascent-override: 92%; descent-override: 23%; line-gap-override: 0%; }
+@font-face { font-family: "Titre repli"; font-weight: 700 800; src: local("Arial Bold"), local("Arial-BoldMT"); size-adjust: 66.1%; ascent-override: 150%; descent-override: 30%; line-gap-override: 0%; }
 :root {
---titre: "Barlow Condensed", "Titre repli", "Arial Narrow", sans-serif;
+--titre: "Barlow Condensed", "Titre repli", sans-serif;
 --nuit: #062b1a;
 --pelouse: #0f5a36;
 --citron: #c6f24e;
