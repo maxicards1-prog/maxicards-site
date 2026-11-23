@@ -409,3 +409,22 @@ ol.etapes li::before { background: var(--degrade); }
   .scene-ouverture, .holo, .etincelle, .carte-outil::after { display: none; }
   .hero-visuel { transform: none; }
 }
+
+/* ===== Lisibilité (23/11/2026) : « très simple à comprendre… écrit en gros en plein milieu » ===== */
+.titre-outil { flex-direction: column; text-align: center; gap: 10px; margin-top: 10px; }
+.titre-outil h1 { font-size: clamp(1.6rem, 6vw, 2.3rem); }
+.consigne { text-align: center; font-size: 1.2rem; font-weight: 600; line-height: 1.45; color: var(--texte); max-width: 30em; margin: 4px auto 20px; }
+.intro { font-size: 1.05rem; margin: 22px 0 0; }
+.en-bref { background: var(--surface); border: 1px solid var(--bord); border-left: 4px solid var(--violet, #6a4cff); border-radius: 12px; padding: 14px 16px; color: var(--texte); font-size: 1.08rem; }
+.en-bref b { display: block; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--violet, #6a4cff); margin-bottom: 4px; }
+.en-bref + .date-maj { margin: -8px 0 16px; }
+.tableau-defile:has(tbody:empty) { display: none; }
+.outil .boutons .principal { min-height: 50px; font-size: 1.08rem; padding-left: 26px; padding-right: 26px; }
+@media (max-width: 720px) {
+  .outil .boutons .principal { flex: 1 1 100%; }
+  .fil [aria-current] { display: none; }
+  .fil > span[aria-hidden]:nth-last-child(2) { display: none; }
+  .aide, .fil, .date-maj, .sources, .encadre, .message, .tuile .libelle, .compteur .sous, table,
+  .champ label, .etiquette, .ligne-case, .carte-outil span, .carte-outil .carte-texte, .poke .verrou { font-size: 1rem; }
+  .table-types { font-size: .78rem; }
+}
