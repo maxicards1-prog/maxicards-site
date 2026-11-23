@@ -2,6 +2,17 @@
    Aucun appel réseau, aucune librairie. Sans JavaScript ou avec « mouvement réduit », tout reste visible et immobile. */
 (function () {
   'use strict';
+  /* Polices Google : chargées après l'affichage (display=swap, repli aux mêmes proportions), pour ne pas retarder le 1er affichage */
+  function polices() {
+    var h = document.documentElement.getAttribute('data-polices');
+    if (!h) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = h;
+    document.head.appendChild(l);
+  }
+  if (document.readyState === 'complete') polices(); else window.addEventListener('load', polices);
+
   var calme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (calme) return;
 
