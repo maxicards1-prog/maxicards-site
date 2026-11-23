@@ -127,9 +127,9 @@ li { margin-bottom: 6px; }
 .hero-texte, .scene { position: relative; }
 .hero h1 { color: #fff; font-size: clamp(1.8rem, 6.2vw, 2.8rem); line-height: 1.1; margin: 0 0 10px; }
 .hero .chapo { color: #e4dcfb; margin: 0 0 16px; }
-.acces { display: flex; flex-wrap: wrap; gap: 8px; }
-.acces a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 14px 6px 8px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .25);
-  background: rgba(255, 255, 255, .12); color: #fff; font-weight: 800; font-size: .92rem; text-decoration: none; transition: background .15s, color .15s, transform .15s; }
+.acces { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.acces a { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .14); color: #fff; font-family: var(--titres); font-weight: 700; font-size: 1.15rem; line-height: 1.2; text-decoration: none; transition: background .15s, color .15s, transform .15s; }
 .acces a:hover { background: var(--or); color: #1a0f3c; transform: translateY(-2px); }
 .acces a:hover .ico { transform: rotate(-8deg) scale(1.08); }
 .hero a:focus-visible { outline: 3px solid var(--or); outline-offset: 2px; }
@@ -169,11 +169,11 @@ li { margin-bottom: 6px; }
 .outil[data-outil] { min-height: 320px; }
 /* Hauteur réservée sur téléphone : l'outil se monte en JavaScript, le texte dessous ne doit pas sauter */
 @media (max-width: 440px) {
-  .outil[data-outil="robux-en-euros"] { min-height: 770px; }
-  .outil[data-outil="devex-robux-en-euros"] { min-height: 890px; }
-  .outil[data-outil="calculateur-gains-vente-roblox"] { min-height: 905px; }
+  .outil[data-outil="robux-en-euros"] { min-height: 880px; }
+  .outil[data-outil="devex-robux-en-euros"] { min-height: 980px; }
+  .outil[data-outil="calculateur-gains-vente-roblox"] { min-height: 995px; }
   .outil[data-outil="generateur-pseudo-roblox"] { min-height: 1190px; }
-  .outil[data-outil="verifier-pseudo-roblox"] { min-height: 330px; }
+  .outil[data-outil="verifier-pseudo-roblox"] { min-height: 350px; }
 }
 .grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
 .champ { display: flex; flex-direction: column; gap: 6px; }
@@ -290,4 +290,27 @@ button.mini { min-height: 38px; min-width: 38px; padding: 4px 10px; font-size: .
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .attend { opacity: 1; transform: none; }
   .carte-outil, .liste-guides a { transform: none; }
+}
+
+/* Lisibilité (23/11/2026) : l'essentiel d'abord, gros, simple */
+.intro { color: var(--texte-doux); margin: 0 0 16px; }
+.bref { background: var(--accent-doux); border: 2px solid var(--bord); border-left: 6px solid var(--accent); border-radius: var(--rayon); padding: 14px 18px; margin: 0 0 18px; }
+.bref strong { display: block; font-family: var(--titres); font-size: 1.05rem; color: var(--accent-fonce); margin-bottom: 4px; }
+.bref p { margin: 0; font-size: 1.1rem; line-height: 1.55; }
+.titre-page .chapo { margin-bottom: 14px; }
+.outil .boutons.action { margin-top: 16px; }
+.outil .boutons.action button.principal { min-width: 200px; min-height: 54px; font-size: 1.1rem; }
+.resultats .tuile.forte { grid-column: 1 / -1; text-align: center; padding: 16px 14px; }
+.resultats .tuile.forte .valeur { font-size: clamp(2.1rem, 9vw, 3rem); color: var(--accent-fonce); }
+.resultats .tuile.forte .libelle { font-size: .95rem; }
+main p, main li { max-width: 70ch; }
+.hero .chapo, .hero p { max-width: none; }
+.liste-outils li, .liste-guides li, .tableau-defile { max-width: none; }
+@media (max-width: 600px) {
+  body { font-size: 18px; line-height: 1.65; }
+  .fil { display: none; }
+  .outil .boutons.action button.principal, .outil .boutons button.principal { width: 100%; }
+  .acces { grid-template-columns: 1fr 1fr; }
+  .acces a { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 1.02rem; }
+  h1 { font-size: 1.7rem; }
 }

@@ -248,6 +248,12 @@
     animer(v, valeur);
     return h('div', { 'class': 'tuile' + (forte ? ' forte' : '') }, v, h('span', { 'class': 'libelle' }, libelle));
   }
+  // Action principale : un seul gros bouton (les calculs se font aussi en tapant)
+  function action(libelle, fn) {
+    var b = h('button', { type: 'button', 'class': 'principal' }, libelle);
+    b.addEventListener('click', fn);
+    return h('div', { 'class': 'boutons action' }, b);
+  }
   function vider(e) { while (e.firstChild) e.removeChild(e.firstChild); }
   function packsDe(racine) { try { return JSON.parse(racine.getAttribute('data-packs') || '[]'); } catch (e) { return []; } }
   function nb(racine, nom, defaut) { var v = lireNombre(racine.getAttribute(nom)); return v == null ? defaut : v; }
@@ -268,7 +274,7 @@
     var aide = h('p', { 'class': 'aide' });
     racine.appendChild(h('div', { 'class': 'grille' }, champ('Je veux convertir', sens), champ('Quantité', val, ''), champ('Quels packs ?', src,
       'Le prix en euros est le même ; seule la quantité de Robux change. À vérifier à l\'achat.')));
-    racine.appendChild(msg); racine.appendChild(sortie);
+    racine.appendChild(action('Convertir', function () { calc(); })); racine.appendChild(sortie); racine.appendChild(msg);
     function calc() {
       vider(sortie); vider(msg);
       var v = lireNombre(val.value), mode = src.value;
@@ -303,7 +309,7 @@
       champ('Robux gagnés à retirer', val, 'Seuls les Robux gagnés (ventes dans vos jeux) comptent, pas ceux que vous avez achetés.'),
       champ('Taux DevEx ($ par Robux)', taux, 'Taux standard officiel au 23/11/2026 : 0,0038. Modifiez-le s\'il change ou si vous avez d\'anciens Robux à 0,0035.'),
       champ('Taux de change : 1 € = … $', chg, 'Valeur de la BCE au 23/11/2026 (1,0939). Votre banque applique son propre taux.')));
-    racine.appendChild(msg); racine.appendChild(sortie);
+    racine.appendChild(action('Calculer', function () { calc(); })); racine.appendChild(sortie); racine.appendChild(msg);
     function calc() {
       vider(sortie); vider(msg);
       var r = lireNombre(val.value), t = lireNombre(taux.value), c = lireNombre(chg.value);
@@ -329,7 +335,7 @@
     cAutre.hidden = true;
     racine.appendChild(h('div', { 'class': 'grille' }, champ('Prix de vente en Robux', prix), champ('Type de vente', type), cAutre,
       champ('Taux DevEx ($ par Robux)', taux), champ('1 € = … $', chg)));
-    racine.appendChild(msg); racine.appendChild(sortie);
+    racine.appendChild(action('Calculer', function () { calc(); })); racine.appendChild(sortie); racine.appendChild(msg);
     function part() {
       var v = type.value;
       if (v === '70' || v === '70u') return 0.7;
@@ -358,7 +364,7 @@
     var champPseudo = h('input', { type: 'text', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', maxlength: '60' });
     var liste_ = h('ul', { 'class': 'regles', 'aria-live': 'polite' }), bilan = h('div', { 'class': 'message', role: 'status' });
     racine.appendChild(champ('Votre pseudo', champPseudo, 'Le texte reste dans votre navigateur.'));
-    racine.appendChild(bilan); racine.appendChild(liste_);
+    racine.appendChild(action('Vérifier', function () { calc(); })); racine.appendChild(bilan); racine.appendChild(liste_);
     racine.appendChild(h('p', { 'class': 'aide' }, 'Cet outil contrôle seulement le format. Il ne sait pas si le pseudo est libre ni s\'il sera accepté par la modération de Roblox.'));
     function calc() {
       vider(liste_); vider(bilan);
@@ -382,7 +388,7 @@
     var go = h('button', { type: 'button', 'class': 'principal' }, 'Générer 12 idées');
     racine.appendChild(h('div', { 'class': 'grille' }, champ('Un mot (facultatif)', mot, 'Votre prénom, un surnom, un animal… sans accent ni espace.'), champ('Style', st)));
     racine.appendChild(h('div', { 'class': 'boutons' }, go));
-    racine.appendChild(msg); racine.appendChild(zone);
+    racine.appendChild(zone); racine.appendChild(msg);
     function generer() {
       vider(zone); vider(msg);
       genererPseudos(mot.value, st.value).forEach(function (p) {
