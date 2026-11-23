@@ -183,3 +183,16 @@ textarea:focus { outline: 3px solid var(--accent-doux); border-color: var(--acce
 .noms-compo label { font-size: .85rem; color: var(--texte-doux); display: block; }
 .noms-compo input { width: 100%; }
 @media print { .entete, .pied, .pub, .liste-outils, details.faq, .boutons, .fil { display: none !important; } }
+
+/* En-tête : logo + nom (23/11/2026, logo.py) */
+.logo { width: 36px; height: 36px; border-radius: 9px; }
+.nom-site { font-size: 1.22rem; font-weight: 800; letter-spacing: -.02em; line-height: 1; color: var(--texte); white-space: nowrap; }
+.nom-site b { color: var(--accent); font-weight: 800; }
+.menu-titre { margin: 8px 12px 2px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--texte-doux); }
+.menu nav { max-height: calc(100vh - 80px); overflow-y: auto; }
+.fil span[aria-current] { color: var(--texte); }
+.pied nav + nav { margin-top: 6px; }
+main figure { margin: 18px 0; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); padding: 12px; }
+main figure svg { display: block; width: 100%; height: auto; max-height: 420px; }
+main figcaption { font-size: .9rem; color: var(--texte-doux); margin-top: 8px; }
+@media (max-width: 400px) { .nom-site { font-size: 1.08rem; } .logo { width: 32px; height: 32px; } }

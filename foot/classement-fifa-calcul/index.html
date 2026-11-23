@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classement FIFA : calcul des points (méthode SUM, Elo)</title>
+<meta name="description" content="FIFA ranking : comment se calculent les points du classement FIFA depuis 2018 (méthode SUM, de type Elo) : formule, importance des matchs, exemples.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://maxicards.net/foot/classement-fifa-calcul/">
+<meta name="theme-color" content="#138a4a">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Outils Foot">
+<meta property="og:title" content="Classement FIFA : calcul des points (méthode SUM, Elo)">
+<meta property="og:description" content="FIFA ranking : comment se calculent les points du classement FIFA depuis 2018 (méthode SUM, de type Elo) : formule, importance des matchs, exemples.">
+<meta property="og:url" content="https://maxicards.net/foot/classement-fifa-calcul/">
+<meta property="og:image" content="https://maxicards.net/foot/assets/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Outils Foot : règles, tactique et outils gratuits pour le foot amateur">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Classement FIFA : calcul des points (méthode SUM, Elo)">
+<meta name="twitter:description" content="FIFA ranking : comment se calculent les points du classement FIFA depuis 2018 (méthode SUM, de type Elo) : formule, importance des matchs, exemples.">
+<meta name="twitter:image" content="https://maxicards.net/foot/assets/partage.png">
+<link rel="icon" href="/foot/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/foot/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/foot/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/foot/apple-touch-icon.png">
+<link rel="manifest" href="/foot/site.webmanifest">
+<link rel="stylesheet" href="/foot/assets/style.css?v=5ef33bd7aa">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net https://*.googleadservices.com https://adservice.google.com https://www.googletagservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline'; img-src https: data: blob:; font-src 'self'; connect-src 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; frame-src https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'none'">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2308397761739264" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Classement FIFA : comment les points sont calculés (méthode SUM)","description":"FIFA ranking : comment se calculent les points du classement FIFA depuis 2018 (méthode SUM, de type Elo) : formule, importance des matchs, exemples.","url":"https://maxicards.net/foot/classement-fifa-calcul/","mainEntityOfPage":"https://maxicards.net/foot/classement-fifa-calcul/","inLanguage":"fr-FR","image":"https://maxicards.net/foot/assets/partage.png","datePublished":"2026-11-23","dateModified":"2026-11-23","author":{"@type":"Organization","name":"MAXICARDS","url":"https://maxicards.net/"},"publisher":{"@type":"Organization","name":"MAXICARDS","logo":{"@type":"ImageObject","url":"https://maxicards.net/foot/assets/icone-512.png"}}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment est calculé le classement FIFA ?","acceptedAnswer":{"@type":"Answer","text":"Depuis août 2018, avec la méthode SUM : après chaque match, des points sont ajoutés ou retirés selon la formule P = Pavant + I × (W − We), inspirée du classement Elo."}},{"@type":"Question","name":"Que veut dire I dans la formule ?","acceptedAnswer":{"@type":"Answer","text":"C'est l'importance du match : de 5 pour un amical hors fenêtre internationale à 60 pour un quart de finale, une demi-finale ou une finale de Coupe du monde."}},{"@type":"Question","name":"Un match amical compte-t-il pour le classement FIFA ?","acceptedAnswer":{"@type":"Answer","text":"Oui, mais peu : I vaut 5 hors des fenêtres internationales et 10 dans ces fenêtres, contre 25 pour un match de qualification."}},{"@type":"Question","name":"Que se passe-t-il pour un match gagné aux tirs au but ?","acceptedAnswer":{"@type":"Answer","text":"Le vainqueur reçoit W = 0,75 au lieu de 1, et le perdant W = 0,5, comme pour un nul."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://maxicards.net/foot/"},{"@type":"ListItem","position":2,"name":"Classements et compétitions","item":"https://maxicards.net/foot/classements-et-competitions/"},{"@type":"ListItem","position":3,"name":"Calcul du classement FIFA","item":"https://maxicards.net/foot/classement-fifa-calcul/"}]}</script>
+</head>
+<body>
+<header class="entete">
+<div class="conteneur">
+<a class="marque" href="/foot/" aria-label="Outils Foot, accueil"><svg class="logo" aria-hidden="true" focusable="false" viewBox="0 0 48 48"><defs><linearGradient id="of-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#19a55a"/><stop offset="1" stop-color="#0b5e33"/></linearGradient></defs><rect width="48" height="48" rx="12" fill="url(#of-g)"/><path d="M24 3v7.5M24 37.5v7.5" stroke="#fff" stroke-opacity=".6" stroke-width="2.2" stroke-linecap="round"/><circle cx="24" cy="24" r="14.5" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2.2"/><clipPath id="of-b"><circle cx="24" cy="24" r="11"/></clipPath><circle cx="24" cy="24" r="11" fill="#fff"/><g clip-path="url(#of-b)"><path d="M24.00 20.04L27.77 22.78L26.33 27.20L21.67 27.20L20.23 22.78zM24.00 15.53L20.55 13.02L21.87 8.96L26.13 8.96L27.45 13.02zM32.06 21.38L33.37 17.32L37.64 17.32L38.96 21.38L35.51 23.89zM28.98 30.85L33.25 30.85L34.56 34.91L31.11 37.42L27.66 34.91zM19.02 30.85L20.34 34.91L16.89 37.42L13.44 34.91L14.75 30.85zM15.94 21.38L12.49 23.89L9.04 21.38L10.36 17.32L14.63 17.32z" fill="#161a2b"/><path d="M24.00 20.04L24.00 15.86M27.77 22.78L31.74 21.48M26.33 27.20L28.78 30.59M21.67 27.20L19.22 30.59M20.23 22.78L16.26 21.48" stroke="#161a2b" stroke-width="1.5" stroke-linecap="round"/></g></svg><span class="nom-site">Outils <b>Foot</b></span></a>
+<details class="menu"><summary>Menu</summary><nav aria-label="Menu du site"><p class="menu-titre">Outils</p><a href="/foot/categorie-foot-2026-2027/">Catégories foot 2026-2027</a><a href="/foot/regles-foot-par-categorie/">Durée, terrain et buts par catégorie</a><a href="/foot/taille-ballon-foot/">Taille de ballon par âge</a><a href="/foot/createur-composition-foot/">Créer sa compo de foot</a><a href="/foot/generateur-equipes-aleatoires/">Faire des équipes équilibrées</a><a href="/foot/generateur-tournoi-foot/">Générateur de tournoi de foot</a><a href="/foot/calculateur-classement-foot/">Calculateur de classement</a><a href="/foot/calculateur-temps-de-jeu-foot/">Temps de jeu équitable</a><a href="/foot/calculateur-taxe-ea-fc/">Calculateur de taxe EA FC 27</a><p class="menu-titre">Guides</p><a href="/foot/regles-du-foot/">Règles du foot expliquées</a><a href="/foot/classements-et-competitions/">Classements et compétitions</a><a href="/foot/tactique-foot/">Tactique et schémas de jeu</a><a href="/foot/foot-amateur-club/">Club, licence et organisation</a><a href="/foot/plan-du-site/">Plan du site</a></nav></details>
+</div>
+</header>
+<main>
+<div class="conteneur">
+<nav class="fil" aria-label="Fil d'Ariane"><a href="/foot/">Accueil</a> › <a href="/foot/classements-et-competitions/">Classements et compétitions</a> › <span aria-current="page">Calcul du classement FIFA</span></nav>
+<h1>Classement FIFA : comment les points sont calculés (méthode SUM)</h1>
+<p class="chapo">Depuis août 2018, le classement mondial masculin de la FIFA utilise la méthode « SUM », inspirée du classement Elo : après chaque match, des points sont ajoutés ou retirés selon la formule P = Pavant + I × (W − We), où I est l'importance du match, W le résultat et We le résultat attendu.</p>
+
+<p>Le « FIFA ranking » classe les équipes nationales masculines. Cette page explique la méthode, d'après la FIFA. Elle ne donne aucun classement du jour : les points changent après chaque match international.</p>
+
+<h2>Le principe : on ajoute ou on retire des points</h2>
+<p>Avant 2018, la FIFA faisait une moyenne de points sur plusieurs années. Le modèle actuel, nommé « SUM », fonctionne autrement : chaque match ajoute ou retire des points au total existant de l'équipe. Les points échangés dépendent en partie de la force relative des deux adversaires : une équipe bien classée qui bat une équipe faible gagne peu, alors qu'une équipe faible qui bat une équipe forte gagne beaucoup. Ce principe est celui du classement Elo, utilisé depuis longtemps dans d'autres sports.</p>
+
+<div class="pub" aria-hidden="true"></div><h2>La formule du classement FIFA</h2>
+<p>La FIFA donne la formule suivante : <strong>P = Pavant + I × (W − We)</strong>.</p>
+<ul>
+<li><strong>P</strong> : les points après le match.</li>
+<li><strong>Pavant</strong> : les points avant le match.</li>
+<li><strong>I</strong> : l'importance du match (tableau plus bas).</li>
+<li><strong>W</strong> : le résultat. 1 pour une victoire, 0,5 pour un nul, 0 pour une défaite.</li>
+<li><strong>We</strong> : le résultat attendu, calculé avec l'écart de points entre les deux équipes : We = 1 ÷ (10 puissance (−écart ÷ 600) + 1). L'écart est « points de l'équipe moins points de l'adversaire ».</li>
+</ul>
+<p>Si deux équipes ont les mêmes points, We vaut 0,5 : une victoire rapporte alors la moitié de I.</p>
+
+<h2>L'importance des matchs</h2>
+<div class="tableau-defile"><table>
+<thead><tr><th>Type de match</th><th>I</th></tr></thead>
+<tbody>
+<tr><td>Match amical hors des fenêtres internationales</td><td>5</td></tr>
+<tr><td>Match amical dans une fenêtre internationale</td><td>10</td></tr>
+<tr><td>Ligue des nations, phase de groupes</td><td>15</td></tr>
+<tr><td>Ligue des nations, barrages et finales ; qualifications aux compétitions finales (dont Coupe du monde)</td><td>25</td></tr>
+<tr><td>Compétitions continentales finales, jusqu'aux quarts de finale exclus</td><td>35</td></tr>
+<tr><td>Compétitions continentales finales à partir des quarts de finale</td><td>40</td></tr>
+<tr><td>Coupe du monde, jusqu'aux quarts de finale exclus</td><td>50</td></tr>
+<tr><td>Coupe du monde, à partir des quarts de finale</td><td>60</td></tr>
+</tbody>
+</table></div>
+<p>Un match amical compte donc cinq à douze fois moins qu'un match de Coupe du monde.</p>
+
+<h2>Cas particuliers</h2>
+<ul>
+<li><strong>Tirs au but :</strong> l'équipe qui gagne aux tirs au but a W = 0,75, celle qui perd a W = 0,5. Si le match a un vainqueur avant les tirs au but (par exemple un match retour), il compte comme une victoire normale.</li>
+<li><strong>Phase à élimination directe d'une compétition finale :</strong> une équipe ne perd pas de points si le calcul donne un résultat négatif. Ses points restent ceux d'avant le match.</li>
+</ul>
+
+<h2>Exemples calculés</h2>
+<p>Les exemples ci-dessous utilisent des totaux inventés.</p>
+<ul>
+<li>L'équipe A (1 300 points) bat l'équipe B (1 500 points) lors d'un match de qualification (I = 25). We = 0,317 pour A. A gagne 25 × (1 − 0,317), soit environ 17 points. B perd autant. C'est l'exemple donné par la FIFA.</li>
+<li>Même match, mais nul : A gagne 25 × (0,5 − 0,317), soit environ 4,6 points, et B les perd.</li>
+<li>Deux équipes à 1 400 points se rencontrent en amical dans une fenêtre internationale (I = 10) : le vainqueur gagne 5 points, le perdant en perd 5, et un nul ne change rien.</li>
+</ul>
+
+<h2>Erreurs fréquentes</h2>
+<ul>
+<li>Croire que le classement est une moyenne de points sur plusieurs années : c'était l'ancienne méthode.</li>
+<li>Croire que tous les matchs pèsent pareil : l'importance va de 5 à 60.</li>
+<li>Le confondre avec le coefficient des clubs européens : voyez <a href="/foot/coefficient-uefa/">le coefficient UEFA</a>.</li>
+</ul>
+<p>Ce classement sert notamment de dernier critère pour départager les équipes à la Coupe du monde : lisez <a href="/foot/egalite-de-points-coupe-du-monde/">l'égalité de points à la Coupe du monde</a>. Pour les championnats nationaux, regardez <a href="/foot/egalite-de-points-championnat/">l'égalité de points en championnat</a>. Le texte de la FIFA fait foi.</p>
+<h2>Sources et mise à jour</h2><ul class="sources"><li><a href="https://inside.fifa.com/en/fifa-world-ranking/procedure-men" rel="noopener">Procédure du classement mondial masculin FIFA/Coca-Cola</a>, inside.fifa.com, consulté le 23/11/2026</li><li><a href="https://digitalhub.fifa.com/m/f99da4f73212220/original/edbm045h0udbwkqew35a-pdf.pdf" rel="noopener">Revision of the FIFA / Coca-Cola World Ranking (formule SUM, importance des matchs)</a>, FIFA, consulté le 23/11/2026</li></ul><p class="sources">Page vérifiée le 23/11/2026. Le règlement officiel de votre compétition fait toujours foi. Une erreur ? Écrivez-nous depuis la <a href="/foot/contact/">page contact</a>.</p>
+<h2>Questions fréquentes</h2><details class="faq"><summary>Comment est calculé le classement FIFA ?</summary><p>Depuis août 2018, avec la méthode SUM : après chaque match, des points sont ajoutés ou retirés selon la formule P = Pavant + I × (W − We), inspirée du classement Elo.</p></details><details class="faq"><summary>Que veut dire I dans la formule ?</summary><p>C&#x27;est l&#x27;importance du match : de 5 pour un amical hors fenêtre internationale à 60 pour un quart de finale, une demi-finale ou une finale de Coupe du monde.</p></details><details class="faq"><summary>Un match amical compte-t-il pour le classement FIFA ?</summary><p>Oui, mais peu : I vaut 5 hors des fenêtres internationales et 10 dans ces fenêtres, contre 25 pour un match de qualification.</p></details><details class="faq"><summary>Que se passe-t-il pour un match gagné aux tirs au but ?</summary><p>Le vainqueur reçoit W = 0,75 au lieu de 1, et le perdant W = 0,5, comme pour un nul.</p></details>
+<h2>À lire aussi</h2><ul class="liste-outils"><li><a class="carte-outil" href="/foot/egalite-de-points-coupe-du-monde/"><strong>Égalité de points à la Coupe du monde</strong><span>Les critères FIFA de la phase de groupes 2026 et le classement des huit meilleurs troisièmes.</span></a></li><li><a class="carte-outil" href="/foot/coefficient-uefa/"><strong>Coefficient UEFA</strong><span>Comment se calcule le coefficient UEFA des pays et des clubs, sur cinq saisons, et à quoi il sert.</span></a></li><li><a class="carte-outil" href="/foot/classements-et-competitions/"><strong>Classements et compétitions</strong><span>Égalité de points, format des coupes, coefficients : comment marchent les classements.</span></a></li></ul><h2>Dans la rubrique « Classements et compétitions »</h2><ul class="liste-outils"><li><a class="carte-outil" href="/foot/egalite-de-points-championnat/"><strong>Égalité de points en championnat</strong><span>Les critères de départage de la Ligue 1, de la Premier League, de la Liga, de la Serie A et de la Bundesliga.</span></a></li><li><a class="carte-outil" href="/foot/format-ligue-des-champions/"><strong>Format de la Ligue des champions</strong><span>Phase de ligue à 36 clubs, barrages, huitièmes et critères de classement depuis 2024-2025.</span></a></li><li><a class="carte-outil" href="/foot/egalite-points-foot-amateur/"><strong>Égalité de points en foot amateur</strong><span>Goal-average particulier, confrontations directes : comment départager deux clubs amateurs à égalité.</span></a></li></ul><p><a href="/foot/classements-et-competitions/">Tous les guides : Classements et compétitions ›</a></p>
+
+</div>
+</main>
+<footer class="pied">
+<div class="conteneur">
+<nav aria-label="Guides"><a href="/foot/regles-du-foot/">Règles du foot expliquées</a><a href="/foot/classements-et-competitions/">Classements et compétitions</a><a href="/foot/tactique-foot/">Tactique et schémas de jeu</a><a href="/foot/foot-amateur-club/">Club, licence et organisation</a><a href="/foot/plan-du-site/">Plan du site</a></nav>
+<nav aria-label="Pages du site"><a href="/foot/">Accueil</a><a href="/foot/a-propos/">À propos</a><a href="/foot/contact/">Contact</a><a href="/foot/mentions-legales/">Mentions légales</a><a href="/foot/confidentialite/">Confidentialité</a><a href="https://maxicards.net/outils/">Outils Cartes Pokémon</a></nav>
+<p>Site indépendant, non affilié à la FFF, à l'IFAB, à la FIFA, à l'UEFA ni à Electronic Arts. EA SPORTS FC est une marque d'Electronic Arts. Les règlements officiels de votre ligue ou de votre district font toujours foi.</p>
+<p>Outils gratuits, calculs faits dans votre navigateur. © 2026 MAXICARDS.</p>
+</div>
+</footer>
+
+</body>
+</html>
