@@ -1,4 +1,4 @@
-import { __exportAll } from "./_virtual/_rolldown/runtime.js";
+import { __exportAll } from "./virtual/rolldown/runtime.js";
 //#region src/modelsMap.ts
 var modelsMap_exports = /* @__PURE__ */ __exportAll({
 	cl100k_base: () => cl100k_base,

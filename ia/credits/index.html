@@ -40,11 +40,11 @@
 <h1>Crédits et licences</h1>
 <p class="chapo">La brique libre qui fait tourner le compteur de tokens.</p>
 
-<p>Le compteur de tokens repose sur une bibliothèque libre, hébergée sur ce site (aucun service externe) et utilisée sans modification. Merci à ses auteurs.</p>
+<p>Le compteur de tokens repose sur une bibliothèque libre, hébergée sur ce site (aucun service externe), sans modification de son code. Merci à ses auteurs.</p>
 <div class="tableau-defile"><table><thead><tr><th>Bibliothèque</th><th>Version</th><th>Sert à</th><th>Licence</th></tr></thead><tbody>
 <tr><td><a href="https://github.com/niieani/gpt-tokenizer" rel="noopener">gpt-tokenizer</a></td><td>4.1.2</td><td>découper un texte en tokens comme les modèles GPT (encodage o200k_base)</td><td><a href="/ia/assets/lib/gpt-tokenizer-4.1.2/LICENSE">MIT</a></td></tr>
 </tbody></table></div>
-<p>Seuls les fichiers nécessaires à l'encodage o200k_base sont publiés, tels qu'ils sont fournis dans le paquet npm officiel.</p>
+<p>Seuls les fichiers nécessaires à l'encodage o200k_base sont publiés, tels qu'ils sont fournis dans le paquet npm officiel, à une exception technique près : le dossier <code>_virtual/_rolldown</code> est renommé <code>virtual/rolldown</code> (l'hébergeur ignore les dossiers commençant par « _ ») et l'import correspondant de <code>modelsMap.js</code> est ajusté.</p>
 <p>Le reste du site (textes, prompts, interface, fichier <code>ia.js</code>) est l'œuvre de MAXICARDS.</p>
 
 
