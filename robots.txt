@@ -5,3 +5,4 @@ Sitemap: https://maxicards.net/sitemap.xml
 Sitemap: https://maxicards.net/outils/sitemap.xml
 Sitemap: https://maxicards.net/foot/sitemap.xml
 Sitemap: https://maxicards.net/calcul/sitemap.xml
+Sitemap: https://maxicards.net/gta6/sitemap.xml
