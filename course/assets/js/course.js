@@ -131,9 +131,11 @@
     var t = el('div', { 'class': 'tuile' + (forte ? ' forte' : '') }, v, el('span', { 'class': 'libelle', texte: libelle }));
     var avant = PREV[libelle];
     PREV[libelle] = valeur;
-    if (avant !== valeur) {
+    /* Premier affichage : valeur finale tout de suite (rapide, compté par Google comme 1er gros élément) ;
+       l'animation ne joue qu'aux changements faits par le visiteur. */
+    if (avant !== undefined && avant !== valeur) {
       animer(v, valeur, avant);
-      if (avant !== undefined && !REDUIT) t.className += ' flash';
+      if (!REDUIT) t.className += ' flash';
     }
     return t;
   }

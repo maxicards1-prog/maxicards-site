@@ -229,7 +229,9 @@
       var tu = el.parentNode, sortie = tu && tu.parentNode;
       if (!sortie) return;
       var cle = (sortie.parentNode && sortie.parentNode.getAttribute ? sortie.parentNode.getAttribute('data-outil') : '') + ':' + Array.prototype.indexOf.call(sortie.children, tu);
-      var depart = dernier.hasOwnProperty(cle) ? dernier[cle] : 0;
+      // Premier affichage : valeur finale tout de suite (rapide) ; l'animation ne joue qu'aux changements du visiteur.
+      if (!dernier.hasOwnProperty(cle)) { dernier[cle] = cible; return; }
+      var depart = dernier[cle];
       dernier[cle] = cible;
       if (depart === cible) return;
       sortie.setAttribute('aria-busy', 'true');
