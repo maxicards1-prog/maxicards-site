@@ -38,7 +38,26 @@
       if (!isFinite(v)) { return '–'; }
       return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: typeof dec === 'number' ? dec : 4 }).format(v);
     },
-    texte: function (id, valeur) { var el = document.getElementById(id); if (el) { el.textContent = valeur; } },
+    // Résultat : le chiffre « défile » (animation CSS) quand il change ; le texte final est posé tout de suite.
+    texte: function (id, valeur) {
+      var el = document.getElementById(id);
+      if (!el) { return; }
+      var avant = el.textContent;
+      el.textContent = valeur;
+      if (avant !== String(valeur) && el.classList.contains('valeur') && valeur !== '–') {
+        el.classList.remove('defile');
+        void el.offsetWidth;
+        el.classList.add('defile');
+      }
+    },
+    // Jauge : position 0 à 1 (NaN = masquée).
+    jauge: function (id, fraction) {
+      var el = document.getElementById(id);
+      if (!el) { return; }
+      var ok = isFinite(fraction);
+      el.parentNode.parentNode.classList.toggle('vide', !ok);
+      el.style.setProperty('--pos', (ok ? Math.max(0, Math.min(1, fraction)) * 100 : 0) + '%');
+    },
     surChangement: function (ids, fn) {
       ids.forEach(function (id) {
         var el = document.getElementById(id);

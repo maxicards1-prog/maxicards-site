@@ -12,9 +12,10 @@
   }
   function recalcul() {
     var p = CQ.nombre('poids', 1, 500), t = CQ.nombre('taille', 50, 260);
-    if (!isFinite(p) || !isFinite(t)) { ['rImc', 'rClasse', 'rPlage'].forEach(function (i) { CQ.texte(i, '–'); }); CQ.texte('phrase', ''); return; }
+    if (!isFinite(p) || !isFinite(t)) { ['rImc', 'rClasse', 'rPlage'].forEach(function (i) { CQ.texte(i, '–'); }); CQ.jauge('jImc', NaN); CQ.texte('phrase', ''); return; }
     var m = t / 100, imc = p / (m * m);
     CQ.texte('rImc', CQ.souple(imc, 1));
+    CQ.jauge('jImc', (imc - 15) / 25);
     CQ.texte('rClasse', classe(imc));
     CQ.texte('rPlage', CQ.souple(18.5 * m * m, 1) + ' à moins de ' + CQ.souple(25 * m * m, 1) + ' kg');
     CQ.texte('phrase', CQ.souple(p, 1) + ' kg ÷ (' + CQ.souple(m, 2) + ' m × ' + CQ.souple(m, 2) + ' m) = ' + CQ.souple(imc, 2) +
