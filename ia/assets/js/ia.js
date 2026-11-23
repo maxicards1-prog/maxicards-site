@@ -125,6 +125,12 @@
     }
     requestAnimationFrame(tour);
   }
+  // Options secondaires repliées, bouton d'action principale en grand, boutons secondaires discrets.
+  function replie(titre, enfants) {
+    return el("details", { classe: "plus" }, [el("summary", { texte: titre }), el("div", { classe: "plus-corps" }, enfants)]);
+  }
+  function grand(b) { b.classList.add("grand"); return b; }
+  function secondaire(b) { b.classList.remove("principal"); return b; }
   function sortie(lignes) {
     var z = zone({ rows: lignes || 12, readonly: true, classe: "sortie", "aria-live": "polite", "aria-label": "Texte généré, prêt à copier" });
     return z;
@@ -230,18 +236,17 @@
     modele.addEventListener("change", remplir);
     [role, tache, contexte, pub, ton, format, longueur, exemples, contraintes, style, cQuestions.input, cIncertain.input, cVersions.input]
       .forEach(function (x) { x.addEventListener("input", maj); x.addEventListener("change", maj); });
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Modèle de départ", modele, "Remplit le formulaire avec un exemple à adapter."), champ("Style du prompt", style)]));
-    racine.appendChild(el("div", { classe: "pile" }, [
-      champ("Rôle donné à l'IA", role),
+    racine.appendChild(el("div", { classe: "pile premier" }, [
       champ("Tâche (ce que l'IA doit faire)", tache),
-      champ("Contexte", contexte),
-      champ("Public visé", pub)]));
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Ton", ton), champ("Format", format), champ("Longueur", longueur)]));
-    racine.appendChild(el("div", { classe: "pile" }, [champ("Exemple", exemples), champ("Contraintes", contraintes),
-      cQuestions.boite, cIncertain.boite, cVersions.boite]));
+      champ("Modèle de départ", modele, "Remplit le formulaire avec un exemple à adapter.")]));
+    racine.appendChild(replie("Plus d'options : rôle, contexte, ton, format…", [
+      el("div", { classe: "pile" }, [champ("Rôle donné à l'IA", role), champ("Contexte", contexte), champ("Public visé", pub)]),
+      el("div", { classe: "grille" }, [champ("Ton", ton), champ("Format", format), champ("Longueur", longueur)]),
+      el("div", { classe: "pile" }, [champ("Style du prompt", style), champ("Exemple", exemples), champ("Contraintes", contraintes),
+        cQuestions.boite, cIncertain.boite, cVersions.boite])]));
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "Votre prompt" }));
     racine.appendChild(out); racine.appendChild(cpt.p);
-    racine.appendChild(el("div", { classe: "boutons" }, [boutonCopier("Copier le prompt", function () { return out.value; })]));
+    racine.appendChild(el("div", { classe: "boutons" }, [grand(boutonCopier("Copier le prompt", function () { return out.value; }))]));
     maj();
   }
 
@@ -329,11 +334,12 @@
     }
     entree.addEventListener("input", maj);
     racine.appendChild(champ("Votre prompt", entree)); racine.appendChild(cpt.p);
-    racine.appendChild(score); racine.appendChild(liste);
+    racine.appendChild(el("button", { type: "button", classe: "lien-bouton", texte: "Essayer un exemple", onclick: function () { entree.value = "écris un post sur mon nouveau produit, un truc qui donne envie"; maj(); frapper(out); } }));
+    racine.appendChild(score);
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "Version enrichie" }));
     racine.appendChild(out); racine.appendChild(note);
-    racine.appendChild(el("div", { classe: "boutons" }, [boutonCopier("Copier la version enrichie", function () { return out.value; }),
-      el("button", { type: "button", texte: "Essayer un exemple", onclick: function () { entree.value = "écris un post sur mon nouveau produit, un truc qui donne envie"; maj(); frapper(out); } })]));
+    racine.appendChild(el("div", { classe: "boutons" }, [grand(boutonCopier("Copier la version enrichie", function () { return out.value; }))]));
+    racine.appendChild(replie("Le détail des 12 points", [liste]));
   }
 
   // ---------------------------------------------------------------- 3. Compteur de tokens + 4. prix API
@@ -400,10 +406,10 @@
     racine.appendChild(champ("Votre texte", entree));
     racine.appendChild(tuiles); racine.appendChild(etat); racine.appendChild(voir.boite); racine.appendChild(vue);
     if (tp) {
-      racine.appendChild(el("h2", { classe: "titre-outil", texte: "Combien coûte ce texte avec l'API ?" }));
-      racine.appendChild(el("div", { classe: "grille" }, [champ("Longueur de la réponse (tokens)", sortieRep, "Une page de texte fait souvent 500 à 800 tokens.")]));
-      racine.appendChild(tp.table);
-      racine.appendChild(el("p", { classe: "aide", texte: "Prix officiels en dollars, hors taxes, relevés le " + P.date + ". Pour Claude et Gemini, le nombre de tokens est celui du découpeur GPT : c'est une estimation (leurs découpeurs ne sont pas publiés pour un calcul local)." }));
+      racine.appendChild(replie("Combien coûte ce texte avec l'API ?", [
+        el("div", { classe: "grille" }, [champ("Longueur de la réponse (tokens)", sortieRep, "Une page de texte fait souvent 500 à 800 tokens.")]),
+        tp.table,
+        el("p", { classe: "aide", texte: "Prix officiels en dollars, hors taxes, relevés le " + P.date + ". Pour Claude et Gemini, le nombre de tokens est celui du découpeur GPT : c'est une estimation (leurs découpeurs ne sont pas publiés pour un calcul local)." })]));
     }
     compter();
     chargerTokenizer().then(function (m) { enc = m; compter(); }, function () {
@@ -427,8 +433,9 @@
     racine.appendChild(el("div", { classe: "grille" }, [
       champ("Tokens en entrée par requête", te, "Votre prompt + le contexte envoyé."),
       champ("Tokens en sortie par requête", ts, "La réponse générée."),
-      champ("Requêtes par jour", rq), champ("Jours par mois", jr),
-      champ("Part de l'entrée lue en cache (%)", cache, "0 si vous ne savez pas. Le cache réduit le prix des parties répétées.")]));
+      champ("Requêtes par jour", rq)]));
+    racine.appendChild(replie("Plus d'options : jours par mois, cache", [el("div", { classe: "grille" }, [champ("Jours par mois", jr),
+      champ("Part de l'entrée lue en cache (%)", cache, "0 si vous ne savez pas. Le cache réduit le prix des parties répétées.")])]));
     racine.appendChild(tp.table);
     racine.appendChild(el("p", { classe: "aide", texte: "Tri du moins cher au plus cher. Prix officiels en dollars, hors taxes, relevés le " + P.date + " (sources sous le tableau des tarifs)." }));
     tp.maj();
@@ -559,16 +566,17 @@
       x.addEventListener("input", maj); x.addEventListener("change", maj);
     });
     racine.appendChild(champ("Texte à nettoyer", entree));
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Résultat voulu", mode), champ("Tirets longs", tiret)]));
-    racine.appendChild(el("div", { classe: "cases" }, [cInv.boite, cEsp.boite, cPuces.boite, cGuil.boite, cEmoji.boite]));
+    racine.appendChild(el("div", { classe: "grille" }, [champ("Résultat voulu", mode)]));
     racine.appendChild(bilan);
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "Résultat" }));
     racine.appendChild(out);
     racine.appendChild(el("div", { classe: "boutons" }, [
-      boutonCopier("Copier le résultat", function () { return out.value; }),
-      boutonCopier("Copier avec la mise en forme (Word, Google Docs, e-mail)", function () { return dernier.html ? dernier : null; }, true)]));
-    racine.appendChild(el("h3", { texte: "Aperçu mis en forme" }));
-    racine.appendChild(apercu);
+      grand(boutonCopier("Copier le résultat", function () { return out.value; })),
+      secondaire(boutonCopier("Copier avec la mise en forme (Word, Google Docs, e-mail)", function () { return dernier.html ? dernier : null; }, true))]));
+    racine.appendChild(replie("Plus d'options : tirets, espaces, guillemets, émojis", [
+      el("div", { classe: "grille" }, [champ("Tirets longs", tiret)]),
+      el("div", { classe: "cases" }, [cInv.boite, cEsp.boite, cPuces.boite, cGuil.boite, cEmoji.boite])]));
+    racine.appendChild(replie("Aperçu mis en forme", [apercu]));
     maj();
   }
 
@@ -637,13 +645,14 @@
       out.value = r;
     }
     [outilCible, sujet, style, lumiere, plan, fmt, ambiance, ecrit, eviter].forEach(function (x) { x.addEventListener("input", maj); x.addEventListener("change", maj); });
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Outil d'image", outilCible), champ("Format", fmt)]));
     racine.appendChild(champ("Sujet de l'image", sujet));
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Style", style), champ("Lumière", lumiere), champ("Cadrage", plan)]));
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Ambiance, couleurs", ambiance), champ("Texte dans l'image", ecrit), champ("À éviter", eviter)]));
+    racine.appendChild(el("div", { classe: "grille" }, [champ("Outil d'image", outilCible), champ("Style", style), champ("Format", fmt)]));
+    racine.appendChild(replie("Plus d'options : lumière, cadrage, ambiance…", [
+      el("div", { classe: "grille" }, [champ("Lumière", lumiere), champ("Cadrage", plan)]),
+      el("div", { classe: "grille" }, [champ("Ambiance, couleurs", ambiance), champ("Texte dans l'image", ecrit), champ("À éviter", eviter)])]));
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "Votre prompt d'image" }));
     racine.appendChild(out); racine.appendChild(aideOutil);
-    racine.appendChild(el("div", { classe: "boutons" }, [boutonCopier("Copier le prompt", function () { return out.value; })]));
+    racine.appendChild(el("div", { classe: "boutons" }, [grand(boutonCopier("Copier le prompt", function () { return out.value; }))]));
     maj();
   }
 
@@ -678,18 +687,18 @@
       c1.maj(); c2.maj();
     }
     [metier, usage, niveau, ton, longueur, adresse, eviter, cSources.input, cQuestions.input, cResume.input].forEach(function (x) { x.addEventListener("input", maj); x.addEventListener("change", maj); });
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Votre métier ou situation", metier), champ("Votre niveau", niveau)]));
-    racine.appendChild(champ("Ce que vous faites avec l'IA", usage));
-    racine.appendChild(el("div", { classe: "grille" }, [champ("Ton des réponses", ton), champ("Longueur", longueur), champ("Tutoiement", adresse)]));
-    racine.appendChild(champ("À éviter", eviter));
-    racine.appendChild(el("div", { classe: "cases" }, [cResume.boite, cQuestions.boite, cSources.boite]));
+    racine.appendChild(el("div", { classe: "pile premier" }, [champ("Votre métier ou situation", metier), champ("Ce que vous faites avec l'IA", usage)]));
+    racine.appendChild(replie("Plus d'options : niveau, ton, longueur…", [
+      el("div", { classe: "grille" }, [champ("Votre niveau", niveau), champ("Ton des réponses", ton), champ("Longueur", longueur), champ("Tutoiement", adresse)]),
+      champ("À éviter", eviter),
+      el("div", { classe: "cases" }, [cResume.boite, cQuestions.boite, cSources.boite])]));
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "1. Ce que l'IA doit savoir sur vous" }));
     racine.appendChild(o1); racine.appendChild(c1.p);
-    racine.appendChild(el("div", { classe: "boutons" }, [boutonCopier("Copier le bloc 1", function () { return o1.value; })]));
+    racine.appendChild(el("div", { classe: "boutons" }, [secondaire(boutonCopier("Copier le bloc 1", function () { return o1.value; }))]));
     racine.appendChild(el("h2", { classe: "titre-outil", texte: "2. Comment l'IA doit vous répondre" }));
     racine.appendChild(o2); racine.appendChild(c2.p);
-    racine.appendChild(el("div", { classe: "boutons" }, [boutonCopier("Copier le bloc 2", function () { return o2.value; }),
-      boutonCopier("Copier les deux blocs ensemble", function () { return o1.value + "\n\n" + o2.value; })]));
+    racine.appendChild(el("div", { classe: "boutons" }, [secondaire(boutonCopier("Copier le bloc 2", function () { return o2.value; }))]));
+    racine.appendChild(el("div", { classe: "boutons" }, [grand(boutonCopier("Copier les deux blocs ensemble", function () { return o1.value + "\n\n" + o2.value; }))]));
     maj();
   }
 

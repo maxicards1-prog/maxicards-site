@@ -357,3 +357,61 @@ pre { overflow-x: auto; }
   .js .rv { opacity: 1 !important; transform: none !important; }
   .hero::before { animation: none !important; }
 }
+
+/* ===== Simple à comprendre (23/11/2026) : en haut, un titre en gros, une phrase, puis l'outil ou l'essentiel.
+   Texte 17 px sur mobile, 18 px sur ordinateur ; lignes de texte de 66 caractères au plus ; options repliées. ===== */
+html { font-size: 17px; }
+@media (min-width: 700px) { html { font-size: 18px; } }
+body { font-size: 1rem; line-height: 1.7; }
+main > .conteneur:first-child { padding-top: 14px; }
+.tete-page { text-align: center; max-width: 780px; margin: 0 auto 22px; }
+.tete-page .fil { font-size: .94rem; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .9; }
+.tete-page h1 { font-size: clamp(1.7rem, 6.4vw, 2.5rem); line-height: 1.12; margin: 0 0 10px; text-wrap: balance; }
+.tete-page .chapo { font-size: 1.06rem; margin: 0 auto; max-width: 36em; text-wrap: pretty; }
+/* Colonne de lecture centrée */
+main .conteneur > p, main .conteneur > ol, main .conteneur > h2, main .conteneur > h3, main .conteneur > .encadre,
+main .conteneur > details.faq, main .conteneur > .sources, main .conteneur > .liste-metiers, main .conteneur > .prompt-carte,
+main .conteneur > ul:not(.liste-outils):not(.badges), .essentiel { max-width: 66ch; margin-left: auto; margin-right: auto; }
+main .conteneur > h2.categorie, main .conteneur > h2:has(+ .liste-outils) { max-width: none; }
+/* L'essentiel (guides, métiers) */
+.essentiel { background: var(--accent-doux); border: 1px solid var(--bord-fort); border-radius: 16px; padding: 16px 20px 14px; margin-bottom: 30px; }
+.essentiel-titre { font-family: var(--police-titre); font-weight: 700; font-size: .94rem; text-transform: uppercase; letter-spacing: .07em; color: var(--accent-fonce); margin: 0 0 6px !important; }
+.essentiel p { margin: 0 0 8px; }
+.essentiel ol { margin: 0; padding-left: 1.4em; }
+.essentiel li { margin-bottom: 5px; font-weight: 600; }
+.essentiel a { text-decoration-thickness: 1px; }
+/* Outil : au centre, en gros */
+.outil { max-width: 780px; margin-left: auto; margin-right: auto; }
+.outil + .badges { max-width: 780px; margin-left: auto; margin-right: auto; justify-content: center; }
+.outil .champ label, .ligne-case { font-size: .94rem; }
+.outil .premier .champ:first-child label { font-size: 1.04rem; }
+input[type="number"], input[type="text"], select, textarea { font-size: 1rem; min-height: 50px; }
+textarea.sortie, .frappe { font-size: 16px; }
+button.grand { width: 100%; min-height: 58px; font-size: 1.1rem; border-radius: 14px; letter-spacing: .01em; }
+.boutons:has(.grand) { margin-top: 16px; }
+.lien-bouton { background: none; border: 0; box-shadow: none; color: var(--lien); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; padding: 4px 0; min-height: 44px; }
+.lien-bouton:hover { color: var(--accent); background: none; }
+details.plus { margin-top: 16px; border: 1px dashed var(--bord-fort); border-radius: 14px; padding: 0 14px; background: var(--surface); }
+details.plus > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; font-weight: 600; color: var(--accent-fonce); }
+details.plus > summary::-webkit-details-marker { display: none; }
+details.plus > summary::after { content: ""; flex: none; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .25s var(--doux); }
+details.plus[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+details.plus[open] > .plus-corps { animation: monte .3s var(--doux); }
+.plus-corps { display: grid; gap: 14px; padding: 2px 0 16px; }
+.plus-corps > .pile, .plus-corps > .cases, .plus-corps > .grille { margin-top: 0; }
+/* Tailles minimales lisibles sur mobile (16 px) */
+.aide, .tuile .libelle, .sources, .pied, .carte-outil .carte-texte, .liste-metiers a, table, .message, .verdicts li, .badges li, .menu nav a, .menu summary { font-size: .94rem; }
+.prompt-texte, .tokens-vue { font-size: 16px; }
+/* Accueil : sur mobile, pas de visuel, les outils tout de suite */
+@media (max-width: 759px) {
+  .hero { padding: 18px 0 0; text-align: center; }
+  .hero-visuel { display: none; }
+  .hero h1 { font-size: clamp(1.8rem, 7.4vw, 2.3rem); }
+  .hero .chapo { margin: 0 auto; }
+  .categorie { margin-top: 14px; }
+}
+@media (max-width: 600px) {
+  .carte-outil { display: grid; grid-template-columns: 42px 1fr; column-gap: 14px; row-gap: 2px; align-items: center; padding: 14px; }
+  .carte-outil .ic { grid-row: 1 / span 2; margin: 0; align-self: start; }
+  .carte-outil strong { margin: 0; }
+}
