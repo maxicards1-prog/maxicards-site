@@ -367,3 +367,15 @@ button.mini { min-height: 38px; min-width: 38px; padding: 4px 8px; font-size: .9
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .apparait { opacity: 1; transform: none; }
 }
+
+/* Lisibilité (23/11/2026, demande : « très simple à comprendre… pas 36 000 textes ») :
+   réponse directe en gros en haut des guides, gros bouton d'action, 16 px minimum sur mobile. */
+.chapo.reponse { font-size: 1.18rem; line-height: 1.5; color: var(--texte); font-weight: 600; background: var(--surface); border: 1px solid var(--bord); border-left: 4px solid var(--accent); border-radius: 14px; padding: 14px 16px; }
+.encadre-outil .bouton.principal { font-size: 1.05rem; padding-left: 22px; padding-right: 22px; }
+@media (max-width: 640px) {
+  .fil { display: none; }
+  .aide, .badges li, .maj, .champ label, .etiquette, .ligne-case, .tuile .libelle, .message, .carte-texte span,
+  .encadre, .sources, .progression, .page-case .num, .fichiers .nom, main p:not(.chapo):not(.depot-titre), main li, main summary, table { font-size: 1rem; }
+  .outil .boutons > button.principal { flex: 1 1 100%; min-height: 52px; font-size: 1.1rem; }
+  .encadre-outil .bouton.principal { display: flex; justify-content: center; width: 100%; min-height: 52px; }
+}
