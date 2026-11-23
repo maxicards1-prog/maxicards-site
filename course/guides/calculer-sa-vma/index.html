@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr" data-base="/course">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculer sa VMA : tests et formules expliqués</title>
+<meta name="description" content="Comment calculer sa VMA : demi-Cooper, Cooper, test Léger-Boucher et navette. Formules, exemples chiffrés et limites de chaque méthode.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://maxicards.net/course/guides/calculer-sa-vma/">
+<meta name="theme-color" content="#0f766e">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Outils Course">
+<meta property="og:title" content="Calculer sa VMA : tests et formules expliqués">
+<meta property="og:description" content="Comment calculer sa VMA : demi-Cooper, Cooper, test Léger-Boucher et navette. Formules, exemples chiffrés et limites de chaque méthode.">
+<meta property="og:url" content="https://maxicards.net/course/guides/calculer-sa-vma/">
+<meta property="og:image" content="https://maxicards.net/course/assets/partage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Outils Course : allure, VMA, zones cardiaques et plans d'entraînement">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Calculer sa VMA : tests et formules expliqués">
+<meta name="twitter:description" content="Comment calculer sa VMA : demi-Cooper, Cooper, test Léger-Boucher et navette. Formules, exemples chiffrés et limites de chaque méthode.">
+<meta name="twitter:image" content="https://maxicards.net/course/assets/partage.png">
+<link rel="icon" href="/course/favicon.ico" sizes="48x48">
+<link rel="icon" href="/course/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/course/apple-touch-icon.png">
+<link rel="manifest" href="/course/manifest.webmanifest">
+<link rel="stylesheet" href="/course/assets/style.css?v=e974e089a0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net https://*.googleadservices.com https://adservice.google.com https://www.googletagservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google; style-src 'self' 'unsafe-inline'; img-src https: data:; font-src 'self'; connect-src 'self' https://*.google.com https://*.googlesyndication.com https://*.doubleclick.net https://*.adtrafficquality.google; frame-src https://*.doubleclick.net https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2308397761739264" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Comment calculer sa VMA ?","description":"Comment calculer sa VMA : demi-Cooper, Cooper, test Léger-Boucher et navette. Formules, exemples chiffrés et limites de chaque méthode.","inLanguage":"fr-FR","datePublished":"2026-11-23","dateModified":"2026-11-23","url":"https://maxicards.net/course/guides/calculer-sa-vma/","image":"https://maxicards.net/course/assets/partage.png","author":{"@type":"Organization","name":"MAXICARDS","url":"https://maxicards.net/"},"publisher":{"@type":"Organization","name":"MAXICARDS","url":"https://maxicards.net/"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quelle est la différence entre VMA et VO2max ?","acceptedAnswer":{"@type":"Answer","text":"La VMA est une vitesse (km/h), la VO2max est une consommation d'oxygène (ml/kg/min). On passe de l'une à l'autre avec la règle approchée VO2max = 3,5 x VMA, valable environ entre 8 et 25 km/h."}},{"@type":"Question","name":"Le demi-Cooper est-il fiable ?","acceptedAnswer":{"@type":"Answer","text":"C'est une estimation pratique, pas une mesure de laboratoire. Elle suppose que vous dosez bien votre effort sur 6 minutes."}},{"@type":"Question","name":"Combien de temps peut-on tenir sa VMA ?","acceptedAnswer":{"@type":"Answer","text":"Une étude de Billat et al. (2000) a mesuré en moyenne 5 min 47 s de temps limite à 100 % de la vitesse associée à la VO2max, avec de fortes différences entre coureurs."}},{"@type":"Question","name":"À quelle fréquence refaire le test ?","acceptedAnswer":{"@type":"Answer","text":"Toutes les 6 à 8 semaines environ, dans les mêmes conditions (piste, heure, repos), pour que les résultats soient comparables."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Outils Course","item":"https://maxicards.net/course/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://maxicards.net/course/guides/"},{"@type":"ListItem","position":3,"name":"Comment calculer sa VMA ?","item":"https://maxicards.net/course/guides/calculer-sa-vma/"}]}</script>
+</head>
+<body>
+<header class="entete">
+<div class="conteneur">
+<a class="marque" href="/course/" aria-label="Outils Course, accueil"><svg class="logo" aria-hidden="true" focusable="false" viewBox="0 0 64 64"><defs><linearGradient id="co-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#0f5c57"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#co-g)"/><rect x="26" y="6" width="12" height="7" rx="2.5" fill="#fff"/><rect x="29.5" y="11" width="5" height="6" fill="#fff"/><circle cx="32" cy="38" r="21" fill="#fff"/><circle cx="32" cy="38" r="17" fill="#e6fffb"/><path d="M19 45C23 33 28 49 33 38S41 33 46 31" fill="none" stroke="#ea580c" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="46.5" cy="30.5" r="4" fill="#ea580c"/></svg><span class="nom">Outils Course<small>allure, VMA, plans</small></span></a>
+<details class="menu"><summary>Outils</summary><nav aria-label="Outils"><span class="rubrique">Calculateurs</span><a href="/course/calcul-allure/">Calcul d&#x27;allure</a><a href="/course/calcul-temps-course/">Temps de course</a><a href="/course/convertisseur-allure-vitesse/">Allure et vitesse</a><a href="/course/calcul-vma/">Calcul de la VMA</a><a href="/course/allures-entrainement-vma/">Allures selon la VMA</a><a href="/course/zones-cardiaques/">Zones cardiaques</a><a href="/course/predicteur-temps-course/">Prédicteur de temps</a><span class="rubrique">Tableaux d&#x27;allures</span><a href="/course/tableau-allures-10-km/">Tableau allures 10 km</a><a href="/course/tableau-allures-semi-marathon/">Tableau allures semi</a><a href="/course/tableau-allures-marathon/">Tableau allures marathon</a><span class="rubrique">Plans d&#x27;entraînement</span><a href="/course/plan-debutant-5-km/">Plan débutant 5 km</a><a href="/course/plan-entrainement-10-km/">Plan 10 km</a><a href="/course/plan-entrainement-semi-marathon/">Plan semi-marathon</a><a href="/course/plan-entrainement-marathon/">Plan marathon</a><span class="rubrique">Aide</span><a href="/course/guides/">Tous les guides pratiques</a></nav></details>
+</div>
+</header>
+<main>
+<div class="conteneur">
+<nav class="fil" aria-label="Fil d'Ariane"><a href="/course/">Outils Course</a> › <a href="/course/guides/">Guides</a> › Comment calculer sa VMA ?</nav>
+<h1>Comment calculer sa VMA ?</h1>
+<p class="chapo">La VMA (vitesse maximale aérobie) se calcule avec un test de terrain : au demi-Cooper, vous divisez la distance parcourue en 6 minutes (en mètres) par 100 pour obtenir une vitesse en km/h. Les autres tests donnent des valeurs proches, mais jamais exactes.</p>
+
+<p class="maj">Mis à jour le 23/11/2026</p><div class="encadre-outil"><strong>L'outil gratuit :</strong><br><a class="bouton" href="/course/calcul-vma/">Calcul de la VMA</a><a class="bouton" href="/course/allures-entrainement-vma/">Allures selon la VMA</a></div><h2>Qu'est-ce que la VMA ?</h2>
+<p>La VMA est la plus petite vitesse de course qui sollicite votre consommation maximale d'oxygène (VO2max). On l'exprime en km/h. Elle sert de base pour fixer vos allures d'entraînement : endurance, seuil, fractionné. Pour la différence avec la VO2max, lisez <a href="/course/guides/vma-et-vo2max/">VMA et VO2max</a>.</p>
+<h2>Les tests de terrain les plus utilisés</h2>
+<h3>Le demi-Cooper (6 minutes)</h3>
+<p>Vous courez le plus loin possible pendant 6 minutes. La règle d'usage est : <strong>VMA (km/h) = distance en mètres / 100</strong>. Exemple : 1 500 m en 6 minutes donnent 15 km/h. Cette règle est très répandue chez les coachs, mais nous n'avons pas retrouvé d'étude de validité qui lui soit propre : traitez le résultat comme une estimation. Le test pas à pas est détaillé dans <a href="/course/guides/test-demi-cooper/">Faire un test demi-Cooper</a>.</p>
+<h3>Le test de Cooper (12 minutes)</h3>
+<p>Publié par Kenneth Cooper en 1968 (JAMA), il consiste à courir 12 minutes. Une formule souvent citée estime la VO2max : (distance en m - 504,9) / 44,73. Exemple : 2 400 m donnent environ 42,4 ml/kg/min. Le test original portait sur des militaires américains ; la formule est moins fiable pour des sportifs occasionnels. Sur 12 minutes, la difficulté est de bien répartir l'effort.</p>
+<h3>Le test Léger-Boucher (Université de Montréal)</h3>
+<p>Publié en 1980, c'est un test progressif sur piste de 400 m, avec des repères tous les 25 m. Vous démarrez à 6 km/h et la vitesse augmente de 1 km/h toutes les 2 minutes, au rythme de signaux sonores. Votre VMA est la vitesse du dernier palier tenu. C'est plus précis qu'un test chronométré libre, car l'allure est imposée.</p>
+<h3>Le test navette de 20 m</h3>
+<p>Variante en salle (Léger et al., 1988) : vous faites des allers-retours de 20 m au rythme d'un signal qui s'accélère. Pratique en hiver, mais les demi-tours font baisser la vitesse mesurée par rapport à une ligne droite.</p>
+<h2>Quelle précision attendre ?</h2>
+<ul>
+<li>Un test de terrain donne une estimation, souvent à 1 km/h près selon le coureur et le jour.</li>
+<li>Le résultat dépend de la motivation, du vent, de la fatigue et de votre capacité à doser l'effort.</li>
+<li>Seul un test en laboratoire mesure vraiment la VO2max.</li>
+<li>Refaites le test toutes les 6 à 8 semaines, dans les mêmes conditions, pour suivre votre progression.</li>
+</ul>
+<h2>Que faire de la valeur obtenue ?</h2>
+<p>Entrez-la dans notre <a href="/course/calcul-vma/">calculateur de VMA</a>, puis dans <a href="/course/allures-entrainement-vma/">les allures d'entraînement</a>. Les pourcentages de VMA utilisés pour chaque type de séance varient selon les auteurs : prenez-les comme des repères, pas comme des lois.</p>
+<p><em>Un test maximal est un effort intense. Si vous reprenez le sport après une longue pause ou si vous avez des antécédents médicaux, demandez l'avis d'un médecin avant.</em></p>
+<h2>Questions fréquentes</h2><details class="faq"><summary>Quelle est la différence entre VMA et VO2max ?</summary><p>La VMA est une vitesse (km/h), la VO2max est une consommation d&#x27;oxygène (ml/kg/min). On passe de l&#x27;une à l&#x27;autre avec la règle approchée VO2max = 3,5 x VMA, valable environ entre 8 et 25 km/h.</p></details><details class="faq"><summary>Le demi-Cooper est-il fiable ?</summary><p>C&#x27;est une estimation pratique, pas une mesure de laboratoire. Elle suppose que vous dosez bien votre effort sur 6 minutes.</p></details><details class="faq"><summary>Combien de temps peut-on tenir sa VMA ?</summary><p>Une étude de Billat et al. (2000) a mesuré en moyenne 5 min 47 s de temps limite à 100 % de la vitesse associée à la VO2max, avec de fortes différences entre coureurs.</p></details><details class="faq"><summary>À quelle fréquence refaire le test ?</summary><p>Toutes les 6 à 8 semaines environ, dans les mêmes conditions (piste, heure, repos), pour que les résultats soient comparables.</p></details>
+
+
+<h2>Outils liés</h2><ul class="liste-outils"><li><a class="carte-outil" href="/course/calcul-vma/"><strong>Calcul de la VMA</strong><span>Entrez la distance parcourue pendant le test : l&#x27;outil donne votre VMA en km/h, l&#x27;allure correspondante et une estimation de votre VO2max.</span></a></li><li><a class="carte-outil" href="/course/allures-entrainement-vma/"><strong>Allures selon la VMA</strong><span>Votre VMA donne toutes vos allures : endurance fondamentale, seuil, allures de course et fractionné, avec une fourchette pour chacune.</span></a></li></ul><h2>Autres guides</h2><ul class="liste-guides"><li><a href="/course/guides/test-demi-cooper/"><strong>Comment faire un test demi-Cooper seul ?</strong><span>Faire un test demi-Cooper seul : lieu, échauffement, gestion de l&#x27;allure sur 6 minutes, calcul de la VMA et erreurs fréquentes à éviter.</span></a></li><li><a href="/course/guides/calculer-sa-fc-max/"><strong>Comment calculer sa fréquence cardiaque maximale ?</strong><span>Calculer sa FC max : formules 220 - âge et Tanaka (208 - 0,7 x âge), exemples par âge, test de terrain et marge d&#x27;erreur à connaître.</span></a></li><li><a href="/course/guides/vma-et-vo2max/"><strong>Quelle différence entre VMA et VO2max ?</strong><span>VMA et VO2max : quelle différence, et comment passer de l&#x27;une à l&#x27;autre avec VO2max = 3,5 x VMA (Léger). Exemples chiffrés, limites et précautions.</span></a></li></ul><p><a href="/course/guides/">Tous les guides</a></p>
+<aside class="pace-coach" aria-label="PACE Coach"><p>PACE Coach : un conseil par jour pour courir, nager et rouler plus vite.</p><a class="bouton principal" href="https://www.tiktok.com/@pacecoach.fr" rel="noopener">Suivre PACE Coach sur TikTok</a></aside>
+</div>
+</main>
+<footer class="pied">
+<div class="conteneur">
+<nav aria-label="Pages du site"><a href="/course/">Tous les outils</a><a href="/course/guides/">Guides</a><a href="/course/sources/">Sources</a><a href="/course/avertissement-sante/">Avertissement santé</a><a href="/course/a-propos/">À propos</a><a href="/course/contact/">Contact</a><a href="/course/mentions-legales/">Mentions légales</a><a href="/course/confidentialite/">Confidentialité</a><a href="https://maxicards.net/">maxicards.net</a></nav>
+<p class="sante">Les informations de ce site sont générales et ne constituent pas un avis médical : consultez un médecin avant de reprendre le sport, en cas de douleur ou de problème de santé. <a href="/course/avertissement-sante/">En savoir plus</a>.</p>
+<p>Tous les calculs se font dans votre navigateur : rien de ce que vous saisissez n'est envoyé sur nos serveurs.</p>
+<p>© 2026 MAXICARDS. Outils gratuits financés par la publicité.</p>
+</div>
+</footer>
+
+</body>
+</html>

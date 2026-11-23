@@ -1,0 +1,22 @@
+{
+ "name": "Outils Roblox : Robux en euros, DevEx, pseudos et guides",
+ "short_name": "Outils Roblox",
+ "lang": "fr",
+ "start_url": "/roblox/",
+ "scope": "/roblox/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#6d28d9",
+ "icons": [
+  {
+   "src": "/roblox/assets/icone-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/roblox/assets/icone-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "name": "Outils Course : allure, VMA, zones cardiaques et plans d'entraînement",
+ "short_name": "Outils Course",
+ "lang": "fr",
+ "start_url": "/course/",
+ "scope": "/course/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#0f766e",
+ "icons": [
+  {
+   "src": "/course/assets/icone-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/course/assets/icone-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}
