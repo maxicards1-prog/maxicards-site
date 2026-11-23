@@ -355,3 +355,12 @@ tbody tr:hover td { background: var(--surface-2); }
   .revele { opacity: 1; transform: none; }
 }
 .combo { font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", "DejaVu Sans", system-ui, sans-serif; letter-spacing: .18em; font-weight: 700; }
+
+/* Lisibilité (23/11/2026 : « très simple à comprendre… optimisé, lisible ») : texte de lecture à 16 px au moins,
+   réponse directe en gros en haut, une seule action principale sur l'accueil. */
+.encadre, .carte-outil span, .aide, .message, .champ label, .etiquette, .ligne-case, .carte-video span, .compte,
+.tuile .libelle, table, .liste-outils li { font-size: 1rem; }
+.hero-chiffres span { font-size: .88rem; }
+.chapo { font-size: 1.18rem; line-height: 1.5; font-weight: 600; color: var(--texte); }
+.suite-chapo { color: var(--texte-doux); }
+.hero .bouton-contour { background: none; border: 0; box-shadow: none; text-decoration: underline; text-underline-offset: 4px; padding-left: 8px; padding-right: 8px; }
