@@ -562,6 +562,45 @@
     return { sorties };
   }
 
+  // MP3 (ou autre son) -> WAV 16 bits, à la fréquence d'origine (24/11/2026)
+  async function versWav(fichiers, o, ui) {
+    const sorties = [];
+    const maxMin = MOBILE ? 10 : 30;
+    for (const f of fichiers) {
+      ui.progres(T(`Lecture de « ${f.name} »…`, `Reading “${f.name}”…`), 0);
+      const d = await duree(f);
+      if (d > maxMin * 60) throw new Erreur(T(`« ${f.name} » dure ${Math.round(d / 60)} min : un WAV de plus de ${maxMin} min${MOBILE ? ' sur téléphone' : ''} dépasse la mémoire du navigateur (environ 10 Mo par minute). Coupez le son en morceaux${MOBILE ? ' ou utilisez un ordinateur (30 min)' : ''}.`, `“${f.name}” lasts ${Math.round(d / 60)} min: a WAV longer than ${maxMin} min${MOBILE ? ' on a phone' : ''} exceeds the browser's memory (about 10 MB per minute). Cut the audio into parts${MOBILE ? ' or use a computer (30 min)' : ''}.`));
+      const Ctx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!Ctx) throw new Erreur(T('Votre navigateur ne sait pas décoder le son. Essayez avec Chrome, Edge, Firefox ou Safari à jour.', 'Your browser cannot decode the audio. Try an up-to-date Chrome, Edge, Firefox or Safari.'));
+      const ctx = new Ctx(2, 1, 44100);
+      const brut = await f.arrayBuffer();
+      let audio;
+      try {
+        audio = await new Promise((ok, ko) => { const p = ctx.decodeAudioData(brut, ok, ko); if (p && p.catch) p.catch(ko); });
+      } catch (e) {
+        throw new Erreur(T(`Impossible de lire le son de « ${f.name} » : fichier abîmé, ou format non pris en charge par ce navigateur.`, `Can't read the audio of “${f.name}”: damaged file, or a format this browser does not support.`));
+      }
+      const canaux = Math.min(2, audio.numberOfChannels);
+      const n = audio.length;
+      const taille = 44 + n * canaux * 2;
+      const buf = new ArrayBuffer(taille);
+      const v = new DataView(buf);
+      const ecr = (pos, txt) => { for (let i = 0; i < txt.length; i++) v.setUint8(pos + i, txt.charCodeAt(i)); };
+      ecr(0, 'RIFF'); v.setUint32(4, taille - 8, true); ecr(8, 'WAVE'); ecr(12, 'fmt ');
+      v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, canaux, true);
+      v.setUint32(24, audio.sampleRate, true); v.setUint32(28, audio.sampleRate * canaux * 2, true);
+      v.setUint16(32, canaux * 2, true); v.setUint16(34, 16, true); ecr(36, 'data'); v.setUint32(40, n * canaux * 2, true);
+      const C = [audio.getChannelData(0), canaux > 1 ? audio.getChannelData(1) : null];
+      let pos = 44;
+      for (let i = 0; i < n; i++) {
+        for (let c = 0; c < canaux; c++) { const s = Math.max(-1, Math.min(1, C[c][i])); v.setInt16(pos, s < 0 ? s * 0x8000 : s * 0x7FFF, true); pos += 2; }
+        if (i % 441000 === 0) { ui.progres(T(`Création du WAV de « ${f.name} »`, `Creating the WAV for “${f.name}”`), i / n); await pause(); }
+      }
+      sorties.push({ nom: sansExt(f.name) + '.wav', blob: new Blob([buf], { type: 'audio/wav' }) });
+    }
+    return { sorties };
+  }
+
   // ---------- nouveaux outils (23/11/2026) ----------
   // Point « visuel » (origine en bas à gauche de la page telle qu'affichée) -> coordonnées PDF, rotation de la page
   function repere(page) {
@@ -1039,6 +1078,7 @@
     'compresser-pdf': { titre: T('Compresser un PDF', 'Compress a PDF'), k: ['pdf'], multi: true, btn: T('Compresser', 'Compress'), opts: ['niveau'], run: compresserPdf },
     'mp4-en-mp3': { titre: T('Extraire le son en MP3', 'Extract audio to MP3'), k: ['video'], multi: true, btn: T('Extraire le MP3', 'Extract MP3'), opts: ['debit'], run: videoVersMp3 },
     'audio-en-mp3': { titre: T('Audio en MP3', 'Audio to MP3'), k: ['video'], multi: true, btn: T('Convertir en MP3', 'Convert to MP3'), opts: ['debit'], run: videoVersMp3 },
+    'mp3-en-wav': { titre: T('MP3 en WAV', 'MP3 to WAV'), k: ['video'], multi: true, btn: T('Convertir en WAV', 'Convert to WAV'), opts: [], run: versWav },
     'signer-pdf': { titre: T('Signer un PDF', 'Sign a PDF'), k: ['pdf'], multi: false, btn: T('Signer le PDF', 'Sign PDF'), opts: [], panneau: panneauSignature, run: signer },
     'numeroter-pages-pdf': { titre: T('Numéroter les pages', 'Add page numbers'), k: ['pdf'], multi: true, btn: T('Numéroter', 'Add page numbers'), opts: ['position', 'formatNum', 'debut', 'couverture', 'taillePolice'], run: numeroter },
     'filigrane-pdf': { titre: T('Ajouter un filigrane', 'Add a watermark'), k: ['pdf'], multi: true, btn: T('Ajouter le filigrane', 'Add watermark'), opts: ['texteFil', 'sensFil', 'couleurFil', 'opacite', 'pages'], run: filigrane },
@@ -1056,6 +1096,8 @@
     'png-en-jpg': ['convertir-image', { format: 'jpg' }], 'webp-en-jpg': ['convertir-image', { format: 'jpg' }],
     'jpg-en-png': ['convertir-image', { format: 'png' }], 'webp-en-png': ['convertir-image', { format: 'png' }],
     'jpg-en-webp': ['convertir-image', { format: 'webp' }],
+    'png-en-webp': ['convertir-image', { format: 'webp' }], 'avif-en-jpg': ['convertir-image', { format: 'jpg' }],
+    'avif-en-png': ['convertir-image', { format: 'png' }], 'jpg-en-ico': ['png-en-ico', {}], 'webp-en-pdf': ['jpg-en-pdf', {}],
     'wav-en-mp3': ['audio-en-mp3', { debit: '320' }], 'm4a-en-mp3': ['audio-en-mp3', {}],
   };
   const PAR_GENRE = {
@@ -1065,7 +1107,7 @@
     svg: ['svg-en-png'],
     video: ['mp4-en-mp3'],
   };
-  const ACCEPT = { pdf: '.pdf,application/pdf', image: 'image/*', heic: '.heic,.heif,image/heic,image/heif', svg: '.svg,image/svg+xml', video: 'video/*,audio/*,.mp4,.mov,.m4a,.wav' };
+  const ACCEPT = { pdf: '.pdf,application/pdf', image: 'image/*', heic: '.heic,.heif,image/heic,image/heif', svg: '.svg,image/svg+xml', video: 'video/*,audio/*,.mp4,.mov,.m4a,.wav,.mp3' };
 
   function resoudre(id) {
     if (OUTILS[id]) return { id, outil: OUTILS[id], defaut: {} };
