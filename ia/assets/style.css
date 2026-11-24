@@ -102,6 +102,11 @@ img, svg { max-width: 100%; height: auto; }
 .menu[open] summary::after { transform: translateY(1px) rotate(-135deg); }
 .menu summary:hover { border-color: var(--accent); box-shadow: 0 0 0 4px var(--lueur); }
 .menu summary::-webkit-details-marker { display: none; }
+.langues { margin-left: auto; display: flex; align-items: center; gap: 4px; font-size: .82rem; font-weight: 600; color: var(--texte-doux); white-space: nowrap; }
+.langues a { color: var(--texte-doux); text-decoration: none; padding: 6px 4px; border-radius: 6px; }
+.langues a:hover { color: var(--accent); text-decoration: underline; }
+.langues [aria-current] { color: var(--texte); }
+.langues .sep { opacity: .5; }
 .menu nav { position: absolute; right: 16px; top: 60px; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre-haute); padding: 8px; min-width: 280px; transform-origin: top right; }
 .menu[open] nav { animation: menu-ouvre .22s var(--doux); }
 @keyframes menu-ouvre { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
