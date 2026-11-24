@@ -65,6 +65,12 @@ img, svg { max-width: 100%; height: auto; }
 .menu nav { position: absolute; right: 16px; top: 58px; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre); padding: 8px; min-width: 260px; }
 .menu nav a { display: block; padding: 10px 12px; border-radius: 8px; color: var(--texte); text-decoration: none; }
 .menu nav a:hover, .menu nav a[aria-current="page"] { background: var(--surface-2); color: var(--accent); }
+/* Sélecteur de langue (24/11/2026) : discret, à gauche du menu */
+.langues { display: flex; gap: 2px; margin-left: auto; }
+.langues a { display: inline-block; min-width: 28px; padding: 6px 5px; border-radius: 8px; text-align: center; font-size: .78rem; font-weight: 700; letter-spacing: .04em; color: var(--texte-doux); text-decoration: none; }
+.langues a:hover { color: var(--accent); }
+.langues a[aria-current] { color: var(--accent); background: var(--accent-doux); }
+@media (max-width: 420px) { .langues a { min-width: 24px; padding: 6px 3px; font-size: .72rem; } .entete .conteneur { gap: 8px; } }
 
 /* Contenu */
 main { padding: 20px 0 40px; }

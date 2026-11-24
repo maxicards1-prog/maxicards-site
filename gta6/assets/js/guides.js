@@ -8,6 +8,11 @@
   var populaires = document.querySelector(".populaires");
   var sections = document.querySelectorAll(".rubrique-guides:not(.populaires)");
   var themes = document.querySelector(".themes");
+  var L = (document.documentElement.lang || "fr").slice(0, 2);
+  var MOTS = {fr: ["guide", "guides", " trouvé", " trouvés"], en: ["guide", "guides", " found", " found"],
+              es: ["guía", "guías", " encontrada", " encontradas"], pt: ["guia", "guias", " encontrado", " encontrados"]};
+  var M = MOTS[L] || MOTS.fr;
+  function TX(n, actif) { return n + " " + (n > 1 ? M[1] : M[0]) + (actif ? (n > 1 ? M[3] : M[2]) : ""); }
   function net(t) { return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); }
   function filtrer() {
     var mots = net(champ.value).split(/\s+/).filter(Boolean);
@@ -30,7 +35,7 @@
     if (populaires) populaires.hidden = actif;
     if (themes) themes.hidden = actif;
     aucun.hidden = n > 0;
-    compte.textContent = n + (n > 1 ? " guides" : " guide") + (actif ? (n > 1 ? " trouvés" : " trouvé") : "");
+    compte.textContent = TX(n, actif);
     var revs = document.querySelectorAll(".rubrique-guides .revele");
     for (var k = 0; k < revs.length; k++) revs[k].classList.add("vu");
   }
