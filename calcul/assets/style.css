@@ -442,3 +442,10 @@ details.faq[open] p { animation: descend .3s var(--ease); }
   .puce, .menu summary, .menu nav .groupe-nav a:not(.titre-nav) { font-size: 1rem; }
   .puce { padding: 8px 13px 8px 10px; }
 }
+
+/* ===== LANGUES (24/11) : sélecteur discret FR / EN dans l'en-tête ===== */
+.entete-droite { display: flex; align-items: center; gap: 8px; }
+.langue { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 40px; padding: 0 10px;
+  border: 1px solid var(--bord); border-radius: 10px; font-weight: 700; font-size: .95rem; text-decoration: none; color: var(--texte); }
+.langue:hover { border-color: var(--accent); color: var(--accent-fonce); }
+.imp[hidden], .met[hidden] { display: none; }

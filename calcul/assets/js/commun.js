@@ -2,9 +2,12 @@
 (function () {
   'use strict';
   var formats = {};
+  // Pages anglaises (<html lang="en">) : nombres au format en-US (1,234.5) et messages en anglais.
+  var EN = /^en/i.test(document.documentElement.lang || '');
+  var LOC = EN ? 'en-US' : 'fr-FR';
   function nf(dec) {
     if (!formats[dec]) {
-      formats[dec] = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+      formats[dec] = new Intl.NumberFormat(LOC, { minimumFractionDigits: dec, maximumFractionDigits: dec });
     }
     return formats[dec];
   }
@@ -19,7 +22,10 @@
     nombre: function (id, min, max) {
       var el = document.getElementById(id);
       if (!el) { return NaN; }
-      var brut = String(el.value).trim().replace(/[\s  ]/g, '').replace(',', '.');
+      var brut = String(el.value).trim().replace(/[\s  ]/g, '');
+      // Anglais : 1,200 = 1200 (virgule des milliers) ; sinon la virgule est une décimale.
+      if (EN && /^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(brut)) { brut = brut.replace(/,/g, ''); }
+      brut = brut.replace(',', '.');
       if (brut === '') { return NaN; }
       var v = Number(brut);
       if (!isFinite(v)) { return NaN; }
@@ -29,6 +35,7 @@
     },
     valeur: function (id) { var el = document.getElementById(id); return el ? el.value : ''; },
     coche: function (id) { var el = document.getElementById(id); return !!(el && el.checked); },
+    en: EN,
     euros: function (v) { return isFinite(v) ? nf(2).format(v) + ' €' : '–'; },
     pourcent: function (v, dec) { return isFinite(v) ? nf(typeof dec === 'number' ? dec : 2).format(v) + ' %' : '–'; },
     entier: function (v) { return isFinite(v) ? nf(0).format(v) : '–'; },
@@ -36,7 +43,7 @@
     // Nombre sans zéros inutiles (jusqu'à dec décimales).
     souple: function (v, dec) {
       if (!isFinite(v)) { return '–'; }
-      return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: typeof dec === 'number' ? dec : 4 }).format(v);
+      return new Intl.NumberFormat(LOC, { maximumFractionDigits: typeof dec === 'number' ? dec : 4 }).format(v);
     },
     // Résultat : le chiffre « défile » (animation CSS) quand il change ; le texte final est posé tout de suite.
     texte: function (id, valeur) {
@@ -199,10 +206,10 @@
           var lien = window.location.href;
           var fini = function (msg) { CQ.texte('etatLien', msg); };
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(lien).then(function () { fini('Lien copié : il rouvre ce calcul tel quel.'); },
-              function () { fini('Copiez l\'adresse de la page : elle contient votre calcul.'); });
+            navigator.clipboard.writeText(lien).then(function () { fini(EN ? 'Link copied: it reopens this calculation as is.' : 'Lien copié : il rouvre ce calcul tel quel.'); },
+              function () { fini(EN ? 'Copy the page address: it contains your calculation.' : 'Copiez l\'adresse de la page : elle contient votre calcul.'); });
           } else {
-            fini('Copiez l\'adresse de la page : elle contient votre calcul.');
+            fini(EN ? 'Copy the page address: it contains your calculation.' : 'Copiez l\'adresse de la page : elle contient votre calcul.');
           }
         });
       }
