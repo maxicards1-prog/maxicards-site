@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var O = window.OCP;
+  var tr = O.tr;
   var CLE = 'outilsfoot.equipes.noms';
   var zone = document.getElementById('noms');
   var memo = O.lire(CLE);
@@ -36,7 +37,7 @@
     var sortie = document.getElementById('sortie');
     sortie.textContent = '';
     if (joueurs.length < nb) {
-      O.texte('message', 'Ajoutez au moins ' + nb + ' joueurs (un par ligne).');
+      O.texte('message', tr('Ajoutez au moins ' + nb + ' joueurs (un par ligne).', 'Add at least ' + nb + ' players (one per line).'));
       return;
     }
     O.texte('message', '');
@@ -68,7 +69,7 @@
       bloc.className = 'equipe';
       var h = document.createElement('h3');
       var total = eq.reduce(function (a, p) { return a + p.niveau; }, 0);
-      h.textContent = 'Équipe ' + (i + 1) + ' (' + eq.length + ' joueurs' + (mode === 'equilibre' ? ', niveau ' + total : '') + ')';
+      h.textContent = tr('Équipe ', 'Team ') + (i + 1) + ' (' + eq.length + tr(' joueurs', eq.length === 1 ? ' player' : ' players') + (mode === 'equilibre' ? tr(', niveau ', ', rating ') + total : '') + ')';
       bloc.appendChild(h);
       var ol = document.createElement('ol');
       eq.forEach(function (p) {
@@ -78,7 +79,7 @@
       });
       bloc.appendChild(ol);
       sortie.appendChild(bloc);
-      copie.push('Équipe ' + (i + 1) + ' : ' + eq.map(function (p) { return p.nom; }).join(', '));
+      copie.push(tr('Équipe ', 'Team ') + (i + 1) + tr(' : ', ': ') + eq.map(function (p) { return p.nom; }).join(', '));
     });
     sortie.setAttribute('data-texte', copie.join('\n'));
   }
@@ -86,10 +87,10 @@
   document.getElementById('tirer').addEventListener('click', tirer);
   document.getElementById('copier').addEventListener('click', function () {
     var t = document.getElementById('sortie').getAttribute('data-texte') || '';
-    if (!t) { O.texte('message', 'Faites d\'abord un tirage.'); return; }
+    if (!t) { O.texte('message', tr('Faites d\'abord un tirage.', 'Make a draw first.')); return; }
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(t).then(function () { O.texte('message', 'Équipes copiées : collez-les dans votre groupe.'); },
-        function () { O.texte('message', 'Copie impossible : sélectionnez le texte à la main.'); });
+      navigator.clipboard.writeText(t).then(function () { O.texte('message', tr('Équipes copiées : collez-les dans votre groupe.', 'Teams copied: paste them into your group chat.')); },
+        function () { O.texte('message', tr('Copie impossible : sélectionnez le texte à la main.', 'Copying failed: select the text by hand.')); });
     }
   });
 }());

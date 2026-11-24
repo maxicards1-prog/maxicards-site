@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var O = window.OCP;
+  var tr = O.tr;
   var CLE = 'outilsfoot.compo';
   // Lignes de joueurs de champ, de la défense vers l'attaque (le gardien est ajouté à part).
   var SCHEMAS = {
@@ -54,7 +55,7 @@
       var div = document.createElement('div');
       var lab = document.createElement('label');
       lab.setAttribute('for', 'nom' + i);
-      lab.textContent = i === 0 ? 'Gardien' : 'Joueur ' + (i + 1);
+      lab.textContent = i === 0 ? tr('Gardien', 'Goalkeeper') : tr('Joueur ', 'Player ') + (i + 1);
       var inp = document.createElement('input');
       inp.type = 'text'; inp.id = 'nom' + i; inp.maxLength = 22; inp.autocomplete = 'off';
       inp.value = etat.noms[i] || '';
@@ -105,10 +106,10 @@
   [schema, titre, maillot, pelouse].forEach(function (e) { e.addEventListener('input', dessiner); e.addEventListener('change', dessiner); });
   document.getElementById('telecharger').addEventListener('click', function () {
     canvas.toBlob(function (blob) {
-      if (!blob) { O.texte('message', 'Téléchargement impossible sur ce navigateur : faites une capture d\'écran.'); return; }
+      if (!blob) { O.texte('message', tr('Téléchargement impossible sur ce navigateur : faites une capture d\'écran.', 'Download is not possible in this browser: take a screenshot instead.')); return; }
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
-      a.href = url; a.download = 'composition-' + schema.value + '.png';
+      a.href = url; a.download = tr('composition-', 'lineup-') + schema.value + '.png';
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
     }, 'image/png');

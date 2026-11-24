@@ -396,3 +396,8 @@ button.principal { font-size: 1.05rem; min-height: 52px; padding: 12px 22px; }
 .carte-outil .ico { color: var(--nuit); font-size: 1rem; }
 .outil h2.titre-outil { font-size: 1.25rem; margin: 18px 0 6px; padding-left: 0; }
 .outil h2.titre-outil::before { display: none; }
+
+/* ---- Bouton de langue FR / EN dans l'en-tête (24/11/2026) ---- */
+.actions-entete { display: flex; align-items: center; gap: 8px; }
+.langue { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 40px; padding: 0 10px; border: 1px solid var(--bord); border-radius: 10px; font-weight: 700; font-size: .9rem; letter-spacing: .04em; color: var(--texte); text-decoration: none; transition: border-color .2s, color .2s; }
+.langue:hover { border-color: var(--accent); color: var(--accent); }

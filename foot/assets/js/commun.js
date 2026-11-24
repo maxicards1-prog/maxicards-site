@@ -1,10 +1,15 @@
 /* Aides communes à tous les outils. Aucune donnée n'est envoyée : tout est calculé dans le navigateur. */
 (function () {
   'use strict';
+  var EN = document.documentElement.lang === 'en';
+  // tr(texte français, English text) : choisit selon la langue de la page.
+  var tr = function (fr, en) { return EN ? en : fr; };
   var nf = function (dec) {
-    return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    return new Intl.NumberFormat(EN ? 'en-GB' : 'fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
   var OCP = {
+    EN: EN,
+    tr: tr,
     // Lit un nombre dans un champ ; renvoie NaN si vide ou invalide, borné entre min et max.
     nombre: function (id, min, max) {
       var el = document.getElementById(id);
@@ -24,7 +29,7 @@
     pourcent: function (v, dec) {
       if (!isFinite(v)) { return '–'; }
       var d = typeof dec === 'number' ? dec : 1;
-      return nf(d).format(v * 100) + ' %';
+      return nf(d).format(v * 100) + (EN ? '%' : ' %');
     },
     entier: function (v) {
       if (!isFinite(v)) { return '–'; }

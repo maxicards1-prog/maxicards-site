@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var O = window.OCP;
+  var tr = O.tr;
   var TAXE = 0.05;
   // Paliers de prix du marché des transferts (relevés par la communauté, inchangés depuis plusieurs éditions).
   function pas(prix) {
@@ -32,7 +33,7 @@
     } else { O.texte('rMini', '–'); }
     if (isFinite(vente)) {
       var v = arrondiHaut(vente);
-      O.texte('message', v !== vente ? 'Le marché n\'accepte pas ' + O.entier(vente) + ' : prix valide le plus proche au-dessus = ' + O.entier(v) + ' pièces.' : '');
+      O.texte('message', v !== vente ? tr('Le marché n\'accepte pas ' + O.entier(vente) + ' : prix valide le plus proche au-dessus = ' + O.entier(v) + ' pièces.', 'The market does not accept ' + O.entier(vente) + ': the nearest valid price above is ' + O.entier(v) + ' coins.') : '');
     }
   }
   O.surChangement(['prixVente', 'prixAchat'], calculer);

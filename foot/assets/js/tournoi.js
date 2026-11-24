@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var O = window.OCP;
+  var tr = O.tr;
   var CLE = 'outilsfoot.tournoi.equipes';
   var zone = document.getElementById('equipes');
   var memo = O.lire(CLE);
@@ -43,7 +44,7 @@
     var equipes = lireEquipes();
     var sortie = document.getElementById('sortie');
     sortie.textContent = '';
-    if (equipes.length < 2) { O.texte('message', 'Ajoutez au moins 2 équipes (une par ligne).'); return; }
+    if (equipes.length < 2) { O.texte('message', tr('Ajoutez au moins 2 équipes (une par ligne).', 'Add at least 2 teams (one per line).')); return; }
     O.texte('message', '');
     var format = document.getElementById('format').value;
     var nbPoules = format === 'poules' ? Math.max(2, Math.min(Math.round(O.nombre('nbPoules', 2, 16)) || 2, Math.floor(equipes.length / 2))) : 1;
@@ -67,20 +68,20 @@
       }
       maxJournees = Math.max(maxJournees, js.length);
       var bloc = el('div', null, 'equipe');
-      var titre = nbPoules > 1 ? 'Poule ' + String.fromCharCode(65 + ip) : 'Championnat';
-      bloc.appendChild(el('h3', titre + ' : ' + poule.join(', ')));
+      var titre = nbPoules > 1 ? tr('Poule ', 'Group ') + String.fromCharCode(65 + ip) : tr('Championnat', 'League');
+      bloc.appendChild(el('h3', titre + tr(' : ', ': ') + poule.join(', ')));
       texte.push(titre);
       js.forEach(function (j, ij) {
         var d = el('div', null, 'journee');
-        d.appendChild(el('h3', 'Tour ' + (ij + 1)));
+        d.appendChild(el('h3', tr('Tour ', 'Round ') + (ij + 1)));
         var ul = el('ul');
         j.forEach(function (m) {
           if (m[0] === null || m[1] === null) {
-            ul.appendChild(el('li', 'Exempt : ' + (m[0] === null ? m[1] : m[0])));
+            ul.appendChild(el('li', tr('Exempt : ', 'Bye: ') + (m[0] === null ? m[1] : m[0])));
           } else {
             ul.appendChild(el('li', m[0] + ' – ' + m[1]));
             totalMatchs++;
-            texte.push('Tour ' + (ij + 1) + ' : ' + m[0] + ' – ' + m[1]);
+            texte.push(tr('Tour ', 'Round ') + (ij + 1) + tr(' : ', ': ') + m[0] + ' – ' + m[1]);
           }
         });
         d.appendChild(ul);
@@ -94,7 +95,7 @@
       // créneaux : les matchs se jouent par vagues de « terrains » matchs à la fois
       var vagues = Math.ceil(totalMatchs / terrains);
       var minutes = vagues * duree + Math.max(0, vagues - 1) * pause;
-      O.texte('rDuree', Math.floor(minutes / 60) + ' h ' + String(Math.round(minutes % 60)).padStart(2, '0'));
+      O.texte('rDuree', Math.floor(minutes / 60) + tr(' h ', 'h ') + String(Math.round(minutes % 60)).padStart(2, '0'));
     } else { O.texte('rDuree', '–'); }
     sortie.setAttribute('data-texte', texte.join('\n'));
   }
