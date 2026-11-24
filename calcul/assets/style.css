@@ -235,8 +235,8 @@ textarea { width: 100%; font: inherit; font-size: 1rem; padding: 10px 12px; bord
 .outil h3 { margin-top: 18px; }
 
 /* Polices hébergées ici (jeu latin, SIL Open Font License) : Plus Jakarta Sans (texte), Bricolage Grotesque (titres) */
-@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("polices/jakarta.woff2") format("woff2"); }
-@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 700 800; font-display: swap; src: url("polices/bricolage.woff2") format("woff2"); }
+@font-face { font-family: "Plus Jakarta Sans"; font-style: normal; font-weight: 400 700; font-display: optional; src: url("polices/jakarta.woff2") format("woff2"); }
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 700 800; font-display: optional; src: url("polices/bricolage.woff2") format("woff2"); }
 /* =====================================================================
    DESIGN 23/11 : identité (Bricolage Grotesque + Plus Jakarta Sans), couleurs par rubrique,
    bandeau d'accueil, cartes animées, résultats qui défilent, jauges. Animations CSS seulement.
