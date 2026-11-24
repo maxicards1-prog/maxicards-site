@@ -3,6 +3,8 @@
   'use strict';
   if (!window.POKEDEX || !window.TYPES_POKE || !document.getElementById('genererEquipe')) { return; }
   var P = window.POKEDEX, T = window.TYPES_POKE;
+  var EN = document.documentElement.lang === 'en';   // version anglaise (24/11/2026)
+  function t(fr, en) { return EN ? en : fr; }
   var equipe = [];          // entrées de POKEDEX
   var verrous = [];         // booléens par emplacement
 
@@ -58,7 +60,7 @@
       nom.textContent = p[1];
       var num = document.createElement('span');
       num.className = 'num';
-      num.textContent = 'n° ' + p[0] + ' · ' + p[2] + (p[2] === 1 ? 're' : 'e') + ' génération';
+      num.textContent = EN ? '#' + p[0] + ' · Gen ' + p[2] : 'n° ' + p[0] + ' · ' + p[2] + (p[2] === 1 ? 're' : 'e') + ' génération';
       var types = document.createElement('div');
       types.className = 'types';
       types.appendChild(puce(p[3]));
@@ -70,7 +72,7 @@
       cb.checked = !!verrous[i];
       cb.addEventListener('change', function () { verrous[i] = cb.checked; });
       lab.appendChild(cb);
-      lab.appendChild(document.createTextNode(' Garder'));
+      lab.appendChild(document.createTextNode(t(' Garder', ' Keep')));
       li.appendChild(nom); li.appendChild(num); li.appendChild(types); li.appendChild(lab);
       zone.appendChild(li);
     });
@@ -81,7 +83,7 @@
     var n = Math.max(1, Math.min(6, Number(document.getElementById('tailleEquipe').value) || 6));
     var msg = '';
     if (f.gens.length === 0) {
-      document.getElementById('messageEquipe').textContent = 'Cochez au moins une génération.';
+      document.getElementById('messageEquipe').textContent = t('Cochez au moins une génération.', 'Tick at least one generation.');
       return;
     }
     var gardes = [];
@@ -99,10 +101,12 @@
       typesPris[choix[3]] = true; if (choix[4] >= 0) { typesPris[choix[4]] = true; }
     }
     if (nouvelle.length < n) {
-      msg = 'Seulement ' + nouvelle.length + ' Pokémon correspondent à vos filtres : élargissez-les (générations, type, légendaires).';
+      msg = EN ? 'Only ' + nouvelle.length + ' Pokémon match your filters: widen them (generations, type, legendaries).'
+        : 'Seulement ' + nouvelle.length + ' Pokémon correspondent à vos filtres : élargissez-les (générations, type, légendaires).';
     } else {
       var nb = P.filter(function (p) { return admis(p, f); }).length;
-      msg = 'Tiré au hasard parmi ' + nb + ' Pokémon qui correspondent à vos filtres.';
+      msg = EN ? 'Picked at random from ' + nb.toLocaleString('en-US') + ' Pokémon that match your filters.'
+        : 'Tiré au hasard parmi ' + nb + ' Pokémon qui correspondent à vos filtres.';
     }
     equipe = nouvelle; verrous = nouveauxVerrous;
     afficher();
@@ -114,7 +118,7 @@
     var texte = equipe.map(function (p) {
       return p[1] + ' (' + T[p[3]].n + (p[4] >= 0 ? '/' + T[p[4]].n : '') + ')';
     }).join(', ');
-    var fini = function () { document.getElementById('messageEquipe').textContent = 'Équipe copiée : ' + texte; };
+    var fini = function () { document.getElementById('messageEquipe').textContent = t('Équipe copiée : ', 'Team copied: ') + texte; };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(texte).then(fini, fini);
     } else { fini(); }

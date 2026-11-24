@@ -1,10 +1,15 @@
 /* Aides communes à tous les outils. Aucune donnée n'est envoyée : tout est calculé dans le navigateur. */
 (function () {
   'use strict';
+  // Langue de la page (<html lang="en"> = version anglaise : dollars, nombres 1,234.5) ; 24/11/2026
+  var EN = document.documentElement.lang === 'en';
   var nf = function (dec) {
-    return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    return new Intl.NumberFormat(EN ? 'en-US' : 'fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
   var OCP = {
+    en: EN,
+    // Texte selon la langue de la page : O.t('français', 'English')
+    t: function (fr, en) { return EN ? en : fr; },
     // Lit un nombre dans un champ ; renvoie NaN si vide ou invalide, borné entre min et max.
     nombre: function (id, min, max) {
       var el = document.getElementById(id);
@@ -19,12 +24,13 @@
     },
     euros: function (v) {
       if (!isFinite(v)) { return '–'; }
+      if (EN) { return (v < 0 ? '-$' : '$') + nf(2).format(Math.abs(v)); }
       return nf(2).format(v) + ' €';
     },
     pourcent: function (v, dec) {
       if (!isFinite(v)) { return '–'; }
       var d = typeof dec === 'number' ? dec : 1;
-      return nf(d).format(v * 100) + ' %';
+      return nf(d).format(v * 100) + (EN ? '%' : ' %');
     },
     entier: function (v) {
       if (!isFinite(v)) { return '–'; }

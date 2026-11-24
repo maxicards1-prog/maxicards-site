@@ -30,6 +30,36 @@
   ];
   var SUFFIXES = { mignon: ['ou', 'ette', 'inou', 'ichou', 'y'], drole: ['ito', 'ounet', 'asse', 'man'],
     epique: ['or', 'ax', 'ion', 'ar'], classique: ['o', 'a', 'i', 'us'] };
+  // Version anglaise (24/11/2026) : listes écrites pour le site, même structure
+  var EN = document.documentElement.lang === 'en';
+  if (EN) {
+    MOTS = {
+      mignon: ['Peanut', 'Muffin', 'Cupcake', 'Biscuit', 'Pudding', 'Marshmallow', 'Cookie', 'Pebble', 'Button',
+        'Snuggles', 'Bubbles', 'Sprinkles', 'Honey', 'Maple', 'Waffles', 'Noodle', 'Pickle', 'Mochi', 'Cuddles',
+        'Fluffy', 'Pumpkin', 'Sugar', 'Bean', 'Twinkle', 'Dumpling', 'Jellybean', 'Nugget', 'Sweetpea'],
+      drole: ['Sir Chomps', 'Meatball', 'Taco', 'Burrito', 'Potato', 'Spud', 'Nacho', 'Pancake', 'Meatloaf',
+        'Gary', 'Kevin', 'Steve', 'Doug', 'Barry', 'Nigel', 'Uncle Bob', 'Grandpa', 'Captain Oops', 'Lasagna',
+        'Sock', 'Toaster', 'Wiggles', 'Hiccup', 'Dorito', 'Sushi', 'Chowder', 'Pretzel', 'Brownie'],
+      epique: ['Titan', 'Storm', 'Havoc', 'Zenith', 'Nova', 'Eclipse', 'Typhoon', 'Tempest', 'Inferno', 'Comet',
+        'Colossus', 'Gale', 'Meteor', 'Thunder', 'Fury', 'Spartan', 'Vortex', 'Oblivion', 'Omen', 'Apex',
+        'Bastion', 'Warlord', 'Kraken', 'Phoenix', 'Valkyrie', 'Mirage', 'Sentinel', 'Chimera'],
+      classique: ['Max', 'Rex', 'Leo', 'Milo', 'Luna', 'Nala', 'Oscar', 'Rio', 'Kiwi', 'Sky', 'Jade', 'Ruby',
+        'Sapphire', 'Onyx', 'Opal', 'Amber', 'Zelda', 'Tom', 'Lola', 'Hugo', 'Nina', 'Felix', 'Iris', 'Lou', 'Sam',
+        'Ellie', 'Mia', 'Noah']
+    };
+    PAR_TYPE = [
+      ['Plain', 'Buddy', 'Average'], ['Uppercut', 'Judo', 'Boxer', 'Brawler'], ['Zephyr', 'Feather', 'Cloud', 'Breeze'],
+      ['Venom', 'Toxic', 'Vial', 'Hemlock'], ['Clay', 'Dune', 'Sandy', 'Mudpie'], ['Pebble', 'Flint', 'Rocky', 'Granite'],
+      ['Beetle', 'Bzzz', 'Cocoon', 'Cricket'], ['Ghostie', 'Boo', 'Shadow', 'Mist'], ['Bolt', 'Chrome', 'Titanium', 'Rivet'],
+      ['Ember', 'Ash', 'Blaze', 'Ignis', 'Chili'], ['Wave', 'Splash', 'Abyss', 'Marina', 'Bubble'],
+      ['Sprout', 'Fern', 'Moss', 'Basil', 'Clover'], ['Volt', 'Watt', 'Zap', 'Sparky', 'Static'],
+      ['Oracle', 'Mystic', 'Dreamer', 'Hypno'], ['Frost', 'Blizzard', 'Icicle', 'Sorbet', 'Flurry'],
+      ['Drako', 'Scales', 'Wyvern', 'Talon'], ['Midnight', 'Raven', 'Mischief', 'Nocturne'],
+      ['Glitter', 'Pixie', 'Fairy', 'Sparkle', 'Starlight']
+    ];
+    SUFFIXES = { mignon: ['y', 'ie', 'kins', 'boo', 'ums'], drole: ['zilla', 'inator', 'meister', 'man'],
+      epique: ['or', 'ax', 'ion', 'ar'], classique: ['o', 'a', 'i', 'us'] };
+  }
 
   function hasard(n) {
     if (window.crypto && window.crypto.getRandomValues) {
@@ -62,9 +92,15 @@
       if (p[4] >= 0) { PAR_TYPE[p[4]].forEach(function (m) { candidats.push(m); }); }
       var r = racine(p[1]);
       SUFFIXES[style].forEach(function (s) { candidats.push(majuscule((r + s).toLowerCase())); });
+      if (EN) {
+        if (style === 'mignon') { candidats.push('Lil ' + majuscule(r.toLowerCase()), 'Mini' + r.toLowerCase()); }
+        if (style === 'epique') { candidats.push(majuscule(r.toLowerCase()) + ' I', 'Mega' + r.toLowerCase()); }
+        if (style === 'drole') { candidats.push('Mr. ' + majuscule(r.toLowerCase()), majuscule(r.toLowerCase()) + 'zilla'); }
+      } else {
       if (style === 'mignon') { candidats.push('Mini' + r.toLowerCase(), "P'tit " + r); }
       if (style === 'epique') { candidats.push(majuscule(r.toLowerCase()) + ' Ier', 'Méga' + r.toLowerCase()); }
       if (style === 'drole') { candidats.push(majuscule(r.toLowerCase()) + 'ounet', 'Monsieur ' + r); }
+      }
     }
     var vus = {}, sortie = [];
     candidats = candidats.filter(function (c) {
@@ -81,18 +117,21 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.textContent = s;
-      b.title = 'Copier « ' + s + ' »';
+      b.title = EN ? 'Copy "' + s + '"' : 'Copier « ' + s + ' »';
       b.addEventListener('click', function () {
-        var ok = function () { document.getElementById('messageSurnom').textContent = '« ' + s + ' » copié (' + s.length + ' caractères).'; };
+        var ok = function () { document.getElementById('messageSurnom').textContent = EN ? '"' + s + '" copied (' + s.length + ' characters).' : '« ' + s + ' » copié (' + s.length + ' caractères).'; };
         if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(s).then(ok, ok); } else { ok(); }
       });
       var l = document.createElement('span');
       l.className = 'aide';
-      l.textContent = s.length + ' car.';
+      l.textContent = s.length + (EN ? ' chars' : ' car.');
       li.appendChild(b); li.appendChild(l);
       zone.appendChild(li);
     });
-    document.getElementById('messageSurnom').textContent = p
+    document.getElementById('messageSurnom').textContent = EN
+      ? (p ? 'Ideas for ' + p[1] + ' (types included). Click a nickname to copy it.'
+        : 'Tip: type a species to get ideas based on its name and types. Click to copy.')
+      : p
       ? 'Idées pour ' + p[1] + ' (types pris en compte). Cliquez sur un surnom pour le copier.'
       : 'Astuce : écrivez une espèce pour des idées liées à son nom et à ses types. Cliquez pour copier.';
   }

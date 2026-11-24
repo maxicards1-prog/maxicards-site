@@ -428,3 +428,8 @@ ol.etapes li::before { background: var(--degrade); }
   .champ label, .etiquette, .ligne-case, .carte-outil span, .carte-outil .carte-texte, .poke .verrou { font-size: 1rem; }
   .table-types { font-size: .78rem; }
 }
+
+/* Sélecteur de langue FR / EN (24/11/2026) : discret, à gauche du menu */
+.langue { margin-left: auto; padding: 8px 10px; min-width: 44px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--bord); border-radius: 10px; font-weight: 700; font-size: .9rem; letter-spacing: .04em; color: var(--texte-doux); text-decoration: none; transition: border-color .2s, color .2s, background .2s; }
+.langue:hover, .langue:focus-visible { border-color: var(--accent); color: var(--accent); background: var(--accent-doux); }
+.entete .conteneur > .langue + .menu { margin-left: 0; }

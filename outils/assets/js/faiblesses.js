@@ -3,6 +3,8 @@
   'use strict';
   if (!window.TYPES_POKE || !window.TABLE_TYPES || !document.getElementById('type1')) { return; }
   var T = window.TYPES_POKE, M = window.TABLE_TYPES, P = window.POKEDEX || [];
+  var EN = document.documentElement.lang === 'en';   // version anglaise (24/11/2026)
+  function t(fr, en) { return EN ? en : fr; }
   var s1 = document.getElementById('type1'), s2 = document.getElementById('type2');
   var champNom = document.getElementById('nomPokemon');
 
@@ -37,7 +39,7 @@
     var zone = document.getElementById(id);
     while (zone.firstChild) { zone.removeChild(zone.firstChild); }
     if (!liste.length) {
-      var v = document.createElement('span'); v.className = 'aide'; v.textContent = 'aucun';
+      var v = document.createElement('span'); v.className = 'aide'; v.textContent = t('aucun', 'none');
       zone.appendChild(v); return;
     }
     liste.forEach(function (i) { zone.appendChild(puce(i)); });
@@ -63,7 +65,10 @@
     var nomTypes = T[a].n + (b >= 0 ? ' / ' + T[b].n : '');
     var nbFaibles = groupes[4].length + groupes[2].length;
     var res = groupes[0.5].length + groupes[0.25].length + groupes[0].length;
-    document.getElementById('resumeTypes').textContent = 'Type ' + nomTypes + ' : ' + nbFaibles +
+    document.getElementById('resumeTypes').textContent = EN
+      ? nomTypes + ' type: ' + nbFaibles + (nbFaibles === 1 ? ' weakness, ' : ' weaknesses, ') + res +
+        (res === 1 ? ' resistance or immunity.' : ' resistances or immunities.')
+      : 'Type ' + nomTypes + ' : ' + nbFaibles +
       ' faiblesse' + (nbFaibles > 1 ? 's' : '') + ', ' + res + ' résistance' + (res > 1 ? 's' : '') +
       ' ou immunité' + (res > 1 ? 's' : '') + '.';
   }
@@ -72,9 +77,9 @@
     var p = index[normaliser(champNom.value)];
     var info = document.getElementById('infoNom');
     if (!champNom.value.trim()) { info.textContent = ''; return; }
-    if (!p) { info.textContent = 'Nom inconnu : choisissez dans la liste ou réglez les types à la main.'; return; }
+    if (!p) { info.textContent = t('Nom inconnu : choisissez dans la liste ou réglez les types à la main.', 'Unknown name: pick one from the list or set the types by hand.'); return; }
     s1.value = String(p[3]); s2.value = String(p[4]);
-    info.textContent = p[1] + ' (n° ' + p[0] + ') : types chargés.';
+    info.textContent = EN ? p[1] + ' (#' + p[0] + '): types loaded.' : p[1] + ' (n° ' + p[0] + ') : types chargés.';
     calculer();
   }
 

@@ -23,7 +23,7 @@
       if (!(prix > 0) || !(nb >= 1)) { return; }
       nb = Math.floor(nb);
       var total = prix + (isFinite(port) ? port : 0);
-      var nom = String(document.getElementById('nom' + k).value).trim().slice(0, 40) || ('Offre ' + k);
+      var nom = String(document.getElementById('nom' + k).value).trim().slice(0, 40) || (O.t('Offre ', 'Offer ') + k);
       lignes.push({ nom: nom, total: total, nb: nb, parBooster: total / nb });
     });
     var corps = document.getElementById('resultatsOffres');
@@ -39,17 +39,17 @@
       cellule(tr, cartes >= 1 ? O.euros(l.parBooster / cartes) : '–', 'nombre');
       if (unite > 0) {
         var eco = unite * l.nb - l.total;
-        cellule(tr, (eco >= 0 ? '' : '+') + O.euros(Math.abs(eco)) + (eco >= 0 ? ' économisés' : ' de plus'), 'nombre');
+        cellule(tr, (eco >= 0 ? '' : '+') + O.euros(Math.abs(eco)) + (eco >= 0 ? O.t(' économisés', ' saved') : O.t(' de plus', ' more')), 'nombre');
       } else {
         cellule(tr, '–', 'nombre');
       }
       corps.appendChild(tr);
     });
     var msg = '';
-    if (lignes.length === 0) { msg = 'Saisissez au moins un prix et un nombre de boosters.'; }
+    if (lignes.length === 0) { msg = O.t('Saisissez au moins un prix et un nombre de boosters.', 'Enter at least one price and a number of packs.'); }
     else if (lignes.length > 1) {
       var best = lignes.filter(function (l) { return l.parBooster === min; })[0];
-      msg = 'Le moins cher par booster : ' + best.nom + ' (' + O.euros(best.parBooster) + ' le booster).';
+      msg = O.t('Le moins cher par booster : ', 'Cheapest per pack: ') + best.nom + ' (' + O.euros(best.parBooster) + O.t(' le booster).', ' per pack).');
     }
     O.texte('rMessage', msg);
   }

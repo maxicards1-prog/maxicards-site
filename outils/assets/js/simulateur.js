@@ -77,11 +77,11 @@
       div.className = 'booster';
       var t = document.createElement('div');
       t.className = 'titre';
-      t.textContent = 'Booster ' + b;
+      t.textContent = O.t('Booster ', 'Pack ') + b;
       div.appendChild(t);
       var c = document.createElement('div');
       c.className = 'cartes';
-      if (mode === 'pocket') { c.appendChild(carte('3 × 1 losange', 1)); }
+      if (mode === 'pocket') { c.appendChild(carte(O.t('3 × 1 losange', '3 × 1 diamond'), 1)); }
       obtenues.forEach(function (r) { c.appendChild(carte(r.nom, r.niveau)); });
       div.appendChild(c);
       zone.appendChild(div);
@@ -91,12 +91,17 @@
       var attendu = mode === 'pocket' ? n * (r.slot4 + r.slot5) / 100 : n / r.unSur;
       ligneRecap(corps, r.nom, compte[r.id], attendu);
     });
-    var resume = n + ' booster' + (n > 1 ? 's' : '') + ' ouvert' + (n > 1 ? 's' : '') + '. ';
+    var resume = O.en ? n + ' pack' + (n > 1 ? 's' : '') + ' opened. '
+      : n + ' booster' + (n > 1 ? 's' : '') + ' ouvert' + (n > 1 ? 's' : '') + '. ';
     if (mode === 'mega') {
-      resume += vides + ' sans carte Double Rare ou mieux (non affichés). ';
-      resume += compte.sir + compte.mhr > 0 ? 'Bravo, au moins une Illustration Spéciale Rare ou mieux !' : 'Pas d’Illustration Spéciale Rare cette fois.';
+      resume += vides + O.t(' sans carte Double Rare ou mieux (non affichés). ', ' with no Double Rare or better (not shown). ');
+      resume += compte.sir + compte.mhr > 0
+        ? O.t('Bravo, au moins une Illustration Spéciale Rare ou mieux !', 'Nice, at least one Special Illustration Rare or better!')
+        : O.t('Pas d’Illustration Spéciale Rare cette fois.', 'No Special Illustration Rare this time.');
     } else {
-      resume += (compte.e2 + compte.e3 + compte.cr) > 0 ? 'Au moins une carte 2 étoiles ou mieux !' : 'Pas de carte 2 étoiles ou mieux cette fois.';
+      resume += (compte.e2 + compte.e3 + compte.cr) > 0
+        ? O.t('Au moins une carte 2 étoiles ou mieux !', 'At least one 2-star card or better!')
+        : O.t('Pas de carte 2 étoiles ou mieux cette fois.', 'No 2-star card or better this time.');
     }
     O.texte('rResume', resume);
   }

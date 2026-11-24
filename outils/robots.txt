@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://maxicards.net/outils/sitemap.xml
+Sitemap: https://maxicards.net/outils/en/sitemap.xml

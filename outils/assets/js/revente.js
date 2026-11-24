@@ -11,6 +11,45 @@
   };
 
   function centimeSup(v) { return Math.ceil(Math.round(v * 10000) / 100) / 100; }
+
+  // ---- Version anglaise (24/11/2026) : eBay.com et TCGplayer, frais publiés, montants en dollars ----
+  // eBay.com sans boutique, catégorie cartes à collectionner : 13,25 % du total de la vente (prix + port payé par
+  // l'acheteur) jusqu'à 7 500 $, 2,35 % au-delà, + 0,30 $ par commande (0,40 $ au-dessus de 10 $).
+  // TCGplayer vendeur Marketplace niveau 1-4 : commission 10,75 % du prix (plafond 75 $ par article, depuis le
+  // 10/02/2026) + traitement du paiement 2,5 % de (prix + port) + 0,30 $. La taxe de vente n'est pas comptée.
+  if (O.en) {
+    PLATEFORMES = {
+      ebay: { nom: 'eBay.com (no Store)' },
+      tcgplayer: { nom: 'TCGplayer (Level 1-4)' },
+      perso: { nom: 'Custom', taux: null, fixe: null, plafond: null }
+    };
+  }
+  function cent(v) { return Math.round(v * 100) / 100; }
+  function fraisEn(cle, vente, port) {
+    var total = vente + port;
+    if (cle === 'ebay') {
+      return cent(0.1325 * Math.min(total, 7500) + 0.0235 * Math.max(total - 7500, 0)) + (total <= 10 ? 0.30 : 0.40);
+    }
+    if (cle === 'tcgplayer') {
+      return Math.min(cent(0.1075 * vente), 75) + cent(0.025 * total) + 0.30;
+    }
+    return cent(vente * val('tauxPerso', 100) / 100) + val('fixePerso', 1e6);
+  }
+  function bilanEn(cle, e) {
+    function calc(vente) {
+      var com = fraisEn(cle, vente, e.portEncaisse);
+      var autres = cent(vente * e.autresPct);
+      var net = vente + e.portEncaisse - com - autres - e.portReel - e.emballage;
+      return { com: com + autres, net: net, benef: net - e.achat - e.gradation };
+    }
+    var x = calc(e.vente);
+    // prix minimum sans perte : recherche par dichotomie (les frais ne suivent pas une formule simple)
+    var bas = 0, haut = 1e7;
+    if (calc(haut).benef < 0) { x.seuil = 0; return x; }
+    for (var i = 0; i < 60; i++) { var m = (bas + haut) / 2; if (calc(m).benef >= 0) { haut = m; } else { bas = m; } }
+    x.seuil = Math.ceil(Math.round(haut * 10000) / 100) / 100;
+    return x;
+  }
   function val(id, max) { var v = O.nombre(id, 0, max); return isFinite(v) ? v : 0; }
 
   function regles(cle) {
@@ -58,7 +97,7 @@
     var cle = document.getElementById('plateforme').value;
     document.getElementById('blocPerso').hidden = cle !== 'perso';
     var e = entree();
-    var b = bilan(regles(cle), e);
+    var b = O.en ? bilanEn(cle, e) : bilan(regles(cle), e);
     O.texte('rCommission', O.euros(b.com));
     O.texte('rNet', O.euros(b.net));
     O.texte('rBenefice', O.euros(b.benef));
@@ -72,9 +111,9 @@
     var corps = document.getElementById('comparaison');
     while (corps.firstChild) { corps.removeChild(corps.firstChild); }
     var meilleur = null, lignes = [];
-    ['cardmarket', 'ebay', 'perso'].forEach(function (k) {
+    (O.en ? ['ebay', 'tcgplayer', 'perso'] : ['cardmarket', 'ebay', 'perso']).forEach(function (k) {
       if (k === 'perso' && cle !== 'perso') { return; }
-      var r = regles(k), x = bilan(r, e);
+      var r = O.en ? PLATEFORMES[k] : regles(k), x = O.en ? bilanEn(k, e) : bilan(r, e);
       lignes.push({ r: r, x: x });
       if (meilleur === null || x.benef > meilleur) { meilleur = x.benef; }
     });
