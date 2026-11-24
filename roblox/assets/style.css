@@ -314,3 +314,20 @@ main p, main li { max-width: 70ch; }
   .acces a { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 1.02rem; }
   h1 { font-size: 1.7rem; }
 }
+
+/* ---- Sélecteur de langue (24/11/2026) : <details> sans JavaScript, à côté du menu ---- */
+.entete-droite { display: flex; align-items: center; gap: 8px; }
+.langue summary { list-style: none; cursor: pointer; padding: 8px 10px; border: 2px solid var(--bord); border-radius: 12px; font-weight: 800; font-size: .9rem; min-width: 44px; text-align: center; transition: border-color .15s; }
+.langue summary:hover { border-color: var(--accent); }
+.langue summary::-webkit-details-marker { display: none; }
+.langue nav { position: absolute; right: 16px; top: 58px; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre-haute); padding: 8px; min-width: 170px; }
+.langue nav a { display: block; padding: 10px 12px; border-radius: 10px; color: var(--texte); text-decoration: none; font-weight: 700; }
+.langue nav a:hover, .langue nav a[aria-current="page"] { background: var(--surface-2); color: var(--accent); }
+.langue[open] nav { animation: surgir .18s ease-out; }
+@media (max-width: 440px) {
+  .marque.nom-long .nom { font-size: 1.02rem; }
+  .marque.nom-long small { font-size: .68rem; }
+}/* Langues hors fr : un H1 traduit court peut tenir sur 1 ou 2 lignes selon la police (avant / après chargement) -> 2 lignes réservées sur téléphone (anti-CLS) */
+@media (max-width: 600px) {
+  html:not([lang="fr"]) .titre-page h1 { min-height: 2.3em; }
+}

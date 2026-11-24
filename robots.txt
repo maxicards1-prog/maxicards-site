@@ -10,3 +10,7 @@ Sitemap: https://maxicards.net/convertir/sitemap.xml
 Sitemap: https://maxicards.net/ia/sitemap.xml
 Sitemap: https://maxicards.net/course/sitemap.xml
 Sitemap: https://maxicards.net/course/sitemap-en.xml
+Sitemap: https://maxicards.net/roblox/sitemap.xml
+Sitemap: https://maxicards.net/roblox/sitemap-en.xml
+Sitemap: https://maxicards.net/roblox/sitemap-es.xml
+Sitemap: https://maxicards.net/roblox/sitemap-pt.xml
