@@ -3,13 +3,18 @@
 (() => {
   'use strict';
 
+  // Langue de la page (<html lang="en"> pour /convertir/en/) : T(texte français, texte anglais).
+  // Le français est le texte d'origine, inchangé ; l'anglais n'est utilisé que sur les pages anglaises.
+  const EN = (document.documentElement.lang || '').toLowerCase().startsWith('en');
+  const T = (fr, en) => (EN ? en : fr);
+
   const BASE = document.documentElement.dataset.base || '/convertir';
   const LIB = BASE + '/assets/lib/';
   const MO = 1024 * 1024;
   const MOBILE = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   const LIMITE_PIXELS = MOBILE ? 16000000 : 40000000;
   const LIMITES = { pdf: 300 * MO, image: 80 * MO, heic: 80 * MO, svg: 20 * MO, video: 1024 * MO };
-  const NOMS_TYPES = { pdf: 'PDF', image: 'image', heic: 'photo HEIC', svg: 'image SVG', video: 'vidéo ou audio' };
+  const NOMS_TYPES = { pdf: 'PDF', image: 'image', heic: T('photo HEIC', 'HEIC photo'), svg: T('image SVG', 'SVG image'), video: T('vidéo ou audio', 'video or audio') };
 
   // ---------- petites aides ----------
   function el(tag, attrs, ...enfants) {
@@ -24,12 +29,12 @@
     return n;
   }
   function taille(o) {
-    if (o < 1024) return o + ' o';
-    if (o < MO) return (o / 1024).toFixed(0) + ' Ko';
-    return (o / MO).toFixed(o < 10 * MO ? 1 : 0).replace('.', ',') + ' Mo';
+    if (o < 1024) return o + T(' o', ' B');
+    if (o < MO) return (o / 1024).toFixed(0) + T(' Ko', ' KB');
+    return (o / MO).toFixed(o < 10 * MO ? 1 : 0).replace('.', EN ? '.' : ',') + T(' Mo', ' MB');
   }
   const pause = () => new Promise((r) => setTimeout(r, 0));
-  const sansExt = (nom) => nom.replace(/\.[^.]+$/, '') || 'fichier';
+  const sansExt = (nom) => nom.replace(/\.[^.]+$/, '') || T('fichier', 'file');
   const ext = (nom) => (nom.match(/\.([^.]+)$/) || ['', ''])[1].toLowerCase();
   class Erreur extends Error {}
 
@@ -53,14 +58,14 @@
     const res = [];
     const vus = new Set();
     const morceaux = texte.replace(/\s+/g, '').split(/[,;]/).filter(Boolean);
-    if (!morceaux.length) throw new Erreur('Indiquez des numéros de pages, par exemple : 1-3, 5');
+    if (!morceaux.length) throw new Erreur(T('Indiquez des numéros de pages, par exemple : 1-3, 5', 'Enter page numbers, for example: 1-3, 5'));
     for (const m of morceaux) {
       const r = m.match(/^(\d*)-(\d*)$/);
       let a; let b;
       if (r) { a = r[1] ? +r[1] : 1; b = r[2] ? +r[2] : total; } else if (/^\d+$/.test(m)) { a = b = +m; } else {
-        throw new Erreur(`« ${m} » n'est pas compris. Écrivez par exemple : 1-3, 5, 8-10`);
+        throw new Erreur(T(`« ${m} » n'est pas compris. Écrivez par exemple : 1-3, 5, 8-10`, `“${m}” is not understood. Write, for example: 1-3, 5, 8-10`));
       }
-      if (a < 1 || b < 1 || a > total || b > total) throw new Erreur(`La page ${Math.max(a, b)} n'existe pas : ce PDF a ${total} page${total > 1 ? 's' : ''}.`);
+      if (a < 1 || b < 1 || a > total || b > total) throw new Erreur(T(`La page ${Math.max(a, b)} n'existe pas : ce PDF a ${total} page${total > 1 ? 's' : ''}.`, `Page ${Math.max(a, b)} does not exist: this PDF has ${total} page${total > 1 ? 's' : ''}.`));
       if (a > b) [a, b] = [b, a];
       for (let i = a; i <= b; i++) if (!vus.has(i)) { vus.add(i); res.push(i - 1); }
     }
@@ -78,7 +83,7 @@
         const s = document.createElement('script');
         s.src = src;
         s.onload = ok;
-        s.onerror = () => { delete scripts[src]; ko(new Erreur('Un module n\'a pas pu se charger. Vérifiez votre connexion puis réessayez.')); };
+        s.onerror = () => { delete scripts[src]; ko(new Erreur(T('Un module n\'a pas pu se charger. Vérifiez votre connexion puis réessayez.', 'A component could not load. Check your connection and try again.'))); };
         document.head.appendChild(s);
       });
     }
@@ -92,7 +97,7 @@
       pdfjsP = import(LIB + 'pdfjs-4.10.38/pdf.min.mjs').then((m) => {
         m.GlobalWorkerOptions.workerSrc = LIB + 'pdfjs-4.10.38/pdf.worker.min.mjs';
         return m;
-      }).catch((e) => { pdfjsP = null; throw new Erreur('Le lecteur de PDF n\'a pas pu se charger (' + e.message + ').'); });
+      }).catch((e) => { pdfjsP = null; throw new Erreur(T('Le lecteur de PDF n\'a pas pu se charger (', 'The PDF reader could not load (') + e.message + ').'); });
     }
     return pdfjsP;
   }
@@ -107,8 +112,8 @@
         standardFontDataUrl: LIB + 'pdfjs-4.10.38/standard_fonts/',
       }).promise;
     } catch (e) {
-      if (e && e.name === 'PasswordException') throw new Erreur(`« ${f.name} » est protégé par un mot de passe. Ouvrez-le avec son mot de passe et enregistrez une copie sans protection, puis réessayez.`);
-      throw new Erreur(`« ${f.name} » n'est pas un PDF lisible (fichier abîmé ou incomplet).`);
+      if (e && e.name === 'PasswordException') throw new Erreur(T(`« ${f.name} » est protégé par un mot de passe. Ouvrez-le avec son mot de passe et enregistrez une copie sans protection, puis réessayez.`, `“${f.name}” is password-protected. Open it with its password, save an unprotected copy, then try again.`));
+      throw new Erreur(T(`« ${f.name} » n'est pas un PDF lisible (fichier abîmé ou incomplet).`, `“${f.name}” is not a readable PDF (damaged or incomplete file).`));
     }
   }
   async function ouvrirPdfLib(f) {
@@ -117,8 +122,8 @@
     try {
       return await PDFDocument.load(octets, { updateMetadata: false });
     } catch (e) {
-      if (e && /encrypt/i.test(e.message || '')) throw new Erreur(`« ${f.name} » est protégé (chiffré). Enregistrez-en une copie sans protection depuis votre lecteur de PDF, puis réessayez.`);
-      throw new Erreur(`« ${f.name} » n'est pas un PDF lisible (fichier abîmé ou incomplet).`);
+      if (e && /encrypt/i.test(e.message || '')) throw new Erreur(T(`« ${f.name} » est protégé (chiffré). Enregistrez-en une copie sans protection depuis votre lecteur de PDF, puis réessayez.`, `“${f.name}” is protected (encrypted). Save an unprotected copy from your PDF reader, then try again.`));
+      throw new Erreur(T(`« ${f.name} » n'est pas un PDF lisible (fichier abîmé ou incomplet).`, `“${f.name}” is not a readable PDF (damaged or incomplete file).`));
     }
   }
 
@@ -132,10 +137,10 @@
         const a = attentes.get(e.data.id);
         if (!a) return;
         attentes.delete(e.data.id);
-        if (e.data.erreur) a.ko(new Erreur(`« ${a.nom} » : ${e.data.erreur}`)); else a.ok(e.data);
+        if (e.data.erreur) a.ko(new Erreur(T(`« ${a.nom} » : ${e.data.erreur}`, `“${a.nom}”: ${e.data.erreur}`))); else a.ok(e.data);
       };
       travailleur.onerror = () => {
-        for (const a of attentes.values()) a.ko(new Erreur('Le décodeur HEIC a planté (photo trop grande pour cet appareil ?).'));
+        for (const a of attentes.values()) a.ko(new Erreur(T('Le décodeur HEIC a planté (photo trop grande pour cet appareil ?).', 'The HEIC decoder crashed (photo too large for this device?).')));
         attentes.clear();
         travailleur = null;
       };
@@ -173,7 +178,7 @@
         const bm = await createImageBitmap(f);
         return { source: bm, w: bm.width, h: bm.height, liberer: () => bm.close() };
       } catch (e2) {
-        throw new Erreur(`Impossible de lire l'image « ${f.name} » : format non reconnu par votre navigateur.`);
+        throw new Erreur(T(`Impossible de lire l'image « ${f.name} » : format non reconnu par votre navigateur.`, `Can't read the image “${f.name}”: your browser does not recognize this format.`));
       }
     }
   }
@@ -191,7 +196,7 @@
     const c = document.createElement('canvas');
     c.width = w; c.height = h;
     const ctx = c.getContext('2d');
-    if (!ctx) throw new Erreur('Image trop grande pour la mémoire de cet appareil.');
+    if (!ctx) throw new Erreur(T('Image trop grande pour la mémoire de cet appareil.', 'Image too large for this device\'s memory.'));
     if (fondBlanc) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); }
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(im.source, 0, 0, w, h);
@@ -199,8 +204,8 @@
   }
   function versBlob(c, type, qualite) {
     return new Promise((ok, ko) => c.toBlob((b) => {
-      if (!b) ko(new Erreur('Image trop grande pour la mémoire de cet appareil. Essayez sur un ordinateur.'));
-      else if (type && b.type !== type) ko(new Erreur(type === 'image/webp' ? 'Votre navigateur (Safari) ne sait pas créer d\'images WEBP. Choisissez JPG ou PNG, ou utilisez Chrome, Edge ou Firefox.' : 'Votre navigateur ne sait pas créer ce format d\'image.'));
+      if (!b) ko(new Erreur(T('Image trop grande pour la mémoire de cet appareil. Essayez sur un ordinateur.', 'Image too large for this device\'s memory. Try on a computer.')));
+      else if (type && b.type !== type) ko(new Erreur(type === 'image/webp' ? T('Votre navigateur (Safari) ne sait pas créer d\'images WEBP. Choisissez JPG ou PNG, ou utilisez Chrome, Edge ou Firefox.', 'Your browser (Safari) cannot create WEBP images. Choose JPG or PNG, or use Chrome, Edge or Firefox.') : T('Votre navigateur ne sait pas créer ce format d\'image.', 'Your browser cannot create this image format.')));
       else ok(b);
     }, type, qualite));
   }
@@ -262,7 +267,7 @@
       const echelle = Number(o.resolution) / 72;
       const chiffres = String(n).length;
       for (let i = 0; i < pages.length; i++) {
-        ui.progres(`« ${f.name} » : page ${pages[i] + 1} (${i + 1} sur ${pages.length})`, i / pages.length);
+        ui.progres(T(`« ${f.name} » : page ${pages[i] + 1} (${i + 1} sur ${pages.length})`, `“${f.name}”: page ${pages[i] + 1} (${i + 1} of ${pages.length})`), i / pages.length);
         const page = await doc.getPage(pages[i] + 1);
         let vp = page.getViewport({ scale: echelle });
         if (vp.width * vp.height > LIMITE_PIXELS) {
@@ -290,7 +295,7 @@
     const marge = Number(o.marge) || 0;
     for (let i = 0; i < fichiers.length; i++) {
       const f = fichiers[i];
-      ui.progres(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, i / fichiers.length);
+      ui.progres(T(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, `Image ${i + 1} of ${fichiers.length}: “${f.name}”`), i / fichiers.length);
       let emb = null;
       if ((f.type || '') === 'image/png') {
         try { emb = await pdf.embedPng(await f.arrayBuffer()); } catch (e) { emb = null; }
@@ -312,7 +317,7 @@
       pdf.addPage([pw, ph]).drawImage(emb, { x: (pw - w) / 2, y: (ph - h) / 2, width: w, height: h });
       await pause();
     }
-    ui.progres('Création du PDF…', 1);
+    ui.progres(T('Création du PDF…', 'Creating the PDF…'), 1);
     const nom = fichiers.length === 1 ? sansExt(fichiers[0].name) + '.pdf' : 'images.pdf';
     return { sorties: [{ nom, blob: new Blob([await pdf.save()], { type: 'application/pdf' }) }] };
   }
@@ -322,7 +327,7 @@
     const sorties = [];
     for (let i = 0; i < fichiers.length; i++) {
       const f = fichiers[i];
-      ui.progres(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, i / fichiers.length);
+      ui.progres(T(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, `Image ${i + 1} of ${fichiers.length}: “${f.name}”`), i / fichiers.length);
       const im = await decoderImage(f);
       const c = toile(im, 0, 0, type === 'image/jpeg');
       im.liberer();
@@ -338,7 +343,7 @@
     let avant = 0; let apres = 0;
     for (let i = 0; i < fichiers.length; i++) {
       const f = fichiers[i];
-      ui.progres(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, i / fichiers.length);
+      ui.progres(T(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, `Image ${i + 1} of ${fichiers.length}: “${f.name}”`), i / fichiers.length);
       const im = await decoderImage(f);
       const max = Number(o.maxi) || 0;
       const k = max && Math.max(im.w, im.h) > max ? max / Math.max(im.w, im.h) : 1;
@@ -349,17 +354,17 @@
       c.width = c.height = 0;
       avant += f.size;
       if (b.size >= f.size && k === 1) {
-        notes.push(`« ${f.name} » est déjà bien compressée : l'original est gardé tel quel.`);
+        notes.push(T(`« ${f.name} » est déjà bien compressée : l'original est gardé tel quel.`, `“${f.name}” is already well compressed: the original is kept as is.`));
         sorties.push({ nom: f.name, blob: f });
         apres += f.size;
       } else {
-        sorties.push({ nom: `${sansExt(f.name)}-compresse.${EXT[type]}`, blob: b });
+        sorties.push({ nom: T(`${sansExt(f.name)}-compresse.${EXT[type]}`, `${sansExt(f.name)}-compressed.${EXT[type]}`), blob: b });
         apres += b.size;
       }
       await pause();
     }
     const gain = avant ? Math.round((1 - apres / avant) * 100) : 0;
-    notes.unshift(`Avant : ${taille(avant)}. Après : ${taille(apres)}${gain > 0 ? ` (−${gain} %)` : ''}.`);
+    notes.unshift(T(`Avant : ${taille(avant)}. Après : ${taille(apres)}${gain > 0 ? ` (−${gain} %)` : ''}.`, `Before: ${taille(avant)}. After: ${taille(apres)}${gain > 0 ? ` (−${gain}%)` : ''}.`));
     return { sorties, notes };
   }
 
@@ -367,17 +372,17 @@
     const sorties = [];
     for (let i = 0; i < fichiers.length; i++) {
       const f = fichiers[i];
-      ui.progres(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, i / fichiers.length);
+      ui.progres(T(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, `Image ${i + 1} of ${fichiers.length}: “${f.name}”`), i / fichiers.length);
       const im = await decoderImage(f);
       let w; let h;
       if (o.mode === 'pourcent') {
         const p = Number(o.pourcent);
-        if (!(p > 0 && p <= 400)) throw new Erreur('Indiquez un pourcentage entre 1 et 400.');
+        if (!(p > 0 && p <= 400)) throw new Erreur(T('Indiquez un pourcentage entre 1 et 400.', 'Enter a percentage between 1 and 400.'));
         w = im.w * p / 100; h = im.h * p / 100;
       } else {
         const lw = Number(o.largeur) || 0; const lh = Number(o.hauteur) || 0;
-        if (!lw && !lh) throw new Erreur('Indiquez une largeur ou une hauteur en pixels.');
-        if (lw > 20000 || lh > 20000) throw new Erreur('20 000 pixels au plus par côté.');
+        if (!lw && !lh) throw new Erreur(T('Indiquez une largeur ou une hauteur en pixels.', 'Enter a width or a height in pixels.'));
+        if (lw > 20000 || lh > 20000) throw new Erreur(T('20 000 pixels au plus par côté.', '20,000 pixels maximum per side.'));
         if (lw && lh && o.ratio !== 'non') { const k = Math.min(lw / im.w, lh / im.h); w = im.w * k; h = im.h * k; } else if (lw && lh) { w = lw; h = lh; } else if (lw) { w = lw; h = im.h * lw / im.w; } else { h = lh; w = im.w * lh / im.h; }
       }
       const type = formatDe(f);
@@ -391,18 +396,18 @@
   }
 
   async function fusionner(fichiers, o, ui) {
-    if (fichiers.length < 2) throw new Erreur('Ajoutez au moins deux PDF à fusionner.');
+    if (fichiers.length < 2) throw new Erreur(T('Ajoutez au moins deux PDF à fusionner.', 'Add at least two PDFs to merge.'));
     const { PDFDocument } = await pdfLib();
     const out = await PDFDocument.create();
     for (let i = 0; i < fichiers.length; i++) {
-      ui.progres(`Ajout de « ${fichiers[i].name} » (${i + 1} sur ${fichiers.length})`, i / fichiers.length);
+      ui.progres(T(`Ajout de « ${fichiers[i].name} » (${i + 1} sur ${fichiers.length})`, `Adding “${fichiers[i].name}” (${i + 1} of ${fichiers.length})`), i / fichiers.length);
       const src = await ouvrirPdfLib(fichiers[i]);
       const pages = await out.copyPages(src, src.getPageIndices());
       pages.forEach((p) => out.addPage(p));
       await pause();
     }
-    ui.progres('Enregistrement du PDF fusionné…', 1);
-    return { sorties: [{ nom: 'fusion.pdf', blob: new Blob([await out.save()], { type: 'application/pdf' }) }] };
+    ui.progres(T('Enregistrement du PDF fusionné…', 'Saving the merged PDF…'), 1);
+    return { sorties: [{ nom: T('fusion.pdf', 'merged.pdf'), blob: new Blob([await out.save()], { type: 'application/pdf' }) }] };
   }
 
   async function extraire(src, indices, PDFDocument) {
@@ -420,18 +425,18 @@
     if (o.mode === 'plages') groupes = groupesDePlages(o.plages || '', n).map((g) => ({ nom: 'pages-' + g.nom, pages: g.pages }));
     else {
       const t = o.mode === 'groupes' ? Math.max(1, Math.floor(Number(o.groupe) || 0)) : 1;
-      if (o.mode === 'groupes' && !(Number(o.groupe) >= 1)) throw new Erreur('Indiquez un nombre de pages par fichier (1 ou plus).');
+      if (o.mode === 'groupes' && !(Number(o.groupe) >= 1)) throw new Erreur(T('Indiquez un nombre de pages par fichier (1 ou plus).', 'Enter a number of pages per file (1 or more).'));
       groupes = [];
       for (let d = 0; d < n; d += t) {
         const pages = [...Array(Math.min(t, n - d)).keys()].map((x) => x + d);
         groupes.push({ nom: pages.length === 1 ? `page-${d + 1}` : `pages-${d + 1}-${d + pages.length}`, pages });
       }
     }
-    if (!groupes.length) throw new Erreur('Indiquez au moins une plage de pages, par exemple : 1-3, 4-6');
-    if (groupes.length === 1 && groupes[0].pages.length === n) throw new Erreur('Cette plage reprend tout le PDF : rien à diviser.');
+    if (!groupes.length) throw new Erreur(T('Indiquez au moins une plage de pages, par exemple : 1-3, 4-6', 'Enter at least one page range, for example: 1-3, 4-6'));
+    if (groupes.length === 1 && groupes[0].pages.length === n) throw new Erreur(T('Cette plage reprend tout le PDF : rien à diviser.', 'This range covers the whole PDF: nothing to split.'));
     const sorties = [];
     for (let i = 0; i < groupes.length; i++) {
-      ui.progres(`Fichier ${i + 1} sur ${groupes.length}`, i / groupes.length);
+      ui.progres(T(`Fichier ${i + 1} sur ${groupes.length}`, `File ${i + 1} of ${groupes.length}`), i / groupes.length);
       sorties.push({ nom: `${sansExt(f.name)}-${groupes[i].nom}.pdf`, blob: await extraire(src, groupes[i].pages, PDFDocument) });
       await pause();
     }
@@ -445,11 +450,11 @@
     const n = src.getPageCount();
     const enlever = new Set(plage(o.pages || '', n));
     const garder = [...Array(n).keys()].filter((i) => !enlever.has(i));
-    if (!garder.length) throw new Erreur('Vous ne pouvez pas supprimer toutes les pages.');
-    ui.progres('Création du nouveau PDF…', 0.5);
+    if (!garder.length) throw new Erreur(T('Vous ne pouvez pas supprimer toutes les pages.', 'You cannot delete every page.'));
+    ui.progres(T('Création du nouveau PDF…', 'Creating the new PDF…'), 0.5);
     return {
-      sorties: [{ nom: `${sansExt(f.name)}-modifie.pdf`, blob: await extraire(src, garder, PDFDocument) }],
-      notes: [`${enlever.size} page${enlever.size > 1 ? 's' : ''} supprimée${enlever.size > 1 ? 's' : ''}, ${garder.length} gardée${garder.length > 1 ? 's' : ''}.`],
+      sorties: [{ nom: T(`${sansExt(f.name)}-modifie.pdf`, `${sansExt(f.name)}-edited.pdf`), blob: await extraire(src, garder, PDFDocument) }],
+      notes: [T(`${enlever.size} page${enlever.size > 1 ? 's' : ''} supprimée${enlever.size > 1 ? 's' : ''}, ${garder.length} gardée${garder.length > 1 ? 's' : ''}.`, `${enlever.size} page${enlever.size > 1 ? 's' : ''} deleted, ${garder.length} kept.`)],
     };
   }
 
@@ -457,7 +462,7 @@
     const { degrees } = await pdfLib();
     const sorties = [];
     for (const f of fichiers) {
-      ui.progres(`« ${f.name} »`, 0.5);
+      ui.progres(T(`« ${f.name} »`, `“${f.name}”`), 0.5);
       const doc = await ouvrirPdfLib(f);
       const n = doc.getPageCount();
       const cibles = o.pages && o.pages.trim() ? plage(o.pages, n) : [...Array(n).keys()];
@@ -466,7 +471,7 @@
         const p = doc.getPage(i);
         p.setRotation(degrees((((p.getRotation().angle + a) % 360) + 360) % 360));
       }
-      sorties.push({ nom: `${sansExt(f.name)}-pivote.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
+      sorties.push({ nom: T(`${sansExt(f.name)}-pivote.pdf`, `${sansExt(f.name)}-rotated.pdf`), blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
     }
     return { sorties };
   }
@@ -480,7 +485,7 @@
       const out = await PDFDocument.create();
       const n = doc.numPages;
       for (let i = 1; i <= n; i++) {
-        ui.progres(`« ${f.name} » : page ${i} sur ${n}`, (i - 1) / n);
+        ui.progres(T(`« ${f.name} » : page ${i} sur ${n}`, `“${f.name}”: page ${i} of ${n}`), (i - 1) / n);
         const page = await doc.getPage(i);
         const vp1 = page.getViewport({ scale: 1 });
         let vp = page.getViewport({ scale: reglages[0] / 72 });
@@ -497,10 +502,10 @@
       await doc.destroy();
       const b = new Blob([await out.save()], { type: 'application/pdf' });
       if (b.size >= f.size * 0.95) {
-        notes.push(`« ${f.name} » (${taille(f.size)}) ne devient pas plus léger à ce niveau (${taille(b.size)}) : il est déjà optimisé. Gardez l'original ou essayez le niveau « forte ».`);
+        notes.push(T(`« ${f.name} » (${taille(f.size)}) ne devient pas plus léger à ce niveau (${taille(b.size)}) : il est déjà optimisé. Gardez l'original ou essayez le niveau « forte ».`, `“${f.name}” (${taille(f.size)}) does not get smaller at this level (${taille(b.size)}): it is already optimized. Keep the original or try the “High” level.`));
       } else {
-        notes.push(`« ${f.name} » : ${taille(f.size)} → ${taille(b.size)} (−${Math.round((1 - b.size / f.size) * 100)} %).`);
-        sorties.push({ nom: `${sansExt(f.name)}-compresse.pdf`, blob: b });
+        notes.push(T(`« ${f.name} » : ${taille(f.size)} → ${taille(b.size)} (−${Math.round((1 - b.size / f.size) * 100)} %).`, `“${f.name}”: ${taille(f.size)} → ${taille(b.size)} (−${Math.round((1 - b.size / f.size) * 100)}%).`));
+        sorties.push({ nom: T(`${sansExt(f.name)}-compresse.pdf`, `${sansExt(f.name)}-compressed.pdf`), blob: b });
       }
     }
     return { sorties, notes };
@@ -523,18 +528,18 @@
     const sorties = [];
     const maxMin = MOBILE ? 20 : 60;
     for (const f of fichiers) {
-      ui.progres(`Lecture de « ${f.name} »…`, 0);
+      ui.progres(T(`Lecture de « ${f.name} »…`, `Reading “${f.name}”…`), 0);
       const d = await duree(f);
-      if (d > maxMin * 60) throw new Erreur(`« ${f.name} » dure ${Math.round(d / 60)} min : au-delà de ${maxMin} min${MOBILE ? ' sur téléphone' : ''}, la mémoire du navigateur ne suffit pas. Coupez la vidéo en morceaux${MOBILE ? ' ou utilisez un ordinateur (60 min)' : ''}.`);
+      if (d > maxMin * 60) throw new Erreur(T(`« ${f.name} » dure ${Math.round(d / 60)} min : au-delà de ${maxMin} min${MOBILE ? ' sur téléphone' : ''}, la mémoire du navigateur ne suffit pas. Coupez la vidéo en morceaux${MOBILE ? ' ou utilisez un ordinateur (60 min)' : ''}.`, `“${f.name}” lasts ${Math.round(d / 60)} min: beyond ${maxMin} min${MOBILE ? ' on a phone' : ''}, the browser runs out of memory. Cut the video into parts${MOBILE ? ' or use a computer (60 min)' : ''}.`));
       const Ctx = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-      if (!Ctx) throw new Erreur('Votre navigateur ne sait pas décoder le son. Essayez avec Chrome, Edge, Firefox ou Safari à jour.');
+      if (!Ctx) throw new Erreur(T('Votre navigateur ne sait pas décoder le son. Essayez avec Chrome, Edge, Firefox ou Safari à jour.', 'Your browser cannot decode the audio. Try an up-to-date Chrome, Edge, Firefox or Safari.'));
       const ctx = new Ctx(2, 1, 44100);
       const brut = await f.arrayBuffer();
       let audio;
       try {
         audio = await new Promise((ok, ko) => { const p = ctx.decodeAudioData(brut, ok, ko); if (p && p.catch) p.catch(ko); });
       } catch (e) {
-        throw new Erreur(`Impossible d'extraire le son de « ${f.name} » : pas de piste audio, ou format de son non pris en charge par ce navigateur.`);
+        throw new Erreur(T(`Impossible d'extraire le son de « ${f.name} » : pas de piste audio, ou format de son non pris en charge par ce navigateur.`, `Can't extract the audio from “${f.name}”: no audio track, or an audio format this browser does not support.`));
       }
       const lj = await lame();
       const canaux = Math.min(2, audio.numberOfChannels);
@@ -548,7 +553,7 @@
         const fin = Math.min(L.length, i + pas);
         const m = R ? enc.encodeBuffer(vers16(L, i, fin), vers16(R, i, fin)) : enc.encodeBuffer(vers16(L, i, fin));
         if (m.length) morceaux.push(new Uint8Array(m));
-        if (t % 25 === 0) { ui.progres(`Encodage MP3 de « ${f.name} »`, i / L.length); await pause(); }
+        if (t % 25 === 0) { ui.progres(T(`Encodage MP3 de « ${f.name} »`, `Encoding “${f.name}” to MP3`), i / L.length); await pause(); }
       }
       const fin = enc.flush();
       if (fin.length) morceaux.push(new Uint8Array(fin));
@@ -579,7 +584,7 @@
   }
   function verifTexte(police, texte) {
     try { police.encodeText(texte); } catch (e) {
-      throw new Erreur('Ce texte contient un caractère que la police standard des PDF ne sait pas écrire (emoji, alphabet non latin…). Retirez-le et réessayez.');
+      throw new Erreur(T('Ce texte contient un caractère que la police standard des PDF ne sait pas écrire (emoji, alphabet non latin…). Retirez-le et réessayez.', 'This text contains a character the standard PDF font cannot write (emoji, non-Latin alphabet…). Remove it and try again.'));
     }
   }
 
@@ -587,7 +592,7 @@
     const { StandardFonts, rgb, degrees } = await pdfLib();
     const sorties = [];
     for (const f of fichiers) {
-      ui.progres(`« ${f.name} »`, 0.3);
+      ui.progres(T(`« ${f.name} »`, `“${f.name}”`), 0.3);
       const doc = await ouvrirPdfLib(f);
       const police = await doc.embedFont(StandardFonts.Helvetica);
       const pages = doc.getPages();
@@ -599,7 +604,7 @@
       pages.forEach((page, i) => {
         if (i < saut) return;
         const k = i - saut + debut;
-        const texte = { n: `${k}`, page: `Page ${k}`, sur: `${k} / ${total}`, pagesur: `Page ${k} sur ${total}` }[o.formatNum] || `${k}`;
+        const texte = { n: `${k}`, page: `Page ${k}`, sur: `${k} / ${total}`, pagesur: T(`Page ${k} sur ${total}`, `Page ${k} of ${total}`) }[o.formatNum] || `${k}`;
         const R = repere(page);
         const tw = police.widthOfTextAtSize(texte, t);
         const [h, v] = (o.position || 'bas-centre').split('-');
@@ -607,7 +612,7 @@
         const vy = h === 'haut' ? R.VH - marge - t : marge;
         texteSur(page, police, texte, t, vx, vy, 0, rgb(0.15, 0.15, 0.15), 1, degrees);
       });
-      sorties.push({ nom: `${sansExt(f.name)}-numerote.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
+      sorties.push({ nom: T(`${sansExt(f.name)}-numerote.pdf`, `${sansExt(f.name)}-numbered.pdf`), blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
     }
     return { sorties };
   }
@@ -615,12 +620,12 @@
   async function filigrane(fichiers, o, ui) {
     const { StandardFonts, rgb, degrees } = await pdfLib();
     const texte = (o.texteFil || '').trim().slice(0, 60);
-    if (!texte) throw new Erreur('Écrivez le texte du filigrane, par exemple : CONFIDENTIEL');
+    if (!texte) throw new Erreur(T('Écrivez le texte du filigrane, par exemple : CONFIDENTIEL', 'Type the watermark text, for example: CONFIDENTIAL'));
     const couleur = { gris: rgb(0.45, 0.45, 0.45), rouge: rgb(0.8, 0.1, 0.1), bleu: rgb(0.12, 0.35, 0.8) }[o.couleurFil] || rgb(0.45, 0.45, 0.45);
     const opacite = Math.min(0.9, Math.max(0.05, Number(o.opacite) / 100 || 0.25));
     const sorties = [];
     for (const f of fichiers) {
-      ui.progres(`« ${f.name} »`, 0.3);
+      ui.progres(T(`« ${f.name} »`, `“${f.name}”`), 0.3);
       const doc = await ouvrirPdfLib(f);
       const police = await doc.embedFont(StandardFonts.HelveticaBold);
       verifTexte(police, texte);
@@ -640,7 +645,7 @@
         const vy = cy - (tw / 2) * Math.sin(a) - (th / 2) * Math.cos(a);
         texteSur(page, police, texte, t, vx, vy, a * 180 / Math.PI, couleur, opacite, degrees);
       }
-      sorties.push({ nom: `${sansExt(f.name)}-filigrane.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
+      sorties.push({ nom: T(`${sansExt(f.name)}-filigrane.pdf`, `${sansExt(f.name)}-watermarked.pdf`), blob: new Blob([await doc.save()], { type: 'application/pdf' }) });
     }
     return { sorties };
   }
@@ -653,7 +658,7 @@
       const morceaux = [];
       let car = 0;
       for (let i = 1; i <= n; i++) {
-        ui.progres(`« ${f.name} » : page ${i} sur ${n}`, (i - 1) / n);
+        ui.progres(T(`« ${f.name} » : page ${i} sur ${n}`, `“${f.name}”: page ${i} of ${n}`), (i - 1) / n);
         const page = await doc.getPage(i);
         const contenu = await page.getTextContent();
         let t = '';
@@ -666,10 +671,10 @@
       }
       await doc.destroy();
       if (car < 20 * n && car < 200) {
-        notes.push(`« ${f.name} » ne contient presque pas de texte : c'est sans doute un document scanné (des photos de pages). Le site ne fait pas de reconnaissance de caractères (OCR).`);
+        notes.push(T(`« ${f.name} » ne contient presque pas de texte : c'est sans doute un document scanné (des photos de pages). Le site ne fait pas de reconnaissance de caractères (OCR).`, `“${f.name}” contains almost no text: it is probably a scanned document (photos of pages). This site does not do text recognition (OCR).`));
         if (!car) continue;
       }
-      notes.push(`« ${f.name} » : ${car.toLocaleString('fr-FR')} caractères extraits de ${n} page${n > 1 ? 's' : ''}.`);
+      notes.push(T(`« ${f.name} » : ${car.toLocaleString('fr-FR')} caractères extraits de ${n} page${n > 1 ? 's' : ''}.`, `“${f.name}”: ${car.toLocaleString('en-US')} characters extracted from ${n} page${n > 1 ? 's' : ''}.`));
       sorties.push({ nom: sansExt(f.name) + '.txt', blob: new Blob(['﻿' + morceaux.join('\n\n') + '\n'], { type: 'text/plain;charset=utf-8' }) });
     }
     return { sorties, notes };
@@ -680,30 +685,30 @@
     const f = fichiers[0];
     const src = await ouvrirPdfLib(f);
     const n = src.getPageCount();
-    if (!(o.pagesExtr || '').trim()) throw new Erreur('Indiquez les pages à extraire, par exemple : 2, 5-7');
+    if (!(o.pagesExtr || '').trim()) throw new Erreur(T('Indiquez les pages à extraire, par exemple : 2, 5-7', 'Enter the pages to extract, for example: 2, 5-7'));
     const pages = plage(o.pagesExtr, n);
-    ui.progres('Création du PDF…', 0.5);
+    ui.progres(T('Création du PDF…', 'Creating the PDF…'), 0.5);
     if (o.modeExtr === 'chaque') {
       const sorties = [];
       for (const i of pages) { sorties.push({ nom: `${sansExt(f.name)}-page-${i + 1}.pdf`, blob: await extraire(src, [i], PDFDocument) }); await pause(); }
       return { sorties };
     }
-    return { sorties: [{ nom: `${sansExt(f.name)}-extrait.pdf`, blob: await extraire(src, pages, PDFDocument) }],
-      notes: [`${pages.length} page${pages.length > 1 ? 's' : ''} extraite${pages.length > 1 ? 's' : ''} sur ${n}.`] };
+    return { sorties: [{ nom: T(`${sansExt(f.name)}-extrait.pdf`, `${sansExt(f.name)}-extracted.pdf`), blob: await extraire(src, pages, PDFDocument) }],
+      notes: [T(`${pages.length} page${pages.length > 1 ? 's' : ''} extraite${pages.length > 1 ? 's' : ''} sur ${n}.`, `${pages.length} of ${n} page${n > 1 ? 's' : ''} extracted.`)] };
   }
 
   async function organiser(fichiers, o, ui) {
     const { PDFDocument } = await pdfLib();
     const f = fichiers[0];
     const etat = o.__ordre;
-    if (!etat || etat.fichier !== f) throw new Erreur('Patientez : les miniatures des pages sont en cours d\'affichage.');
+    if (!etat || etat.fichier !== f) throw new Erreur(T('Patientez : les miniatures des pages sont en cours d\'affichage.', 'Please wait: the page thumbnails are still loading.'));
     const ordre = etat.ordre.filter((x) => !etat.retirees.has(x));
-    if (!ordre.length) throw new Erreur('Vous avez retiré toutes les pages : gardez-en au moins une.');
-    if (!etat.retirees.size && ordre.every((x, i) => x === i)) throw new Erreur('L\'ordre n\'a pas changé : déplacez des pages avec les flèches, ou retirez-en, puis réessayez.');
+    if (!ordre.length) throw new Erreur(T('Vous avez retiré toutes les pages : gardez-en au moins une.', 'You removed every page: keep at least one.'));
+    if (!etat.retirees.size && ordre.every((x, i) => x === i)) throw new Erreur(T('L\'ordre n\'a pas changé : déplacez des pages avec les flèches, ou retirez-en, puis réessayez.', 'The order has not changed: move pages with the arrows, or remove some, then try again.'));
     const src = await ouvrirPdfLib(f);
-    ui.progres('Création du PDF réorganisé…', 0.5);
-    return { sorties: [{ nom: `${sansExt(f.name)}-organise.pdf`, blob: await extraire(src, ordre, PDFDocument) }],
-      notes: [`${ordre.length} page${ordre.length > 1 ? 's' : ''} dans le nouvel ordre${etat.retirees.size ? `, ${etat.retirees.size} retirée${etat.retirees.size > 1 ? 's' : ''}` : ''}.`] };
+    ui.progres(T('Création du PDF réorganisé…', 'Creating the reordered PDF…'), 0.5);
+    return { sorties: [{ nom: T(`${sansExt(f.name)}-organise.pdf`, `${sansExt(f.name)}-reordered.pdf`), blob: await extraire(src, ordre, PDFDocument) }],
+      notes: [T(`${ordre.length} page${ordre.length > 1 ? 's' : ''} dans le nouvel ordre${etat.retirees.size ? `, ${etat.retirees.size} retirée${etat.retirees.size > 1 ? 's' : ''}` : ''}.`, `${ordre.length} page${ordre.length > 1 ? 's' : ''} in the new order${etat.retirees.size ? `, ${etat.retirees.size} removed` : ''}.`)] };
   }
 
   // Signature : rogne le dessin aux pixels non transparents
@@ -725,11 +730,11 @@
     const { degrees } = await pdfLib();
     const f = fichiers[0];
     const s = o.__signature;
-    if (!s || s.fichier !== f) throw new Erreur('Patientez : l\'aperçu de la page est en cours d\'affichage.');
+    if (!s || s.fichier !== f) throw new Erreur(T('Patientez : l\'aperçu de la page est en cours d\'affichage.', 'Please wait: the page preview is still loading.'));
     const sig = rogner(s.pad);
-    if (!sig) throw new Erreur('Dessinez d\'abord votre signature dans le cadre (ou importez une image de signature).');
-    if (!s.pos) throw new Erreur('Touchez l\'aperçu de la page à l\'endroit où placer la signature.');
-    ui.progres('Ajout de la signature…', 0.5);
+    if (!sig) throw new Erreur(T('Dessinez d\'abord votre signature dans le cadre (ou importez une image de signature).', 'First draw your signature in the box (or import a signature image).'));
+    if (!s.pos) throw new Erreur(T('Touchez l\'aperçu de la page à l\'endroit où placer la signature.', 'Tap the page preview where the signature should go.'));
+    ui.progres(T('Ajout de la signature…', 'Adding the signature…'), 0.5);
     const doc = await ouvrirPdfLib(f);
     const page = doc.getPage(s.pos.page - 1);
     const png = await doc.embedPng(await (await versBlob(sig, 'image/png')).arrayBuffer());
@@ -739,19 +744,19 @@
     const cx = s.pos.fx * vp.width; const cy = s.pos.fy * vp.height;
     const [x, y] = vp.convertToPdfPoint(cx - w / 2, cy + h / 2);
     page.drawImage(png, { x, y, width: w, height: h, rotate: degrees(vp.rotation || 0) });
-    return { sorties: [{ nom: `${sansExt(f.name)}-signe.pdf`, blob: new Blob([await doc.save()], { type: 'application/pdf' }) }],
-      notes: ['Signature ajoutée en page ' + s.pos.page + '. Pour signer à un autre endroit, recommencez avec le fichier obtenu.'] };
+    return { sorties: [{ nom: T(`${sansExt(f.name)}-signe.pdf`, `${sansExt(f.name)}-signed.pdf`), blob: new Blob([await doc.save()], { type: 'application/pdf' }) }],
+      notes: [T('Signature ajoutée en page ', 'Signature added on page ') + s.pos.page + T('. Pour signer à un autre endroit, recommencez avec le fichier obtenu.', '. To sign in another place, start again with the new file.')] };
   }
 
   async function svgVersImage(fichiers, o, ui) {
     const sorties = [];
     for (let i = 0; i < fichiers.length; i++) {
       const f = fichiers[i];
-      ui.progres(`« ${f.name} »`, i / fichiers.length);
+      ui.progres(T(`« ${f.name} »`, `“${f.name}”`), i / fichiers.length);
       const texte = await f.text();
       const d = new DOMParser().parseFromString(texte, 'image/svg+xml');
       const svg = d.documentElement;
-      if (!svg || svg.nodeName.toLowerCase() !== 'svg' || d.getElementsByTagName('parsererror').length) throw new Erreur(`« ${f.name} » n'est pas un SVG valide.`);
+      if (!svg || svg.nodeName.toLowerCase() !== 'svg' || d.getElementsByTagName('parsererror').length) throw new Erreur(T(`« ${f.name} » n'est pas un SVG valide.`, `“${f.name}” is not a valid SVG.`));
       const nb = (v) => { const m = /^\s*([\d.]+)\s*(px)?\s*$/.exec(v || ''); return m ? parseFloat(m[1]) : 0; };
       let w = nb(svg.getAttribute('width')); let h = nb(svg.getAttribute('height'));
       const vb = (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
@@ -765,7 +770,7 @@
       const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' }));
       try {
         const img = new Image(); img.src = url;
-        await img.decode().catch(() => { throw new Erreur(`Votre navigateur n'arrive pas à afficher « ${f.name} ».`); });
+        await img.decode().catch(() => { throw new Erreur(T(`Votre navigateur n'arrive pas à afficher « ${f.name} ».`, `Your browser cannot display “${f.name}”.`)); });
         const type = o.format === 'jpg' ? 'image/jpeg' : 'image/png';
         const c = toile({ source: img, w: W, h: H }, W, H, type === 'image/jpeg' || o.fond === 'blanc');
         sorties.push({ nom: `${sansExt(f.name)}.${EXT[type]}`, blob: await versBlob(c, type, 0.92) });
@@ -779,7 +784,7 @@
     const tailles = o.taillesIco === 'complet' ? [16, 24, 32, 48, 64, 128, 256] : [16, 32, 48];
     const sorties = [];
     for (const f of fichiers) {
-      ui.progres(`« ${f.name} »`, 0.3);
+      ui.progres(T(`« ${f.name} »`, `“${f.name}”`), 0.3);
       const im = await decoderImage(f);
       const pngs = [];
       for (const t of tailles) {
@@ -803,7 +808,7 @@
       });
       sorties.push({ nom: sansExt(f.name) + '.ico', blob: new Blob([tete.buffer, ...pngs], { type: 'image/x-icon' }) });
     }
-    return { sorties, notes: [`Icône créée en ${tailles.join(', ')} px.`] };
+    return { sorties, notes: [T(`Icône créée en ${tailles.join(', ')} px.`, `Icon created in ${tailles.join(', ')} px.`)] };
   }
 
   async function noirEtBlanc(fichiers, o, ui) {
@@ -811,7 +816,7 @@
     const seuil = Number(o.seuil) || 128;
     for (let i = 0; i < fichiers.length; i++) {
       const f = fichiers[i];
-      ui.progres(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, i / fichiers.length);
+      ui.progres(T(`Image ${i + 1} sur ${fichiers.length} : « ${f.name} »`, `Image ${i + 1} of ${fichiers.length}: “${f.name}”`), i / fichiers.length);
       const im = await decoderImage(f);
       const type = formatDe(f);
       const c = toile(im, 0, 0, type === 'image/jpeg');
@@ -830,7 +835,7 @@
         ctx.putImageData(d, 0, y);
         if ((y / bande) % 8 === 0) await pause();
       }
-      sorties.push({ nom: `${sansExt(f.name)}-noir-et-blanc.${EXT[type]}`, blob: await versBlob(c, type, 0.92) });
+      sorties.push({ nom: T(`${sansExt(f.name)}-noir-et-blanc.${EXT[type]}`, `${sansExt(f.name)}-black-and-white.${EXT[type]}`), blob: await versBlob(c, type, 0.92) });
       c.width = c.height = 0;
     }
     return { sorties };
@@ -840,7 +845,7 @@
   async function panneauSignature(f, zone, valeurs) {
     const etat = { fichier: f, pad: null, pos: null, largeur: valeurs.__largeur || 30 };
     valeurs.__signature = etat;
-    const pad = el('canvas', { class: 'signature-pad', width: 900, height: 300, 'aria-label': 'Cadre pour dessiner votre signature' });
+    const pad = el('canvas', { class: 'signature-pad', width: 900, height: 300, 'aria-label': T('Cadre pour dessiner votre signature', 'Box to draw your signature') });
     const pctx = pad.getContext('2d');
     etat.pad = pad;
     let encre = '#111111';
@@ -850,8 +855,8 @@
     pad.addEventListener('pointermove', (e) => { if (!trace) return; const [x, y] = point(e); pctx.lineTo(x, y); pctx.stroke(); });
     const fin = () => { if (trace) { trace = false; dessiner(); } };
     pad.addEventListener('pointerup', fin); pad.addEventListener('pointercancel', fin);
-    const effacer = el('button', { type: 'button', texte: 'Effacer la signature', onclick: () => { pctx.clearRect(0, 0, pad.width, pad.height); dessiner(); } });
-    const couleur = el('select', { 'aria-label': 'Couleur de l\'encre' }, el('option', { value: '#111111', texte: 'Encre noire' }), el('option', { value: '#1d3f9e', texte: 'Encre bleue' }));
+    const effacer = el('button', { type: 'button', texte: T('Effacer la signature', 'Clear signature'), onclick: () => { pctx.clearRect(0, 0, pad.width, pad.height); dessiner(); } });
+    const couleur = el('select', { 'aria-label': T('Couleur de l\'encre', 'Ink color') }, el('option', { value: '#111111', texte: T('Encre noire', 'Black ink') }), el('option', { value: '#1d3f9e', texte: T('Encre bleue', 'Blue ink') }));
     couleur.addEventListener('change', () => { encre = couleur.value; });
     const imp = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp', class: 'visuellement-cache', id: 'sig-' + Math.random().toString(36).slice(2) });
     imp.addEventListener('change', async () => {
@@ -870,20 +875,20 @@
         dessiner();
       } catch (e) { /* image illisible : rien */ }
     });
-    const importer = el('label', { class: 'bouton', for: imp.id, texte: 'Importer une image' });
+    const importer = el('label', { class: 'bouton', for: imp.id, texte: T('Importer une image', 'Import an image') });
     const choixPage = el('input', { type: 'number', min: 1, value: 1, inputmode: 'numeric', id: 'sigp-' + Math.random().toString(36).slice(2, 7) });
     const tailleSig = el('input', { type: 'range', min: 10, max: 60, step: 1, value: etat.largeur, id: 'sigt-' + Math.random().toString(36).slice(2, 7) });
     const sortieT = el('output', { texte: etat.largeur + ' %' });
     tailleSig.addEventListener('input', () => { etat.largeur = valeurs.__largeur = Number(tailleSig.value); sortieT.textContent = tailleSig.value + ' %'; dessiner(); });
-    const apercu = el('canvas', { class: 'apercu-page', 'aria-label': 'Aperçu de la page : touchez pour placer la signature' });
-    const aide = el('p', { class: 'aide', texte: 'Chargement de l\'aperçu…' });
+    const apercu = el('canvas', { class: 'apercu-page', 'aria-label': T('Aperçu de la page : touchez pour placer la signature', 'Page preview: tap to place the signature') });
+    const aide = el('p', { class: 'aide', texte: T('Chargement de l\'aperçu…', 'Loading preview…') });
     zone.replaceChildren(
-      el('p', { class: 'etiquette', texte: '1. Dessinez votre signature (souris, doigt ou stylet)' }), pad,
+      el('p', { class: 'etiquette', texte: T('1. Dessinez votre signature (souris, doigt ou stylet)', '1. Draw your signature (mouse, finger or stylus)') }), pad,
       el('div', { class: 'boutons' }, effacer, couleur, importer, imp),
       el('div', { class: 'grille options' },
-        el('div', { class: 'champ' }, el('label', { for: choixPage.id, texte: 'Page à signer' }), choixPage),
-        el('div', { class: 'champ' }, el('label', { for: tailleSig.id }, 'Largeur de la signature : ', sortieT), tailleSig)),
-      el('p', { class: 'etiquette', texte: '2. Touchez la page à l\'endroit de la signature' }), aide, apercu);
+        el('div', { class: 'champ' }, el('label', { for: choixPage.id, texte: T('Page à signer', 'Page to sign') }), choixPage),
+        el('div', { class: 'champ' }, el('label', { for: tailleSig.id }, T('Largeur de la signature : ', 'Signature width: '), sortieT), tailleSig)),
+      el('p', { class: 'etiquette', texte: T('2. Touchez la page à l\'endroit de la signature', '2. Tap the page where the signature goes') }), aide, apercu);
     let doc; let fond = null; let vp = null; let numero = 0;
     try { doc = await ouvrirPdfjs(f); } catch (e) { aide.textContent = e.message; aide.classList.add('erreur'); return; }
     if (valeurs.__signature !== etat) { doc.destroy(); return; }
@@ -900,7 +905,7 @@
       const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
       await page.render({ canvasContext: ctx, viewport: vpr }).promise;
       fond = c; apercu.width = c.width; apercu.height = c.height;
-      aide.textContent = `Page ${n} sur ${doc.numPages}. Touchez l'endroit où doit aller le centre de la signature.`;
+      aide.textContent = T(`Page ${n} sur ${doc.numPages}. Touchez l'endroit où doit aller le centre de la signature.`, `Page ${n} of ${doc.numPages}. Tap where the center of the signature should go.`);
       dessiner();
     }
     function dessiner() {
@@ -920,7 +925,7 @@
       const r = apercu.getBoundingClientRect();
       etat.pos = { page: numero, vp, fx: (e.clientX - r.left) / r.width, fy: (e.clientY - r.top) / r.height };
       dessiner();
-      aide.textContent = `Signature placée en page ${numero}. Cliquez sur « Signer le PDF », ou touchez ailleurs pour la déplacer.`;
+      aide.textContent = T(`Signature placée en page ${numero}. Cliquez sur « Signer le PDF », ou touchez ailleurs pour la déplacer.`, `Signature placed on page ${numero}. Click “Sign PDF”, or tap elsewhere to move it.`);
     });
     choixPage.addEventListener('change', afficherPage);
     await afficherPage();
@@ -930,8 +935,8 @@
     const etat = { fichier: f, ordre: [], retirees: new Set() };
     valeurs.__ordre = etat;
     const grille = el('ol', { class: 'pages-grille' });
-    const aide = el('p', { class: 'aide', texte: 'Chargement des miniatures…' });
-    zone.replaceChildren(el('p', { class: 'etiquette', texte: 'Déplacez les pages avec ◀ ▶, retirez-les avec ✕' }), aide, grille);
+    const aide = el('p', { class: 'aide', texte: T('Chargement des miniatures…', 'Loading thumbnails…') });
+    zone.replaceChildren(el('p', { class: 'etiquette', texte: T('Déplacez les pages avec ◀ ▶, retirez-les avec ✕', 'Move pages with ◀ ▶, remove them with ✕') }), aide, grille);
     let doc;
     try { doc = await ouvrirPdfjs(f); } catch (e) { aide.textContent = e.message; aide.classList.add('erreur'); return; }
     if (valeurs.__ordre !== etat) { doc.destroy(); return; }
@@ -942,9 +947,9 @@
       const c = el('canvas', { class: 'miniature', width: 1, height: 1 });
       const li = el('li', { class: 'page-case' }, c, el('span', { class: 'num', texte: 'Page ' + (i + 1) }),
         el('span', { class: 'actions' },
-          el('button', { type: 'button', class: 'mini', 'aria-label': `Déplacer la page ${i + 1} avant`, texte: '◀', onclick: () => bouger(i, -1) }),
-          el('button', { type: 'button', class: 'mini', 'aria-label': `Retirer ou remettre la page ${i + 1}`, texte: '✕', onclick: () => { if (etat.retirees.has(i)) etat.retirees.delete(i); else etat.retirees.add(i); rang(); } }),
-          el('button', { type: 'button', class: 'mini', 'aria-label': `Déplacer la page ${i + 1} après`, texte: '▶', onclick: () => bouger(i, 1) })));
+          el('button', { type: 'button', class: 'mini', 'aria-label': T(`Déplacer la page ${i + 1} avant`, `Move page ${i + 1} earlier`), texte: '◀', onclick: () => bouger(i, -1) }),
+          el('button', { type: 'button', class: 'mini', 'aria-label': T(`Retirer ou remettre la page ${i + 1}`, `Remove or restore page ${i + 1}`), texte: '✕', onclick: () => { if (etat.retirees.has(i)) etat.retirees.delete(i); else etat.retirees.add(i); rang(); } }),
+          el('button', { type: 'button', class: 'mini', 'aria-label': T(`Déplacer la page ${i + 1} après`, `Move page ${i + 1} later`), texte: '▶', onclick: () => bouger(i, 1) })));
       cases.push({ li, c });
     }
     function bouger(i, d) {
@@ -955,7 +960,7 @@
     }
     function rang() {
       grille.replaceChildren(...etat.ordre.map((i) => { cases[i].li.classList.toggle('retiree', etat.retirees.has(i)); return cases[i].li; }));
-      aide.textContent = `${n} page${n > 1 ? 's' : ''}${etat.retirees.size ? `, ${etat.retirees.size} retirée${etat.retirees.size > 1 ? 's' : ''}` : ''}. Les miniatures servent seulement à repérer les pages : le PDF obtenu garde la qualité d'origine.`;
+      aide.textContent = T(`${n} page${n > 1 ? 's' : ''}${etat.retirees.size ? `, ${etat.retirees.size} retirée${etat.retirees.size > 1 ? 's' : ''}` : ''}. Les miniatures servent seulement à repérer les pages : le PDF obtenu garde la qualité d'origine.`, `${n} page${n > 1 ? 's' : ''}${etat.retirees.size ? `, ${etat.retirees.size} removed` : ''}. The thumbnails are only there to identify the pages: the new PDF keeps the original quality.`);
     }
     rang();
     const maxApercus = MOBILE ? 150 : 400;
@@ -969,80 +974,80 @@
       await page.render({ canvasContext: ctx, viewport: vp }).promise;
       page.cleanup();
     }
-    if (n > maxApercus) aide.textContent += ` Miniatures affichées pour les ${maxApercus} premières pages.`;
+    if (n > maxApercus) aide.textContent += T(` Miniatures affichées pour les ${maxApercus} premières pages.`, ` Thumbnails shown for the first ${maxApercus} pages.`);
     doc.destroy();
   }
 
   // ---------- options ----------
   const OPT = {
-    resolution: { label: 'Qualité des images', type: 'select', val: '150', choix: [['96', 'Écran (96 ppp, léger)'], ['150', 'Bonne (150 ppp)'], ['300', 'Impression (300 ppp, lourd)']] },
-    pages: { label: 'Pages (vide = toutes)', type: 'text', val: '', aide: 'Exemple : 1-3, 5, 8-' },
-    page: { label: 'Format de page', type: 'select', val: 'a4', choix: [['a4', 'A4, sens automatique'], ['a4-portrait', 'A4 portrait'], ['a4-paysage', 'A4 paysage'], ['image', 'Taille de l\'image']] },
-    marge: { label: 'Marges', type: 'select', val: '0', choix: [['0', 'Sans marge'], ['20', 'Petites (7 mm)'], ['40', 'Grandes (14 mm)']] },
-    format: { label: 'Format de sortie', type: 'select', val: 'jpg', choix: [['jpg', 'JPG'], ['png', 'PNG'], ['webp', 'WEBP']] },
-    qualiteConv: { id: 'qualite', label: 'Qualité JPG / WEBP', type: 'range', val: '92', min: 50, max: 100, step: 1, unite: ' %' },
-    qualite: { label: 'Qualité', type: 'range', val: '75', min: 30, max: 95, step: 1, unite: ' %', aide: '75 % : bon compromis. Plus bas = plus léger.' },
-    maxi: { label: 'Taille maximale', type: 'select', val: '1920', choix: [['0', 'Garder la taille'], ['3840', '3840 px (4K)'], ['2560', '2560 px'], ['1920', '1920 px (Full HD)'], ['1280', '1280 px'], ['800', '800 px']] },
-    formatComp: { id: 'format', label: 'Format de sortie', type: 'select', val: 'jpg', choix: [['jpg', 'JPG (le plus compatible)'], ['webp', 'WEBP (le plus léger)'], ['meme', 'Même format qu\'à l\'origine']] },
-    modeRedim: { id: 'mode', label: 'Redimensionner', type: 'select', val: 'pixels', choix: [['pixels', 'En pixels'], ['pourcent', 'En pourcentage']] },
-    largeur: { label: 'Largeur (px)', type: 'number', val: '1080', min: 1, si: (o) => o.mode === 'pixels' },
-    hauteur: { label: 'Hauteur (px)', type: 'number', val: '', min: 1, aide: 'Vide = calculée pour garder les proportions.', si: (o) => o.mode === 'pixels' },
-    ratio: { label: 'Proportions', type: 'select', val: 'oui', choix: [['oui', 'Garder (l\'image tient dans le cadre)'], ['non', 'Étirer à la taille exacte']], si: (o) => o.mode === 'pixels' && o.largeur && o.hauteur },
-    pourcent: { label: 'Pourcentage', type: 'number', val: '50', min: 1, max: 400, si: (o) => o.mode === 'pourcent' },
-    modeDiv: { id: 'mode', label: 'Découper', type: 'select', val: 'chaque', choix: [['chaque', 'Une page par fichier'], ['groupes', 'Tous les N pages'], ['plages', 'Selon mes plages']] },
-    groupe: { label: 'Pages par fichier', type: 'number', val: '2', min: 1, si: (o) => o.mode === 'groupes' },
-    plages: { label: 'Plages (un fichier par plage)', type: 'text', val: '1-3, 4-6', aide: 'Séparez les fichiers par des virgules.', si: (o) => o.mode === 'plages' },
-    pagesSuppr: { id: 'pages', label: 'Pages à supprimer', type: 'text', val: '', aide: 'Exemple : 2, 5-7' },
-    angle: { label: 'Rotation', type: 'select', val: '90', choix: [['90', '90° vers la droite'], ['180', '180° (à l\'envers)'], ['270', '90° vers la gauche']] },
-    niveau: { label: 'Compression', type: 'select', val: 'moyen', choix: [['leger', 'Légère (150 ppp)'], ['moyen', 'Moyenne (110 ppp, conseillée)'], ['fort', 'Forte (80 ppp, le plus léger)']] },
-    position: { label: 'Position du numéro', type: 'select', val: 'bas-centre', choix: [['bas-centre', 'En bas, au centre'], ['bas-droite', 'En bas, à droite'], ['bas-gauche', 'En bas, à gauche'], ['haut-centre', 'En haut, au centre'], ['haut-droite', 'En haut, à droite']] },
-    formatNum: { label: 'Texte', type: 'select', val: 'n', choix: [['n', '1, 2, 3…'], ['page', 'Page 1'], ['sur', '1 / 10'], ['pagesur', 'Page 1 sur 10']] },
-    debut: { label: 'Premier numéro', type: 'number', val: '1', min: 0 },
-    couverture: { label: 'Première page', type: 'select', val: 'non', choix: [['non', 'Numérotée'], ['oui', 'Sans numéro (couverture)']] },
-    taillePolice: { label: 'Taille du texte', type: 'select', val: '11', choix: [['9', 'Petite'], ['11', 'Normale'], ['14', 'Grande']] },
-    texteFil: { label: 'Texte du filigrane', type: 'text', val: 'CONFIDENTIEL', aide: '60 caractères au plus. Exemple : COPIE, BROUILLON, « Pour dossier de location uniquement ».' },
-    sensFil: { label: 'Sens', type: 'select', val: 'diagonale', choix: [['diagonale', 'En diagonale'], ['horizontal', 'Horizontal']] },
-    couleurFil: { label: 'Couleur', type: 'select', val: 'gris', choix: [['gris', 'Gris'], ['rouge', 'Rouge'], ['bleu', 'Bleu']] },
-    opacite: { label: 'Opacité', type: 'range', val: '25', min: 10, max: 60, step: 5, unite: ' %' },
-    separer: { label: 'Repères de pages', type: 'select', val: 'oui', choix: [['oui', 'Indiquer « --- Page 1 --- »'], ['non', 'Texte continu']] },
-    pagesExtr: { label: 'Pages à extraire', type: 'text', val: '', aide: 'Exemple : 2, 5-7' },
-    modeExtr: { label: 'Résultat', type: 'select', val: 'un', choix: [['un', 'Un seul PDF avec ces pages'], ['chaque', 'Un PDF par page']] },
-    largeurSvg: { label: 'Taille de l\'image', type: 'select', val: 'x2', choix: [['x1', 'Taille d\'origine'], ['x2', '2 × (net sur écran Retina)'], ['x4', '4 ×'], ['512', '512 px de large'], ['1024', '1024 px de large'], ['2048', '2048 px de large']] },
-    formatSvg: { id: 'format', label: 'Format', type: 'select', val: 'png', choix: [['png', 'PNG (garde la transparence)'], ['jpg', 'JPG (fond blanc)']] },
-    fond: { label: 'Fond', type: 'select', val: 'transparent', choix: [['transparent', 'Transparent'], ['blanc', 'Blanc']], si: (o) => o.format !== 'jpg' },
-    taillesIco: { label: 'Tailles', type: 'select', val: 'favicon', choix: [['favicon', '16, 32 et 48 px (favicon)'], ['complet', '16 à 256 px (icône Windows)']] },
-    cadrage: { label: 'Image pas carrée', type: 'select', val: 'contenir', choix: [['contenir', 'Garder toute l\'image (bords transparents)'], ['remplir', 'Remplir le carré (recadrer au centre)']] },
-    modeNb: { label: 'Rendu', type: 'select', val: 'gris', choix: [['gris', 'Niveaux de gris'], ['seuil', 'Noir et blanc pur (deux couleurs)']] },
-    seuil: { label: 'Seuil', type: 'range', val: '128', min: 20, max: 235, step: 1, aide: 'Plus haut = plus de noir.', si: (o) => o.modeNb === 'seuil' },
-    debit: { label: 'Qualité du MP3', type: 'select', val: '192', choix: [['128', '128 kb/s (léger)'], ['192', '192 kb/s (conseillé)'], ['256', '256 kb/s'], ['320', '320 kb/s (maximum)']] },
+    resolution: { label: T('Qualité des images', 'Image quality'), type: 'select', val: '150', choix: [['96', T('Écran (96 ppp, léger)', 'Screen (96 dpi, small)')], ['150', T('Bonne (150 ppp)', 'Good (150 dpi)')], ['300', T('Impression (300 ppp, lourd)', 'Print (300 dpi, large)')]] },
+    pages: { label: T('Pages (vide = toutes)', 'Pages (blank = all)'), type: 'text', val: '', aide: T('Exemple : 1-3, 5, 8-', 'Example: 1-3, 5, 8-') },
+    page: { label: T('Format de page', 'Page size'), type: 'select', val: 'a4', choix: [['a4', T('A4, sens automatique', 'A4, auto orientation')], ['a4-portrait', 'A4 portrait'], ['a4-paysage', T('A4 paysage', 'A4 landscape')], ['image', T('Taille de l\'image', 'Image size')]] },
+    marge: { label: T('Marges', 'Margins'), type: 'select', val: '0', choix: [['0', T('Sans marge', 'No margin')], ['20', T('Petites (7 mm)', 'Small (7 mm)')], ['40', T('Grandes (14 mm)', 'Large (14 mm)')]] },
+    format: { label: T('Format de sortie', 'Output format'), type: 'select', val: 'jpg', choix: [['jpg', 'JPG'], ['png', 'PNG'], ['webp', 'WEBP']] },
+    qualiteConv: { id: 'qualite', label: T('Qualité JPG / WEBP', 'JPG / WEBP quality'), type: 'range', val: '92', min: 50, max: 100, step: 1, unite: ' %' },
+    qualite: { label: T('Qualité', 'Quality'), type: 'range', val: '75', min: 30, max: 95, step: 1, unite: ' %', aide: T('75 % : bon compromis. Plus bas = plus léger.', '75%: a good balance. Lower = smaller file.') },
+    maxi: { label: T('Taille maximale', 'Maximum size'), type: 'select', val: '1920', choix: [['0', T('Garder la taille', 'Keep original size')], ['3840', '3840 px (4K)'], ['2560', '2560 px'], ['1920', '1920 px (Full HD)'], ['1280', '1280 px'], ['800', '800 px']] },
+    formatComp: { id: 'format', label: T('Format de sortie', 'Output format'), type: 'select', val: 'jpg', choix: [['jpg', T('JPG (le plus compatible)', 'JPG (most compatible)')], ['webp', T('WEBP (le plus léger)', 'WEBP (smallest)')], ['meme', T('Même format qu\'à l\'origine', 'Same format as the original')]] },
+    modeRedim: { id: 'mode', label: T('Redimensionner', 'Resize'), type: 'select', val: 'pixels', choix: [['pixels', T('En pixels', 'By pixels')], ['pourcent', T('En pourcentage', 'By percentage')]] },
+    largeur: { label: T('Largeur (px)', 'Width (px)'), type: 'number', val: '1080', min: 1, si: (o) => o.mode === 'pixels' },
+    hauteur: { label: T('Hauteur (px)', 'Height (px)'), type: 'number', val: '', min: 1, aide: T('Vide = calculée pour garder les proportions.', 'Blank = calculated to keep the aspect ratio.'), si: (o) => o.mode === 'pixels' },
+    ratio: { label: T('Proportions', 'Aspect ratio'), type: 'select', val: 'oui', choix: [['oui', T('Garder (l\'image tient dans le cadre)', 'Keep (image fits inside the box)')], ['non', T('Étirer à la taille exacte', 'Stretch to exact size')]], si: (o) => o.mode === 'pixels' && o.largeur && o.hauteur },
+    pourcent: { label: T('Pourcentage', 'Percentage'), type: 'number', val: '50', min: 1, max: 400, si: (o) => o.mode === 'pourcent' },
+    modeDiv: { id: 'mode', label: T('Découper', 'Split mode'), type: 'select', val: 'chaque', choix: [['chaque', T('Une page par fichier', 'One page per file')], ['groupes', T('Tous les N pages', 'Every N pages')], ['plages', T('Selon mes plages', 'By custom ranges')]] },
+    groupe: { label: T('Pages par fichier', 'Pages per file'), type: 'number', val: '2', min: 1, si: (o) => o.mode === 'groupes' },
+    plages: { label: T('Plages (un fichier par plage)', 'Ranges (one file per range)'), type: 'text', val: '1-3, 4-6', aide: T('Séparez les fichiers par des virgules.', 'Separate files with commas.'), si: (o) => o.mode === 'plages' },
+    pagesSuppr: { id: 'pages', label: T('Pages à supprimer', 'Pages to delete'), type: 'text', val: '', aide: T('Exemple : 2, 5-7', 'Example: 2, 5-7') },
+    angle: { label: 'Rotation', type: 'select', val: '90', choix: [['90', T('90° vers la droite', '90° clockwise')], ['180', T('180° (à l\'envers)', '180° (upside down)')], ['270', T('90° vers la gauche', '90° counterclockwise')]] },
+    niveau: { label: T('Compression', 'Compression level'), type: 'select', val: 'moyen', choix: [['leger', T('Légère (150 ppp)', 'Low (150 dpi)')], ['moyen', T('Moyenne (110 ppp, conseillée)', 'Medium (110 dpi, recommended)')], ['fort', T('Forte (80 ppp, le plus léger)', 'High (80 dpi, smallest file)')]] },
+    position: { label: T('Position du numéro', 'Number position'), type: 'select', val: 'bas-centre', choix: [['bas-centre', T('En bas, au centre', 'Bottom center')], ['bas-droite', T('En bas, à droite', 'Bottom right')], ['bas-gauche', T('En bas, à gauche', 'Bottom left')], ['haut-centre', T('En haut, au centre', 'Top center')], ['haut-droite', T('En haut, à droite', 'Top right')]] },
+    formatNum: { label: T('Texte', 'Number style'), type: 'select', val: 'n', choix: [['n', '1, 2, 3…'], ['page', 'Page 1'], ['sur', '1 / 10'], ['pagesur', T('Page 1 sur 10', 'Page 1 of 10')]] },
+    debut: { label: T('Premier numéro', 'Start at'), type: 'number', val: '1', min: 0 },
+    couverture: { label: T('Première page', 'First page'), type: 'select', val: 'non', choix: [['non', T('Numérotée', 'Numbered')], ['oui', T('Sans numéro (couverture)', 'No number (cover)')]] },
+    taillePolice: { label: T('Taille du texte', 'Font size'), type: 'select', val: '11', choix: [['9', T('Petite', 'Small')], ['11', T('Normale', 'Normal')], ['14', T('Grande', 'Large')]] },
+    texteFil: { label: T('Texte du filigrane', 'Watermark text'), type: 'text', val: T('CONFIDENTIEL', 'CONFIDENTIAL'), aide: T('60 caractères au plus. Exemple : COPIE, BROUILLON, « Pour dossier de location uniquement ».', '60 characters max. Examples: COPY, DRAFT, “For rental application only”.') },
+    sensFil: { label: T('Sens', 'Direction'), type: 'select', val: 'diagonale', choix: [['diagonale', T('En diagonale', 'Diagonal')], ['horizontal', 'Horizontal']] },
+    couleurFil: { label: T('Couleur', 'Color'), type: 'select', val: 'gris', choix: [['gris', T('Gris', 'Gray')], ['rouge', T('Rouge', 'Red')], ['bleu', T('Bleu', 'Blue')]] },
+    opacite: { label: T('Opacité', 'Opacity'), type: 'range', val: '25', min: 10, max: 60, step: 5, unite: ' %' },
+    separer: { label: T('Repères de pages', 'Page markers'), type: 'select', val: 'oui', choix: [['oui', T('Indiquer « --- Page 1 --- »', 'Add “--- Page 1 ---”')], ['non', T('Texte continu', 'Continuous text')]] },
+    pagesExtr: { label: T('Pages à extraire', 'Pages to extract'), type: 'text', val: '', aide: T('Exemple : 2, 5-7', 'Example: 2, 5-7') },
+    modeExtr: { label: T('Résultat', 'Output'), type: 'select', val: 'un', choix: [['un', T('Un seul PDF avec ces pages', 'One PDF with these pages')], ['chaque', T('Un PDF par page', 'One PDF per page')]] },
+    largeurSvg: { label: T('Taille de l\'image', 'Image size'), type: 'select', val: 'x2', choix: [['x1', T('Taille d\'origine', 'Original size')], ['x2', T('2 × (net sur écran Retina)', '2× (sharp on Retina screens)')], ['x4', '4 ×'], ['512', T('512 px de large', '512 px wide')], ['1024', T('1024 px de large', '1024 px wide')], ['2048', T('2048 px de large', '2048 px wide')]] },
+    formatSvg: { id: 'format', label: 'Format', type: 'select', val: 'png', choix: [['png', T('PNG (garde la transparence)', 'PNG (keeps transparency)')], ['jpg', T('JPG (fond blanc)', 'JPG (white background)')]] },
+    fond: { label: T('Fond', 'Background'), type: 'select', val: 'transparent', choix: [['transparent', 'Transparent'], ['blanc', T('Blanc', 'White')]], si: (o) => o.format !== 'jpg' },
+    taillesIco: { label: T('Tailles', 'Sizes'), type: 'select', val: 'favicon', choix: [['favicon', T('16, 32 et 48 px (favicon)', '16, 32 and 48 px (favicon)')], ['complet', T('16 à 256 px (icône Windows)', '16 to 256 px (Windows icon)')]] },
+    cadrage: { label: T('Image pas carrée', 'Non-square image'), type: 'select', val: 'contenir', choix: [['contenir', T('Garder toute l\'image (bords transparents)', 'Fit the whole image (transparent edges)')], ['remplir', T('Remplir le carré (recadrer au centre)', 'Fill the square (center crop)')]] },
+    modeNb: { label: T('Rendu', 'Style'), type: 'select', val: 'gris', choix: [['gris', T('Niveaux de gris', 'Grayscale')], ['seuil', T('Noir et blanc pur (deux couleurs)', 'Pure black and white (two colors)')]] },
+    seuil: { label: T('Seuil', 'Threshold'), type: 'range', val: '128', min: 20, max: 235, step: 1, aide: T('Plus haut = plus de noir.', 'Higher = more black.'), si: (o) => o.modeNb === 'seuil' },
+    debit: { label: T('Qualité du MP3', 'MP3 quality'), type: 'select', val: '192', choix: [['128', T('128 kb/s (léger)', '128 kbps (small)')], ['192', T('192 kb/s (conseillé)', '192 kbps (recommended)')], ['256', T('256 kb/s', '256 kbps')], ['320', T('320 kb/s (maximum)', '320 kbps (maximum)')]] },
   };
 
   // ---------- les outils ----------
   const IMG = ['image', 'heic'];
   const OUTILS = {
-    'pdf-en-jpg': { titre: 'PDF en JPG', k: ['pdf'], multi: true, btn: 'Convertir en JPG', opts: ['resolution', 'pages'], run: (f, o, u) => pdfVersImages(f, o, u, 'image/jpeg') },
-    'pdf-en-png': { titre: 'PDF en PNG', k: ['pdf'], multi: true, btn: 'Convertir en PNG', opts: ['resolution', 'pages'], run: (f, o, u) => pdfVersImages(f, o, u, 'image/png') },
-    'jpg-en-pdf': { titre: 'Images en PDF', k: IMG, multi: true, ordre: true, btn: 'Créer le PDF', opts: ['page', 'marge'], run: imagesVersPdf },
-    'heic-en-jpg': { titre: 'HEIC en JPG', k: IMG, multi: true, btn: 'Convertir', opts: ['format', 'qualiteConv'], run: convertirImages },
-    'convertir-image': { titre: 'Convertir une image (JPG, PNG, WEBP)', k: IMG, multi: true, btn: 'Convertir', opts: ['format', 'qualiteConv'], run: convertirImages },
-    'compresser-image': { titre: 'Compresser des images', k: IMG, multi: true, btn: 'Compresser', opts: ['qualite', 'maxi', 'formatComp'], run: compresserImages },
-    'redimensionner-image': { titre: 'Redimensionner des images', k: IMG, multi: true, btn: 'Redimensionner', opts: ['modeRedim', 'largeur', 'hauteur', 'ratio', 'pourcent'], run: redimensionner },
-    'fusionner-pdf': { titre: 'Fusionner des PDF', k: ['pdf'], multi: true, ordre: true, btn: 'Fusionner', opts: [], run: fusionner },
-    'diviser-pdf': { titre: 'Diviser un PDF', k: ['pdf'], multi: false, btn: 'Diviser', opts: ['modeDiv', 'groupe', 'plages'], run: diviser },
-    'supprimer-pages-pdf': { titre: 'Supprimer des pages d\'un PDF', k: ['pdf'], multi: false, btn: 'Supprimer ces pages', opts: ['pagesSuppr'], run: supprimerPages },
-    'pivoter-pdf': { titre: 'Pivoter un PDF', k: ['pdf'], multi: true, btn: 'Pivoter', opts: ['angle', 'pages'], run: pivoter },
-    'compresser-pdf': { titre: 'Compresser un PDF', k: ['pdf'], multi: true, btn: 'Compresser', opts: ['niveau'], run: compresserPdf },
-    'mp4-en-mp3': { titre: 'Extraire le son en MP3', k: ['video'], multi: true, btn: 'Extraire le MP3', opts: ['debit'], run: videoVersMp3 },
-    'audio-en-mp3': { titre: 'Audio en MP3', k: ['video'], multi: true, btn: 'Convertir en MP3', opts: ['debit'], run: videoVersMp3 },
-    'signer-pdf': { titre: 'Signer un PDF', k: ['pdf'], multi: false, btn: 'Signer le PDF', opts: [], panneau: panneauSignature, run: signer },
-    'numeroter-pages-pdf': { titre: 'Numéroter les pages', k: ['pdf'], multi: true, btn: 'Numéroter', opts: ['position', 'formatNum', 'debut', 'couverture', 'taillePolice'], run: numeroter },
-    'filigrane-pdf': { titre: 'Ajouter un filigrane', k: ['pdf'], multi: true, btn: 'Ajouter le filigrane', opts: ['texteFil', 'sensFil', 'couleurFil', 'opacite', 'pages'], run: filigrane },
-    'pdf-en-texte': { titre: 'PDF en texte', k: ['pdf'], multi: true, btn: 'Extraire le texte', opts: ['separer'], run: pdfVersTexte },
-    'extraire-pages-pdf': { titre: 'Extraire des pages', k: ['pdf'], multi: false, btn: 'Extraire', opts: ['pagesExtr', 'modeExtr'], run: extrairePages },
-    'organiser-pdf': { titre: 'Changer l\'ordre des pages', k: ['pdf'], multi: false, btn: 'Créer le PDF', opts: [], panneau: panneauOrdre, run: organiser },
-    'svg-en-png': { titre: 'SVG en PNG', k: ['svg'], multi: true, btn: 'Convertir', opts: ['largeurSvg', 'formatSvg', 'fond'], run: svgVersImage },
-    'png-en-ico': { titre: 'Créer une icône ICO', k: IMG, multi: true, btn: 'Créer le fichier ICO', opts: ['taillesIco', 'cadrage'], run: versIco },
-    'image-noir-et-blanc': { titre: 'Noir et blanc', k: IMG, multi: true, btn: 'Passer en noir et blanc', opts: ['modeNb', 'seuil'], run: noirEtBlanc },
+    'pdf-en-jpg': { titre: T('PDF en JPG', 'PDF to JPG'), k: ['pdf'], multi: true, btn: T('Convertir en JPG', 'Convert to JPG'), opts: ['resolution', 'pages'], run: (f, o, u) => pdfVersImages(f, o, u, 'image/jpeg') },
+    'pdf-en-png': { titre: T('PDF en PNG', 'PDF to PNG'), k: ['pdf'], multi: true, btn: T('Convertir en PNG', 'Convert to PNG'), opts: ['resolution', 'pages'], run: (f, o, u) => pdfVersImages(f, o, u, 'image/png') },
+    'jpg-en-pdf': { titre: T('Images en PDF', 'Images to PDF'), k: IMG, multi: true, ordre: true, btn: T('Créer le PDF', 'Create PDF'), opts: ['page', 'marge'], run: imagesVersPdf },
+    'heic-en-jpg': { titre: T('HEIC en JPG', 'HEIC to JPG'), k: IMG, multi: true, btn: T('Convertir', 'Convert'), opts: ['format', 'qualiteConv'], run: convertirImages },
+    'convertir-image': { titre: T('Convertir une image (JPG, PNG, WEBP)', 'Convert an image (JPG, PNG, WEBP)'), k: IMG, multi: true, btn: T('Convertir', 'Convert'), opts: ['format', 'qualiteConv'], run: convertirImages },
+    'compresser-image': { titre: T('Compresser des images', 'Compress images'), k: IMG, multi: true, btn: T('Compresser', 'Compress'), opts: ['qualite', 'maxi', 'formatComp'], run: compresserImages },
+    'redimensionner-image': { titre: T('Redimensionner des images', 'Resize images'), k: IMG, multi: true, btn: T('Redimensionner', 'Resize'), opts: ['modeRedim', 'largeur', 'hauteur', 'ratio', 'pourcent'], run: redimensionner },
+    'fusionner-pdf': { titre: T('Fusionner des PDF', 'Merge PDFs'), k: ['pdf'], multi: true, ordre: true, btn: T('Fusionner', 'Merge'), opts: [], run: fusionner },
+    'diviser-pdf': { titre: T('Diviser un PDF', 'Split a PDF'), k: ['pdf'], multi: false, btn: T('Diviser', 'Split'), opts: ['modeDiv', 'groupe', 'plages'], run: diviser },
+    'supprimer-pages-pdf': { titre: T('Supprimer des pages d\'un PDF', 'Delete PDF pages'), k: ['pdf'], multi: false, btn: T('Supprimer ces pages', 'Delete these pages'), opts: ['pagesSuppr'], run: supprimerPages },
+    'pivoter-pdf': { titre: T('Pivoter un PDF', 'Rotate a PDF'), k: ['pdf'], multi: true, btn: T('Pivoter', 'Rotate'), opts: ['angle', 'pages'], run: pivoter },
+    'compresser-pdf': { titre: T('Compresser un PDF', 'Compress a PDF'), k: ['pdf'], multi: true, btn: T('Compresser', 'Compress'), opts: ['niveau'], run: compresserPdf },
+    'mp4-en-mp3': { titre: T('Extraire le son en MP3', 'Extract audio to MP3'), k: ['video'], multi: true, btn: T('Extraire le MP3', 'Extract MP3'), opts: ['debit'], run: videoVersMp3 },
+    'audio-en-mp3': { titre: T('Audio en MP3', 'Audio to MP3'), k: ['video'], multi: true, btn: T('Convertir en MP3', 'Convert to MP3'), opts: ['debit'], run: videoVersMp3 },
+    'signer-pdf': { titre: T('Signer un PDF', 'Sign a PDF'), k: ['pdf'], multi: false, btn: T('Signer le PDF', 'Sign PDF'), opts: [], panneau: panneauSignature, run: signer },
+    'numeroter-pages-pdf': { titre: T('Numéroter les pages', 'Add page numbers'), k: ['pdf'], multi: true, btn: T('Numéroter', 'Add page numbers'), opts: ['position', 'formatNum', 'debut', 'couverture', 'taillePolice'], run: numeroter },
+    'filigrane-pdf': { titre: T('Ajouter un filigrane', 'Add a watermark'), k: ['pdf'], multi: true, btn: T('Ajouter le filigrane', 'Add watermark'), opts: ['texteFil', 'sensFil', 'couleurFil', 'opacite', 'pages'], run: filigrane },
+    'pdf-en-texte': { titre: T('PDF en texte', 'PDF to text'), k: ['pdf'], multi: true, btn: T('Extraire le texte', 'Extract text'), opts: ['separer'], run: pdfVersTexte },
+    'extraire-pages-pdf': { titre: T('Extraire des pages', 'Extract pages'), k: ['pdf'], multi: false, btn: T('Extraire', 'Extract'), opts: ['pagesExtr', 'modeExtr'], run: extrairePages },
+    'organiser-pdf': { titre: T('Changer l\'ordre des pages', 'Reorder pages'), k: ['pdf'], multi: false, btn: T('Créer le PDF', 'Create PDF'), opts: [], panneau: panneauOrdre, run: organiser },
+    'svg-en-png': { titre: T('SVG en PNG', 'SVG to PNG'), k: ['svg'], multi: true, btn: T('Convertir', 'Convert'), opts: ['largeurSvg', 'formatSvg', 'fond'], run: svgVersImage },
+    'png-en-ico': { titre: T('Créer une icône ICO', 'Create an ICO icon'), k: IMG, multi: true, btn: T('Créer le fichier ICO', 'Create ICO file'), opts: ['taillesIco', 'cadrage'], run: versIco },
+    'image-noir-et-blanc': { titre: T('Noir et blanc', 'Black and white'), k: IMG, multi: true, btn: T('Passer en noir et blanc', 'Convert to black and white'), opts: ['modeNb', 'seuil'], run: noirEtBlanc },
   };
   // Pages qui réutilisent un outil avec un réglage par défaut différent
   const ALIAS = {
@@ -1078,16 +1083,16 @@
 
     const entree = el('input', { type: 'file', class: 'visuellement-cache', id: 'fichiers-' + Math.random().toString(36).slice(2) });
     const depot = el('div', { class: 'depot' },
-      el('p', { class: 'depot-titre', texte: auto ? 'Déposez n\'importe quel fichier ici' : 'Glissez vos fichiers ici' }),
-      el('label', { class: 'bouton principal', for: entree.id, texte: 'Choisir des fichiers' }), entree,
+      el('p', { class: 'depot-titre', texte: auto ? T('Déposez n\'importe quel fichier ici', 'Drop any file here') : T('Glissez vos fichiers ici', 'Drop your files here') }),
+      el('label', { class: 'bouton principal', for: entree.id, texte: T('Choisir des fichiers', 'Choose files') }), entree,
       el('p', { class: 'aide depot-aide' }));
     const liste = el('ul', { class: 'fichiers' });
     const choix = el('div', { class: 'choix', hidden: true });
     const options = el('div', { class: 'grille options' });
     const extra = el('div', { class: 'extra' });
     let fichierPanneau = null;
-    const lancer = el('button', { type: 'button', class: 'principal', disabled: true, texte: 'Convertir' });
-    const vider = el('button', { type: 'button', texte: 'Tout effacer', hidden: true });
+    const lancer = el('button', { type: 'button', class: 'principal', disabled: true, texte: T('Convertir', 'Convert') });
+    const vider = el('button', { type: 'button', texte: T('Tout effacer', 'Clear all'), hidden: true });
     const barre = el('progress', { max: '1', value: '0' });
     const prog = el('div', { class: 'progression', hidden: true }, barre, el('span'));
     const etat = el('div', { class: 'message', role: 'status', 'aria-live': 'polite' });
@@ -1106,9 +1111,9 @@
       entree.multiple = o ? !!o.multi : true;
       entree.accept = o ? o.k.map((k) => ACCEPT[k]).join(',') : '';
       depot.querySelector('.depot-aide').textContent = o
-        ? `${o.k.map((k) => NOMS_TYPES[k]).filter((x, i, a) => a.indexOf(x) === i).join(' ou ')}${o.multi ? ' (plusieurs à la fois possible)' : ''} · rien n'est envoyé sur Internet`
-        : 'PDF, images (JPG, PNG, WEBP, HEIC, SVG), vidéos et sons · tout reste sur votre appareil';
-      lancer.textContent = o ? o.btn : 'Convertir';
+        ? T(`${o.k.map((k) => NOMS_TYPES[k]).filter((x, i, a) => a.indexOf(x) === i).join(' ou ')}${o.multi ? ' (plusieurs à la fois possible)' : ''} · rien n'est envoyé sur Internet`, `${o.k.map((k) => NOMS_TYPES[k]).filter((x, i, a) => a.indexOf(x) === i).join(' or ')}${o.multi ? ' (several at once)' : ''} · nothing is uploaded`)
+        : T('PDF, images (JPG, PNG, WEBP, HEIC, SVG), vidéos et sons · tout reste sur votre appareil', 'PDF, images (JPG, PNG, WEBP, HEIC, SVG), video and audio · everything stays on your device');
+      lancer.textContent = o ? o.btn : T('Convertir', 'Convert');
       options.replaceChildren();
       extra.replaceChildren(); fichierPanneau = null;
       if (!o) return;
@@ -1143,10 +1148,10 @@
         const info = el('span', { class: 'aide', texte: taille(f.size) });
         const li = el('li', {}, el('span', { class: 'nom', texte: f.name }), info);
         if (o && o.ordre && fichiers.length > 1) {
-          li.append(el('button', { type: 'button', class: 'mini', 'aria-label': 'Monter ' + f.name, texte: '↑', disabled: i === 0, onclick: () => { [fichiers[i - 1], fichiers[i]] = [fichiers[i], fichiers[i - 1]]; afficherListe(); } }));
-          li.append(el('button', { type: 'button', class: 'mini', 'aria-label': 'Descendre ' + f.name, texte: '↓', disabled: i === fichiers.length - 1, onclick: () => { [fichiers[i + 1], fichiers[i]] = [fichiers[i], fichiers[i + 1]]; afficherListe(); } }));
+          li.append(el('button', { type: 'button', class: 'mini', 'aria-label': T('Monter ', 'Move up ') + f.name, texte: '↑', disabled: i === 0, onclick: () => { [fichiers[i - 1], fichiers[i]] = [fichiers[i], fichiers[i - 1]]; afficherListe(); } }));
+          li.append(el('button', { type: 'button', class: 'mini', 'aria-label': T('Descendre ', 'Move down ') + f.name, texte: '↓', disabled: i === fichiers.length - 1, onclick: () => { [fichiers[i + 1], fichiers[i]] = [fichiers[i], fichiers[i + 1]]; afficherListe(); } }));
         }
-        li.append(el('button', { type: 'button', class: 'mini', 'aria-label': 'Retirer ' + f.name, texte: '✕', onclick: () => { fichiers.splice(i, 1); afficherListe(); } }));
+        li.append(el('button', { type: 'button', class: 'mini', 'aria-label': T('Retirer ', 'Remove ') + f.name, texte: '✕', onclick: () => { fichiers.splice(i, 1); afficherListe(); } }));
         liste.append(li);
         if (genre(f) === 'pdf' && o && !f._pages) {
           ouvrirPdfLib(f).then((d) => { f._pages = d.getPageCount(); info.textContent = `${taille(f.size)} · ${f._pages} page${f._pages > 1 ? 's' : ''}`; }).catch(() => {});
@@ -1168,16 +1173,16 @@
       choix.hidden = false;
       const g = genres[0];
       if (genres.length > 1) {
-        choix.append(el('p', { texte: 'Vous avez mélangé plusieurs sortes de fichiers. Déposez-en d\'une seule sorte à la fois (que des PDF, que des images…).' }));
+        choix.append(el('p', { texte: T('Vous avez mélangé plusieurs sortes de fichiers. Déposez-en d\'une seule sorte à la fois (que des PDF, que des images…).', 'You mixed several kinds of files. Drop one kind at a time (only PDFs, only images…).') }));
         return;
       }
       if (!PAR_GENRE[g]) {
-        const quoi = { word: 'Les fichiers Word', tableur: 'Les tableurs (Excel)', presentation: 'Les présentations (PowerPoint)' }[g] || 'Ce type de fichier';
-        choix.append(el('p', { texte: `${quoi} ne sont pas encore pris en charge. Nous ne proposons que des conversions qui marchent vraiment dans votre navigateur, sans envoyer vos fichiers.` }));
-        if (g === 'word') choix.append(el('p', { class: 'aide', texte: 'Astuce : dans Word ou LibreOffice, « Fichier › Enregistrer sous › PDF » le fait gratuitement et sans perte.' }));
+        const quoi = { word: T('Les fichiers Word', 'Word files'), tableur: T('Les tableurs (Excel)', 'Spreadsheets (Excel)'), presentation: T('Les présentations (PowerPoint)', 'Presentations (PowerPoint)') }[g] || T('Ce type de fichier', 'Files of this type');
+        choix.append(el('p', { texte: T(`${quoi} ne sont pas encore pris en charge. Nous ne proposons que des conversions qui marchent vraiment dans votre navigateur, sans envoyer vos fichiers.`, `${quoi} are not supported yet. We only offer conversions that truly work in your browser, without uploading your files.`) }));
+        if (g === 'word') choix.append(el('p', { class: 'aide', texte: T('Astuce : dans Word ou LibreOffice, « Fichier › Enregistrer sous › PDF » le fait gratuitement et sans perte.', 'Tip: in Word or LibreOffice, “File › Save As › PDF” does it for free, with no quality loss.') }));
         return;
       }
-      choix.append(el('p', { class: 'etiquette', texte: `Que voulez-vous faire de ${fichiers.length > 1 ? 'ces fichiers' : 'ce fichier'} ?` }));
+      choix.append(el('p', { class: 'etiquette', texte: T(`Que voulez-vous faire de ${fichiers.length > 1 ? 'ces fichiers' : 'ce fichier'} ?`, `What do you want to do with ${fichiers.length > 1 ? 'these files' : 'this file'}?`) }));
       const boutons = el('div', { class: 'boutons' });
       for (const id of PAR_GENRE[g]) {
         boutons.append(el('button', { type: 'button', texte: OUTILS[id].titre, 'aria-pressed': actuel && actuel.id === id ? 'true' : 'false', onclick: () => { actuel = resoudre(id); for (const k of Object.keys(valeurs)) delete valeurs[k]; preparer(); proposer(); afficherListe(); nettoyer(); dire(''); } }));
@@ -1199,17 +1204,17 @@
         });
         if (refus.length) {
           const g = genre(refus[0]);
-          const autre = PAR_GENRE[g] ? ` Pour ${g === 'pdf' ? 'un PDF' : g === 'video' ? 'une vidéo' : 'une image'}, essayez « ${OUTILS[PAR_GENRE[g][0]].titre} » depuis l'accueil.` : '';
-          dire(`« ${refus[0].name} » n'est pas un fichier accepté ici (${o.k.map((k) => NOMS_TYPES[k]).join(', ')}).${autre}`, true);
+          const autre = PAR_GENRE[g] ? T(` Pour ${g === 'pdf' ? 'un PDF' : g === 'video' ? 'une vidéo' : 'une image'}, essayez « ${OUTILS[PAR_GENRE[g][0]].titre} » depuis l'accueil.`, ` For ${g === 'pdf' ? 'a PDF' : g === 'video' ? 'a video' : 'an image'}, try “${OUTILS[PAR_GENRE[g][0]].titre}” from the home page.`) : '';
+          dire(T(`« ${refus[0].name} » n'est pas un fichier accepté ici (${o.k.map((k) => NOMS_TYPES[k]).join(', ')}).${autre}`, `“${refus[0].name}” is not a file this tool accepts (${o.k.map((k) => NOMS_TYPES[k]).join(', ')}).${autre}`), true);
         }
         if (!o.multi) { ajout = ajout.slice(0, 1); fichiers = []; }
       }
       for (const f of ajout) {
         const g = genre(f);
-        if (LIMITES[g] && f.size > LIMITES[g]) { dire(`« ${f.name} » pèse ${taille(f.size)} : c'est trop pour un traitement dans le navigateur (maximum ${taille(LIMITES[g])}).`, true); continue; }
+        if (LIMITES[g] && f.size > LIMITES[g]) { dire(T(`« ${f.name} » pèse ${taille(f.size)} : c'est trop pour un traitement dans le navigateur (maximum ${taille(LIMITES[g])}).`, `“${f.name}” is ${taille(f.size)}: too large to process in the browser (maximum ${taille(LIMITES[g])}).`), true); continue; }
         fichiers.push(f);
       }
-      if (fichiers.length > 300) { fichiers = fichiers.slice(0, 300); dire('300 fichiers au plus à la fois.', true); }
+      if (fichiers.length > 300) { fichiers = fichiers.slice(0, 300); dire(T('300 fichiers au plus à la fois.', '300 files maximum at a time.'), true); }
       if (auto) proposer();
       afficherListe();
     }
@@ -1234,7 +1239,7 @@
       } catch (e) {
         prog.hidden = true;
         if (!(e instanceof Erreur)) console.error(e);
-        dire(e instanceof Erreur ? e.message : `Échec de la conversion : ${e && e.message ? e.message : e}. Si le fichier est très gros, essayez sur un ordinateur.`, true);
+        dire(e instanceof Erreur ? e.message : T(`Échec de la conversion : ${e && e.message ? e.message : e}. Si le fichier est très gros, essayez sur un ordinateur.`, `Conversion failed: ${e && e.message ? e.message : e}. If the file is very large, try on a computer.`), true);
       } finally {
         occupe = false; afficherListe();
       }
@@ -1242,29 +1247,29 @@
 
     function lien(f) {
       const u = URL.createObjectURL(f.blob); urls.push(u);
-      return el('a', { class: 'bouton', href: u, download: f.nom }, `Télécharger ${f.nom} `, el('span', { class: 'aide', texte: `(${taille(f.blob.size)})` }));
+      return el('a', { class: 'bouton', href: u, download: f.nom }, T(`Télécharger ${f.nom} `, `Download ${f.nom} `), el('span', { class: 'aide', texte: `(${taille(f.blob.size)})` }));
     }
     async function afficherResultats(res, secondes) {
       const s = res.sorties || [];
       const notes = (res.notes || []).slice();
-      if (reduction) notes.push('Image très grande : elle a été réduite pour tenir dans la mémoire de cet appareil.');
-      if (s.length) notes.unshift(`Terminé en ${secondes < 1 ? 'moins d\'une seconde' : Math.round(secondes) + ' s'} : ${s.length} fichier${s.length > 1 ? 's' : ''} prêt${s.length > 1 ? 's' : ''}.`);
+      if (reduction) notes.push(T('Image très grande : elle a été réduite pour tenir dans la mémoire de cet appareil.', 'Very large image: it was scaled down to fit this device\'s memory.'));
+      if (s.length) notes.unshift(T(`Terminé en ${secondes < 1 ? 'moins d\'une seconde' : Math.round(secondes) + ' s'} : ${s.length} fichier${s.length > 1 ? 's' : ''} prêt${s.length > 1 ? 's' : ''}.`, `Done in ${secondes < 1 ? 'less than a second' : Math.round(secondes) + ' s'}: ${s.length} file${s.length > 1 ? 's' : ''} ready.`));
       dire(notes.join(' '));
       if (!s.length) return;
       etat.classList.add('ok');
       etat.insertAdjacentHTML('afterbegin', '<svg class="coche" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
       const bloc = el('div', { class: 'resultat' });
       if (s.length > 1) {
-        const tout = el('button', { type: 'button', class: 'principal', texte: `Tout télécharger (.zip, ${s.length} fichiers)` });
+        const tout = el('button', { type: 'button', class: 'principal', texte: T(`Tout télécharger (.zip, ${s.length} fichiers)`, `Download all (.zip, ${s.length} files)`) });
         tout.addEventListener('click', async () => {
-          tout.disabled = true; tout.textContent = 'Préparation du ZIP…';
+          tout.disabled = true; tout.textContent = T('Préparation du ZIP…', 'Preparing the ZIP…');
           try {
             const z = await zip(unique(s));
             const u = URL.createObjectURL(z); urls.push(u);
             const a = el('a', { href: u, download: (actuel.id || 'fichiers') + '.zip' });
             document.body.append(a); a.click(); a.remove();
-            tout.textContent = `ZIP téléchargé (${taille(z.size)})`;
-          } catch (e) { tout.textContent = 'ZIP impossible : téléchargez un par un'; }
+            tout.textContent = T(`ZIP téléchargé (${taille(z.size)})`, `ZIP downloaded (${taille(z.size)})`);
+          } catch (e) { tout.textContent = T('ZIP impossible : téléchargez un par un', 'ZIP failed: download the files one by one'); }
         });
         bloc.append(tout);
       }
@@ -1277,7 +1282,7 @@
         }
         ul.append(li);
       });
-      if (s.length > 200) ul.append(el('li', { class: 'aide', texte: `… et ${s.length - 200} autres : utilisez le ZIP.` }));
+      if (s.length > 200) ul.append(el('li', { class: 'aide', texte: T(`… et ${s.length - 200} autres : utilisez le ZIP.`, `… and ${s.length - 200} more: use the ZIP.`) }));
       bloc.append(ul);
       sortie.append(bloc);
       bloc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

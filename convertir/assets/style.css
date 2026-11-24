@@ -85,6 +85,10 @@ h1, h2, h3, .depot-titre, .marque .nom { font-family: var(--police-titre); }
 .logo { width: 38px; height: 38px; flex: none; border-radius: 10px; box-shadow: 0 6px 16px -6px rgba(79, 70, 229, .6); }
 .marque .nom { display: flex; flex-direction: column; line-height: 1.05; font-size: 1.28rem; letter-spacing: -.02em; }
 .marque small { font-family: var(--police); font-weight: 600; font-size: .72rem; color: var(--ok); letter-spacing: 0; margin-top: 2px; }
+/* Lien de langue (EN / FR), discret, à gauche du menu ; 44 px de haut pour le doigt */
+.langue { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 40px; padding: 0 10px; border-radius: 999px; font-weight: 700; font-size: .82rem; letter-spacing: .04em; color: var(--texte-doux); text-decoration: none; border: 1px solid transparent; transition: border-color .2s, color .2s; }
+.langue:hover, .langue:focus-visible { color: var(--accent); border-color: var(--bord); }
+.entete .conteneur > .langue + .menu { margin-left: -4px; }
 .menu summary { list-style: none; cursor: pointer; padding: 8px 14px; border: 1px solid var(--bord); border-radius: 999px; font-weight: 600; font-size: .95rem; background: var(--surface); transition: border-color .2s, box-shadow .2s; }
 .menu summary:hover { border-color: var(--accent); }
 .menu summary::-webkit-details-marker { display: none; }
