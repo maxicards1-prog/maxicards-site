@@ -364,3 +364,16 @@ tbody tr:hover td { background: var(--surface-2); }
 .chapo { font-size: 1.18rem; line-height: 1.5; font-weight: 600; color: var(--texte); }
 .suite-chapo { color: var(--texte-doux); }
 .hero .bouton-contour { background: none; border: 0; box-shadow: none; text-decoration: underline; text-underline-offset: 4px; padding-left: 8px; padding-right: 8px; }
+
+/* Page « Tous les guides » (24/11/2026) : recherche en gros, thèmes en pastilles, cartes par thème */
+.recherche-guides label { display: block; font-family: var(--titre); font-weight: 800; font-size: 1.2rem; margin-bottom: 8px; }
+.recherche-guides input[type="search"] { width: 100%; font-size: 1.1rem; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--bord); background: var(--surface); color: var(--texte); }
+.recherche-guides input[type="search"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(224, 48, 122, .15); }
+.themes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.themes a { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--bord); background: var(--surface-2); color: var(--texte); text-decoration: none; font-weight: 600; font-size: .95rem; }
+.themes a:hover { border-color: var(--accent); }
+.themes small { font-size: .8rem; color: var(--texte-doux); }
+.rubrique-guides { scroll-margin-top: 80px; }
+.populaires .carte-outil { border-color: var(--accent); }
+.aucun { font-weight: 600; }
+[hidden] { display: none !important; }
