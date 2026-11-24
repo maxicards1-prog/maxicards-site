@@ -8,3 +8,5 @@ Sitemap: https://maxicards.net/calcul/sitemap.xml
 Sitemap: https://maxicards.net/gta6/sitemap.xml
 Sitemap: https://maxicards.net/convertir/sitemap.xml
 Sitemap: https://maxicards.net/ia/sitemap.xml
+Sitemap: https://maxicards.net/course/sitemap.xml
+Sitemap: https://maxicards.net/course/sitemap-en.xml
