@@ -6,9 +6,12 @@
 <title>Démo WallView, l'œuvre sur votre mur - MAXICARDS</title>
 <meta name="description" content="Essayez WallView : voyez une affiche, une toile ou un néon sur votre propre mur, depuis votre téléphone.">
 <meta name="robots" content="noindex, nofollow">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'none'; form-action 'none'"><script id="garde-cadre">(function(){try{if(window.top===window.self)return;var a=location.ancestorOrigins,o=a&&a.length?a[a.length-1]:(document.referrer?new URL(document.referrer).origin:"");if(/^https:\/\/((www\.)?maxicards\.net|adsense\.google\.com|www\.google\.(com|fr))$/.test(o))return;}catch(e){}document.documentElement.style.display="none";})();</script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob:; base-uri 'none'; form-action 'none'"><script id="garde-cadre">(function(){try{if(window.top===window.self)return;var a=location.ancestorOrigins,o=a&&a.length?a[a.length-1]:(document.referrer?new URL(document.referrer).origin:"");if(/^https:\/\/((www\.)?maxicards\.net|adsense\.google\.com|www\.google\.(com|fr))$/.test(o))return;}catch(e){}document.documentElement.style.display="none";})();</script>
 <meta name="theme-color" content="#0f5132">
 <link rel="stylesheet" href="wall-viewer.css">
+<link rel="stylesheet" href="live/live.css">
+<script type="importmap">{"imports":{"three":"./live/vendor/three/build/three.module.min.js"}}</script>
+<script type="module" src="./live/vendor/model-viewer-module.min.js"></script>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#faf8f7;color:#1b1719}
@@ -30,12 +33,56 @@ body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif
 <body>
 <div class="bandeau"><span><b>Démo — MAXICARDS</b> · WallView</span><span><a href="https://apps.shopify.com/wallview" rel="noopener">Fiche sur le Shopify App Store</a> · <a href="../">Autres démos</a></span></div>
 <div class="wrap">
-<p class="astuce"><b>À essayer :</b> touchez « Voir sur mon mur » sur une œuvre, choisissez une pièce d'exemple, ou prenez une photo de votre propre mur : la photo reste sur votre téléphone, elle n'est jamais envoyée.</p>
+<section class="live" id="live" aria-labelledby="liveTitle">
+  <h1 id="liveTitle">Voyez l'œuvre sur votre mur, en direct</h1>
+  <p class="lead">Choisissez l'œuvre, la taille et le cadre, puis touchez le gros bouton : la caméra de votre téléphone s'ouvre et l'œuvre se colle au mur, à sa vraie taille.</p>
+  <div class="lv-stage" id="lvStage">
+    <model-viewer id="mv" alt="Aperçu 3D de l'œuvre à sa vraie taille"
+      ar ar-modes="webxr" ar-placement="wall" ar-scale="fixed"
+      camera-controls touch-action="pan-y" interaction-prompt="none"
+      camera-orbit="0deg 90deg 3m" field-of-view="30deg"
+      min-camera-orbit="-75deg 15deg 0.4m" max-camera-orbit="75deg 165deg 6m"
+      shadow-intensity="1" shadow-softness="0.9" environment-image="neutral" exposure="1.05">
+      <button slot="ar-button" hidden aria-hidden="true" tabindex="-1"></button>
+      <div slot="hotspot-w" class="lv-dim" data-position="0 -0.5 0" data-normal="0 0 1" id="dimW"></div>
+      <div slot="hotspot-h" class="lv-dim" data-position="0.5 0 0" data-normal="0 0 1" id="dimH"></div>
+    </model-viewer>
+    <div class="lv-badge">Aperçu 3D à la vraie taille, vu de 3 m</div>
+  </div>
+  <div class="lv-panel">
+    <div class="lv-label">Œuvre</div><div class="lv-chips" id="lvArt"></div>
+    <div class="lv-label">Taille</div><div class="lv-chips" id="lvSize"></div>
+    <div id="lvFrameBlock">
+      <div class="lv-label">Cadre</div>
+      <div class="lv-chips" id="lvFrame"></div>
+      <div class="lv-chips" style="margin-top:6px"><button type="button" class="lv-chip" id="lvMat" aria-pressed="true">Avec passe-partout</button></div>
+    </div>
+    <p class="lv-sizes" id="lvSizes"></p>
+    <button type="button" class="lv-live" id="liveBtn">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><rect x="8" y="7" width="8" height="10" rx="1"/></svg>
+      <span>Voir en direct sur mon mur</span>
+    </button>
+    <div class="lv-status" id="status" role="status" aria-live="polite"></div>
+    <div class="lv-noar" id="noAr" hidden>
+      <div id="noArDesktop" hidden>
+        <img class="lv-qr" src="live/qr.svg" width="132" height="132" alt="QR code vers cette page">
+        <p><strong>Ouvrez cette page sur votre téléphone.</strong><br>Scannez ce QR code avec l'appareil photo de votre téléphone : la caméra en direct fonctionne sur iPhone (Safari) et sur Android (Chrome).</p>
+      </div>
+      <div id="noArPhone" hidden>
+        <p><strong>Ce téléphone ou ce navigateur ne gère pas la réalité augmentée.</strong><br>Sur iPhone, ouvrez cette page dans Safari. Sur Android, utilisez Chrome à jour avec « Services Google Play pour la RA ». Sinon, essayez le mode photo ci-dessous.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<h2 class="alt">Ou : prenez votre mur en photo</h2>
+<p class="astuce">Touchez « Photo de mon mur » sur une œuvre : prenez une photo, tracez une ligne sur un objet connu (une porte) pour régler l'échelle. La photo reste sur votre téléphone, elle n'est jamais envoyée.</p>
 <div class="grid" id="grid"></div>
 <p class="note" style="margin-top:24px">Fausse boutique de démonstration, œuvres dessinées pour l'occasion.</p>
 </div>
-<script>window.DEMO_OPTS={photoRooms:[{url:"room-living.jpg",pxPerCm:3.9,anchor:[799,278]},{url:"room-bedroom.jpg",pxPerCm:4.6,anchor:[794,190]},{url:"room-dining.jpg",pxPerCm:3.6,anchor:[791,370]}]};</script>
+<script>window.DEMO_OPTS={photoRooms:[{url:"room-living.jpg",pxPerCm:3.9,anchor:[799,278]},{url:"room-bedroom.jpg",pxPerCm:4.6,anchor:[794,190]},{url:"room-dining.jpg",pxPerCm:3.6,anchor:[791,370]}],onEvent:function(n,d){if(n==="room"&&d&&d.sample===false){setTimeout(function(){var b=[].slice.call(document.querySelectorAll(".wv-chip")).filter(function(x){return /chelle/.test(x.textContent)&&x.className.indexOf("is-on")<0})[0];if(b)b.click();},250);}}};</script>
 <script src="wall-viewer.js"></script>
 <script src="demo-art.js"></script>
+<script type="module" src="./live/live.js"></script>
 </body>
 </html>

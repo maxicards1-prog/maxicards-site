@@ -57,7 +57,7 @@
     var kind = document.createElement("div"); kind.className = "kind"; kind.textContent = p.kind;
     var h = document.createElement("h3"); h.textContent = p.title;
     var price = document.createElement("div"); price.className = "price"; price.textContent = p.price;
-    var b = document.createElement("button"); b.type = "button"; b.className = "try"; b.textContent = "Voir sur mon mur";
+    var b = document.createElement("button"); b.type = "button"; b.className = "try"; b.textContent = "Photo de mon mur";
     b.onclick = function () {
       var opts = {
         artworkUrl: p.art, title: p.title, mode: p.mode, lang: "fr", accent: "#111111", addToCart: false,

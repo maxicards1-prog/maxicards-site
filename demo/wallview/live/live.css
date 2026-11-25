@@ -1,0 +1,33 @@
+.live{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin:0 0 28px}
+.live h1{font-size:24px;line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+.live .lead{margin:0 0 14px;color:#444;font-size:15px}
+.lv-stage{position:relative;margin:0 0 14px}
+model-viewer{display:block;width:100%;height:auto;aspect-ratio:4/3;max-height:480px;border-radius:12px;background:radial-gradient(120% 90% at 50% 35%,#f3f0eb 0%,#ebe7e0 60%,#ddd7ce 100%);--poster-color:transparent}
+.lv-stage.night model-viewer{background:radial-gradient(120% 90% at 50% 35%,#34323f 0%,#24222d 60%,#18171f 100%)}
+.lv-badge{position:absolute;left:10px;top:10px;background:rgba(255,255,255,.9);border-radius:8px;padding:3px 8px;font-size:12px;color:#666;pointer-events:none}
+.lv-dim{background:rgba(255,255,255,.94);border:1px solid #d5d9de;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:600;white-space:nowrap;pointer-events:none}
+.lv-panel{display:grid;gap:8px}
+.lv-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#666;margin-top:4px}
+.lv-chips{display:flex;flex-wrap:wrap;gap:6px}
+.lv-chip{border:1px solid #d8d8d8;background:#fff;color:#151515;border-radius:999px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+.lv-chip[aria-pressed="true"]{background:#111;border-color:#111;color:#fff;font-weight:600}
+.lv-sizes{margin:6px 0 0;font-size:14px}
+.lv-live{margin-top:6px;width:100%;min-height:60px;border:0;border-radius:14px;background:#0f5132;color:#fff;font:inherit;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 18px rgba(15,81,50,.3)}
+.lv-live:disabled{opacity:.6;cursor:progress}
+.lv-live.is-off{background:#6f7f77;box-shadow:none}
+.lv-status{font-size:14px;color:#555;min-height:1.4em}
+.lv-status.warn{color:#9a3b00}
+.lv-noar{border:1px solid #e0d6c8;background:#fbf7f0;border-radius:12px;padding:12px 14px;font-size:14.5px}
+.lv-noar[hidden],.lv-noar [hidden]{display:none}
+.lv-noar p{margin:0}
+#noArDesktop{display:flex;gap:14px;align-items:center}
+#noArDesktop[hidden]{display:none}
+.lv-qr{flex:none;border:1px solid #ddd;border-radius:8px}
+.alt{font-size:20px;margin:0 0 8px}
+@media (max-width:480px){
+  .wrap{padding:12px 12px 32px}
+  .live{padding:12px;border-radius:14px}
+  .live h1{font-size:21px}
+  .lv-chip{padding:7px 10px;font-size:13.5px;min-height:38px}
+  #noArDesktop{flex-direction:column;text-align:center}
+}
