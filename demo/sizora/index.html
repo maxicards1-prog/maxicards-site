@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Démo Sizora, guide des tailles - MAXICARDS</title>
+<meta name="description" content="Essayez Sizora, le guide des tailles à prix fixe pour boutiques Shopify, sur une fausse fiche produit.">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'none'; form-action 'none'"><script id="garde-cadre">(function(){try{if(window.top===window.self)return;var a=location.ancestorOrigins,o=a&&a.length?a[a.length-1]:(document.referrer?new URL(document.referrer).origin:"");if(/^https:\/\/((www\.)?maxicards\.net|adsense\.google\.com|www\.google\.(com|fr))$/.test(o))return;}catch(e){}document.documentElement.style.display="none";})();</script>
+<meta name="theme-color" content="#0f5132">
+<link rel="stylesheet" href="size-guide.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#faf8f7;color:#1b1719}
+.bandeau{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:10px 16px;background:#0f5132;color:#fff;font-size:14px}
+.bandeau a{color:#fff;font-weight:600;text-underline-offset:3px}
+.wrap{max-width:980px;margin:auto;padding:20px 16px 40px}
+.note{font-size:14px;color:#555;margin:0 0 16px}
+.astuce{background:#fff;border:1px solid #ddd;border-radius:12px;padding:12px 14px;margin:0 0 18px;font-size:15px}
+</style>
+<style>
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+.p{aspect-ratio:4/5;border-radius:14px;background:linear-gradient(160deg,#e9d7c9,#c9a58b)}
+h1{font-size:26px;margin:0 0 6px}
+.price{font-size:20px;margin:0 0 16px}
+.sizes{display:flex;gap:8px;flex-wrap:wrap}
+.sizes span{border:1px solid #bbb;border-radius:8px;padding:8px 14px;background:#fff}
+.add{width:100%;margin-top:14px;padding:14px;border-radius:999px;border:0;background:#1b1719;color:#fff;font:inherit;font-weight:600}
+</style>
+</head>
+<body>
+<div class="bandeau"><span><b>Démo — MAXICARDS</b> · Sizora</span><span><a href="https://apps.shopify.com/sizora" rel="noopener">Fiche sur le Shopify App Store</a> · <a href="../">Autres démos</a></span></div>
+<div class="wrap">
+<p class="astuce"><b>À essayer :</b> touchez « Guide des tailles » sous le choix de taille, puis l'onglet « Trouver ma taille » : tapez vos mesures (en cm ou en pouces) et la taille conseillée s'affiche. Tout se calcule sur votre téléphone, rien n'est envoyé.</p>
+<main>
+  <div class="p" role="img" aria-label="Robe Riviera (image de démonstration)"></div>
+  <div>
+    <h1>Robe « Riviera »</h1>
+    <p class="price">59,00 €</p>
+    <div class="sizes"><span>XS</span><span>S</span><span>M</span><span>L</span><span>XL</span><span>XXL</span></div>
+    <button type="button" class="sg-open sg-open--link" data-sg-open="demo" style="--sg-accent:#8a3b12">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="10" rx="1.5"/><path d="M6 7v4M10 7v3M14 7v4M18 7v3"/></svg>
+      <span>Guide des tailles</span>
+    </button>
+    <script type="application/json" data-sg-config="demo">
+      {"chart": {"i": "demo", "n": "Robes et hauts", "u": "cm",
+        "c": [{"l": "Taille", "m": false}, {"l": "EU", "m": false}, {"l": "US", "m": false}, {"l": "Poitrine", "m": true}, {"l": "Taille (ventre)", "m": true}, {"l": "Hanches", "m": true}],
+        "r": [["XS", "34", "2", "80-84", "62-66", "86-90"], ["S", "36", "4", "84-88", "66-70", "90-94"], ["M", "38", "6", "88-92", "70-74", "94-98"],
+              ["L", "40", "8", "92-96", "74-78", "98-102"], ["XL", "42", "10", "96-100", "78-82", "102-106"], ["XXL", "44", "12", "100-106", "82-88", "106-112"]],
+        "g": "Poitrine : autour de la partie la plus forte, mètre bien horizontal.\nTaille : autour de la partie la plus fine.\nHanches : autour de la partie la plus forte, pieds joints.",
+        "t": [], "y": ["dress"], "d": true},
+       "pro": false, "unit": "auto", "country": "FR", "lang": "fr", "accent": "#8a3b12", "finder": true}
+    </script>
+    <button class="add" type="button">Ajouter au panier</button>
+  </div>
+</main>
+<p class="note" style="margin-top:24px">Fausse boutique de démonstration. Sizora : un prix fixe, jamais au nombre de commandes.</p>
+</div>
+<script src="size-guide.js"></script>
+</body>
+</html>

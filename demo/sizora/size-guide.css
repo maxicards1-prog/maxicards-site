@@ -1,0 +1,39 @@
+.sg-open{display:inline-flex;align-items:center;gap:8px;margin:10px 0;font:inherit;cursor:pointer;color:var(--sg-accent,#111)}
+.sg-open--link{background:none;border:0;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.sg-open--outline{background:#fff;border:1px solid var(--sg-accent,#111);border-radius:999px;padding:10px 18px}
+.sg-open--filled{background:var(--sg-accent,#111);color:#fff;border:0;border-radius:999px;padding:10px 18px}
+.sg-lock{overflow:hidden}
+.sg-root{position:fixed;inset:0;z-index:2147483000;box-sizing:border-box;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);background:rgba(12,10,14,.6);display:flex;align-items:center;justify-content:center;font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#17151a}
+.sg-box{background:#fff;width:min(640px,100%);max-height:min(820px,100%);display:flex;flex-direction:column;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+@media (max-width:560px){.sg-root{align-items:flex-end}.sg-box{border-radius:16px 16px 0 0;max-height:92%}}
+.sg-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #eee}
+.sg-head strong{font-size:16px}
+.sg-x{border:0;background:#f2f1f3;width:36px;height:36px;border-radius:50%;font-size:22px;line-height:1;cursor:pointer;color:#17151a;flex:none}
+.sg-tabs{display:flex;gap:4px;padding:10px 16px 0;border-bottom:1px solid #eee;overflow-x:auto;scrollbar-width:none}
+.sg-tabs::-webkit-scrollbar{display:none}
+.sg-tab{border:0;background:none;padding:8px 10px;font:inherit;color:#6f6a75;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.sg-tab[aria-selected=true]{color:#17151a;font-weight:600;border-bottom-color:var(--sg-accent,#111)}
+.sg-body{padding:14px 16px 16px;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.sg-units{display:inline-flex;align-self:flex-end;border:1px solid #d6d3da;border-radius:999px;overflow:hidden}
+.sg-units button{border:0;background:#fff;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:#17151a}
+.sg-units button[aria-pressed=true]{background:var(--sg-accent,#111);color:#fff}
+.sg-scroll{overflow-x:auto;border:1px solid #eee;border-radius:10px}
+.sg-table{border-collapse:collapse;width:100%;font-size:14px;white-space:nowrap}
+.sg-table th,.sg-table td{padding:9px 12px;text-align:left;border-bottom:1px solid #f0eef2}
+.sg-table th{background:#faf9fb;font-weight:600;position:sticky;top:0}
+.sg-table tr:last-child td{border-bottom:0}
+.sg-table td:first-child,.sg-table th:first-child{position:sticky;left:0;background:#fff;font-weight:600}
+.sg-table th:first-child{background:#faf9fb}
+.sg-table tr.sg-best td{background:#fff6dd}
+.sg-table tr.sg-best td:first-child{background:#ffeec0}
+.sg-finder{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.sg-field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#5b5660}
+.sg-field input{font:inherit;font-size:16px;padding:10px 12px;border:1px solid #cfccd3;border-radius:10px;color:#17151a;width:100%;box-sizing:border-box}
+.sg-primary{background:var(--sg-accent,#111);color:#fff;border:0;border-radius:12px;padding:13px 14px;font:inherit;font-weight:600;cursor:pointer}
+.sg-result{margin:0;padding:12px 14px;border-radius:12px;background:#f4fbf4;color:#1f4d23}
+.sg-result strong{font-size:18px}
+.sg-note{margin:0;font-size:13px;color:#6f6a75}
+.sg-guide{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.sg-foot{font-size:12px;color:#8a8590;text-align:center;padding:0 16px 12px}
+/* phones: the whole chart fits the width (6 columns at 390 px), no sideways scrolling; last so it wins over the rules above */
+@media (max-width:560px){.sg-body{padding:12px 10px 14px}.sg-table{font-size:12.5px}.sg-table th,.sg-table td{padding:8px 6px}.sg-table th{white-space:normal}}

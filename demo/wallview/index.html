@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Démo WallView, l'œuvre sur votre mur - MAXICARDS</title>
+<meta name="description" content="Essayez WallView : voyez une affiche, une toile ou un néon sur votre propre mur, depuis votre téléphone.">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'none'; form-action 'none'"><script id="garde-cadre">(function(){try{if(window.top===window.self)return;var a=location.ancestorOrigins,o=a&&a.length?a[a.length-1]:(document.referrer?new URL(document.referrer).origin:"");if(/^https:\/\/((www\.)?maxicards\.net|adsense\.google\.com|www\.google\.(com|fr))$/.test(o))return;}catch(e){}document.documentElement.style.display="none";})();</script>
+<meta name="theme-color" content="#0f5132">
+<link rel="stylesheet" href="wall-viewer.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#faf8f7;color:#1b1719}
+.bandeau{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:10px 16px;background:#0f5132;color:#fff;font-size:14px}
+.bandeau a{color:#fff;font-weight:600;text-underline-offset:3px}
+.wrap{max-width:980px;margin:auto;padding:20px 16px 40px}
+.note{font-size:14px;color:#555;margin:0 0 16px}
+.astuce{background:#fff;border:1px solid #ddd;border-radius:12px;padding:12px 14px;margin:0 0 18px;font-size:15px}
+</style>
+<style>
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:#fff;border-radius:14px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.card h3{margin:6px 0 2px;font-size:17px}
+.kind,.price{font-size:13px;color:#666}
+.card .thumb{width:100%;height:auto;border-radius:8px;display:block}
+.card .try{width:100%;margin-top:10px;padding:12px;border-radius:999px;border:1.5px solid #111;background:#fff;font:inherit;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="bandeau"><span><b>Démo — MAXICARDS</b> · WallView</span><span><a href="https://apps.shopify.com/wallview" rel="noopener">Fiche sur le Shopify App Store</a> · <a href="../">Autres démos</a></span></div>
+<div class="wrap">
+<p class="astuce"><b>À essayer :</b> touchez « Voir sur mon mur » sur une œuvre, choisissez une pièce d'exemple, ou prenez une photo de votre propre mur : la photo reste sur votre téléphone, elle n'est jamais envoyée.</p>
+<div class="grid" id="grid"></div>
+<p class="note" style="margin-top:24px">Fausse boutique de démonstration, œuvres dessinées pour l'occasion.</p>
+</div>
+<script>window.DEMO_OPTS={photoRooms:[{url:"room-living.jpg",pxPerCm:3.9,anchor:[799,278]},{url:"room-bedroom.jpg",pxPerCm:4.6,anchor:[794,190]},{url:"room-dining.jpg",pxPerCm:3.6,anchor:[791,370]}]};</script>
+<script src="wall-viewer.js"></script>
+<script src="demo-art.js"></script>
+</body>
+</html>
