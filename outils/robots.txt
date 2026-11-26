@@ -3,3 +3,5 @@ Allow: /
 
 Sitemap: https://maxicards.net/outils/sitemap.xml
 Sitemap: https://maxicards.net/outils/en/sitemap.xml
+Sitemap: https://maxicards.net/outils/es/sitemap.xml
+Sitemap: https://maxicards.net/outils/pt/sitemap.xml

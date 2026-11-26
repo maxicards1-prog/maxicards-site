@@ -23,10 +23,16 @@
       { id: 'cr', nom: 'Couronne', en: 'Crown', slot4: 0.04, slot5: 0.16, niveau: 5 }
     ]
   };
-  // Version anglaise (24/11/2026) : noms officiels anglais des raretés
-  if (document.documentElement.lang === 'en') {
+  // Versions traduites : noms anglais officiels des raretés (en, 24/11/2026) ; es et pt (26/11/2026) gardent les
+  // noms anglais des cartes, utilisés aussi en Espagne et au Brésil, et traduisent les symboles de TCG Pocket.
+  var lang = String(document.documentElement.lang || 'fr').slice(0, 2);
+  var POCKET = {
+    es: { l2: '2 rombos', l3: '3 rombos', l4: '4 rombos (ex)', e1: '1 estrella', e2: '2 estrellas', e3: '3 estrellas', cr: 'Corona' },
+    pt: { l2: '2 losangos', l3: '3 losangos', l4: '4 losangos (ex)', e1: '1 estrela', e2: '2 estrelas', e3: '3 estrelas', cr: 'Coroa' }
+  };
+  if (lang === 'en' || lang === 'es' || lang === 'pt') {
     [window.OCP_DONNEES.megaEvolution, window.OCP_DONNEES.pocket].forEach(function (l) {
-      l.forEach(function (r) { r.nom = r.en; });
+      l.forEach(function (r) { r.nom = (POCKET[lang] && POCKET[lang][r.id]) || r.en; });
     });
   }
 }());

@@ -23,7 +23,7 @@
       if (!(prix > 0) || !(nb >= 1)) { return; }
       nb = Math.floor(nb);
       var total = prix + (isFinite(port) ? port : 0);
-      var nom = String(document.getElementById('nom' + k).value).trim().slice(0, 40) || (O.t('Offre ', 'Offer ') + k);
+      var nom = String(document.getElementById('nom' + k).value).trim().slice(0, 40) || (O.t('Offre ', 'Offer ', 'Oferta ', 'Oferta ') + k);
       lignes.push({ nom: nom, total: total, nb: nb, parBooster: total / nb });
     });
     var corps = document.getElementById('resultatsOffres');
@@ -39,17 +39,17 @@
       cellule(tr, cartes >= 1 ? O.euros(l.parBooster / cartes) : '–', 'nombre');
       if (unite > 0) {
         var eco = unite * l.nb - l.total;
-        cellule(tr, (eco >= 0 ? '' : '+') + O.euros(Math.abs(eco)) + (eco >= 0 ? O.t(' économisés', ' saved') : O.t(' de plus', ' more')), 'nombre');
+        cellule(tr, (eco >= 0 ? '' : '+') + O.euros(Math.abs(eco)) + (eco >= 0 ? O.t(' économisés', ' saved', ' ahorrados', ' economizados') : O.t(' de plus', ' more', ' más', ' a mais')), 'nombre');
       } else {
         cellule(tr, '–', 'nombre');
       }
       corps.appendChild(tr);
     });
     var msg = '';
-    if (lignes.length === 0) { msg = O.t('Saisissez au moins un prix et un nombre de boosters.', 'Enter at least one price and a number of packs.'); }
+    if (lignes.length === 0) { msg = O.t('Saisissez au moins un prix et un nombre de boosters.', 'Enter at least one price and a number of packs.', 'Escribe al menos un precio y un número de sobres.', 'Digite pelo menos um preço e um número de boosters.'); }
     else if (lignes.length > 1) {
       var best = lignes.filter(function (l) { return l.parBooster === min; })[0];
-      msg = O.t('Le moins cher par booster : ', 'Cheapest per pack: ') + best.nom + ' (' + O.euros(best.parBooster) + O.t(' le booster).', ' per pack).');
+      msg = O.t('Le moins cher par booster : ', 'Cheapest per pack: ', 'La más barata por sobre: ', 'A mais barata por booster: ') + best.nom + ' (' + O.euros(best.parBooster) + O.t(' le booster).', ' per pack).', ' el sobre).', ' por booster).');
     }
     O.texte('rMessage', msg);
   }

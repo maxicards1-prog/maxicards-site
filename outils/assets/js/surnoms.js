@@ -31,7 +31,8 @@
   var SUFFIXES = { mignon: ['ou', 'ette', 'inou', 'ichou', 'y'], drole: ['ito', 'ounet', 'asse', 'man'],
     epique: ['or', 'ax', 'ion', 'ar'], classique: ['o', 'a', 'i', 'us'] };
   // Version anglaise (24/11/2026) : listes écrites pour le site, même structure
-  var EN = document.documentElement.lang === 'en';
+  var LANG = String(document.documentElement.lang || 'fr').slice(0, 2);   // es et pt : 26/11/2026
+  var EN = LANG === 'en';
   if (EN) {
     MOTS = {
       mignon: ['Peanut', 'Muffin', 'Cupcake', 'Biscuit', 'Pudding', 'Marshmallow', 'Cookie', 'Pebble', 'Button',
@@ -58,6 +59,63 @@
       ['Glitter', 'Pixie', 'Fairy', 'Sparkle', 'Starlight']
     ];
     SUFFIXES = { mignon: ['y', 'ie', 'kins', 'boo', 'ums'], drole: ['zilla', 'inator', 'meister', 'man'],
+      epique: ['or', 'ax', 'ion', 'ar'], classique: ['o', 'a', 'i', 'us'] };
+  }
+
+  if (LANG === 'es') {
+    MOTS = {
+      mignon: ['Pelusa', 'Bombón', 'Galleta', 'Canela', 'Churrito', 'Gominola', 'Pompón', 'Mochi', 'Nube', 'Algodón',
+        'Caramelo', 'Chispita', 'Peque', 'Mimos', 'Bizcocho', 'Cookie', 'Turrón', 'Miel', 'Fresita', 'Pipo', 'Lunita',
+        'Botón', 'Chiqui', 'Coco', 'Nata', 'Magdalena'],
+      drole: ['Croqueta', 'Tortilla', 'Patata', 'Churro', 'Chorizo', 'Gazpacho', 'Paella', 'Bocata', 'Pepino',
+        'Calcetín', 'Bigotes', 'Zapatilla', 'Fideo', 'Albóndiga', 'Nugget', 'Tito', 'Abuela', 'Abuelo', 'Paco',
+        'Manolo', 'Pepe', 'Chema', 'Toñi', 'Sr. Siesta', 'Torrija', 'Salchicha', 'Empanada', 'Bigotón'],
+      epique: ['Titán', 'Tormenta', 'Azote', 'Cénit', 'Nova', 'Eclipse', 'Tifón', 'Tempestad', 'Infierno', 'Cometa',
+        'Coloso', 'Ráfaga', 'Meteoro', 'Trueno', 'Furia', 'Espartano', 'Vórtice', 'Abismo', 'Augurio', 'Ápex',
+        'Bastión', 'Dragón', 'Kraken', 'Fénix', 'Valquiria', 'Espejismo', 'Centinela', 'Quimera'],
+      classique: ['Max', 'Rex', 'Leo', 'Milo', 'Luna', 'Nala', 'Óscar', 'Río', 'Kiwi', 'Sky', 'Jade', 'Rubí',
+        'Zafiro', 'Ónix', 'Ópalo', 'Ámbar', 'Zelda', 'Tom', 'Lola', 'Hugo', 'Nina', 'Félix', 'Iris', 'Lucas', 'Sam',
+        'Elio', 'Mía', 'Noa']
+    };
+    PAR_TYPE = [
+      ['Normalito', 'Colega', 'Sencillo'], ['Gancho', 'Judoka', 'Boxeador', 'Kimono'], ['Céfiro', 'Pluma', 'Nube', 'Brisa'],
+      ['Veneno', 'Tóxico', 'Frasco', 'Cicuta'], ['Arcilla', 'Duna', 'Arena', 'Barro'], ['Guijarro', 'Sílex', 'Pedrusco', 'Granito'],
+      ['Escarabajo', 'Bzzz', 'Capullo', 'Grillo'], ['Fantasmín', 'Bu', 'Sombra', 'Bruma'], ['Tornillo', 'Cromo', 'Titanio', 'Remache'],
+      ['Brasa', 'Ceniza', 'Llama', 'Ignis', 'Guindilla'], ['Ola', 'Ondina', 'Abismo', 'Marino', 'Burbuja'],
+      ['Savia', 'Helecho', 'Musgo', 'Albahaca', 'Trébol'], ['Voltio', 'Vatio', 'Zap', 'Rayo', 'Pila'],
+      ['Oráculo', 'Místico', 'Soñador', 'Hipno'], ['Escarcha', 'Ventisca', 'Carámbano', 'Sorbete', 'Copo'],
+      ['Drako', 'Escama', 'Guiverno', 'Garra'], ['Medianoche', 'Cuervo', 'Malicia', 'Nocturno'],
+      ['Purpurina', 'Hadita', 'Duende', 'Brillo', 'Estrella']
+    ];
+    SUFFIXES = { mignon: ['ito', 'ita', 'ín', 'i', 'y'], drole: ['ete', 'azo', 'ón', 'man'],
+      epique: ['or', 'ax', 'ión', 'ar'], classique: ['o', 'a', 'i', 'us'] };
+  }
+  if (LANG === 'pt') {
+    MOTS = {
+      mignon: ['Fofinho', 'Bolinho', 'Biscoito', 'Canela', 'Paçoca', 'Brigadeiro', 'Pipoca', 'Mochi', 'Nuvem', 'Algodão',
+        'Caramelo', 'Pitoco', 'Xodó', 'Chuchu', 'Docinho', 'Cookie', 'Mel', 'Moranguinho', 'Pingo', 'Lua', 'Botão',
+        'Bebê', 'Coco', 'Bombom', 'Quindim', 'Jujuba'],
+      drole: ['Coxinha', 'Pastel', 'Batata', 'Farofa', 'Pamonha', 'Quiabo', 'Torresmo', 'Mortadela', 'Meia',
+        'Bigode', 'Chinelo', 'Miojo', 'Almôndega', 'Nugget', 'Tio', 'Vovó', 'Vovô', 'Zé', 'Tonhão', 'Juninho',
+        'Seu Zé', 'Biscoitão', 'Feijão', 'Salsicha', 'Empada', 'Brócolis', 'Abacaxi', 'Pudim'],
+      epique: ['Titã', 'Tempestade', 'Flagelo', 'Zênite', 'Nova', 'Eclipse', 'Tufão', 'Tormenta', 'Inferno', 'Cometa',
+        'Colosso', 'Rajada', 'Meteoro', 'Trovão', 'Fúria', 'Espartano', 'Vórtice', 'Abismo', 'Presságio', 'Ápice',
+        'Bastião', 'Dragão', 'Kraken', 'Fênix', 'Valquíria', 'Miragem', 'Sentinela', 'Quimera'],
+      classique: ['Max', 'Rex', 'Léo', 'Milo', 'Luna', 'Nala', 'Oscar', 'Rio', 'Kiwi', 'Sky', 'Jade', 'Rubi',
+        'Safira', 'Ônix', 'Opala', 'Âmbar', 'Zelda', 'Tom', 'Lola', 'Hugo', 'Nina', 'Félix', 'Íris', 'Lucas', 'Sam',
+        'Davi', 'Mia', 'Noah']
+    };
+    PAR_TYPE = [
+      ['Comum', 'Parça', 'Simples'], ['Gancho', 'Judoca', 'Boxeador', 'Quimono'], ['Zéfiro', 'Pena', 'Nuvem', 'Brisa'],
+      ['Veneno', 'Tóxico', 'Frasco', 'Cicuta'], ['Argila', 'Duna', 'Areia', 'Barro'], ['Seixo', 'Sílex', 'Pedrinha', 'Granito'],
+      ['Besouro', 'Bzzz', 'Casulo', 'Grilo'], ['Fantasminha', 'Bu', 'Sombra', 'Névoa'], ['Parafuso', 'Cromo', 'Titânio', 'Rebite'],
+      ['Brasa', 'Cinza', 'Chama', 'Ignis', 'Pimenta'], ['Onda', 'Ondina', 'Abismo', 'Marujo', 'Bolha'],
+      ['Seiva', 'Samambaia', 'Musgo', 'Manjericão', 'Trevo'], ['Volt', 'Watt', 'Zap', 'Raio', 'Pilha'],
+      ['Oráculo', 'Místico', 'Sonhador', 'Hipno'], ['Geada', 'Nevasca', 'Pingente', 'Sorvete', 'Floco'],
+      ['Drako', 'Escama', 'Serpe', 'Garra'], ['Meia-Noite', 'Corvo', 'Malícia', 'Noturno'],
+      ['Purpurina', 'Fadinha', 'Duende', 'Brilho', 'Estrela']
+    ];
+    SUFFIXES = { mignon: ['inho', 'inha', 'ito', 'i', 'y'], drole: ['ão', 'ildo', 'ete', 'man'],
       epique: ['or', 'ax', 'ion', 'ar'], classique: ['o', 'a', 'i', 'us'] };
   }
 
@@ -92,7 +150,15 @@
       if (p[4] >= 0) { PAR_TYPE[p[4]].forEach(function (m) { candidats.push(m); }); }
       var r = racine(p[1]);
       SUFFIXES[style].forEach(function (s) { candidats.push(majuscule((r + s).toLowerCase())); });
-      if (EN) {
+      if (LANG === 'es') {
+        if (style === 'mignon') { candidats.push('Mini' + r.toLowerCase(), majuscule(r.toLowerCase()) + 'ito'); }
+        if (style === 'epique') { candidats.push(majuscule(r.toLowerCase()) + ' I', 'Mega' + r.toLowerCase()); }
+        if (style === 'drole') { candidats.push('Don ' + majuscule(r.toLowerCase()), majuscule(r.toLowerCase()) + 'azo'); }
+      } else if (LANG === 'pt') {
+        if (style === 'mignon') { candidats.push('Mini' + r.toLowerCase(), majuscule(r.toLowerCase()) + 'inho'); }
+        if (style === 'epique') { candidats.push(majuscule(r.toLowerCase()) + ' I', 'Mega' + r.toLowerCase()); }
+        if (style === 'drole') { candidats.push('Seu ' + majuscule(r.toLowerCase()), majuscule(r.toLowerCase()) + 'ão'); }
+      } else if (EN) {
         if (style === 'mignon') { candidats.push('Lil ' + majuscule(r.toLowerCase()), 'Mini' + r.toLowerCase()); }
         if (style === 'epique') { candidats.push(majuscule(r.toLowerCase()) + ' I', 'Mega' + r.toLowerCase()); }
         if (style === 'drole') { candidats.push('Mr. ' + majuscule(r.toLowerCase()), majuscule(r.toLowerCase()) + 'zilla'); }
@@ -117,18 +183,25 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.textContent = s;
-      b.title = EN ? 'Copy "' + s + '"' : 'Copier « ' + s + ' »';
+      b.title = LANG === 'es' ? 'Copiar «' + s + '»' : LANG === 'pt' ? 'Copiar "' + s + '"' : EN ? 'Copy "' + s + '"' : 'Copier « ' + s + ' »';
       b.addEventListener('click', function () {
-        var ok = function () { document.getElementById('messageSurnom').textContent = EN ? '"' + s + '" copied (' + s.length + ' characters).' : '« ' + s + ' » copié (' + s.length + ' caractères).'; };
+        var ok = function () { document.getElementById('messageSurnom').textContent = LANG === 'es' ? '«' + s + '» copiado (' + s.length + ' caracteres).'
+          : LANG === 'pt' ? '"' + s + '" copiado (' + s.length + ' caracteres).' : EN ? '"' + s + '" copied (' + s.length + ' characters).' : '« ' + s + ' » copié (' + s.length + ' caractères).'; };
         if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(s).then(ok, ok); } else { ok(); }
       });
       var l = document.createElement('span');
       l.className = 'aide';
-      l.textContent = s.length + (EN ? ' chars' : ' car.');
+      l.textContent = s.length + (LANG === 'es' || LANG === 'pt' ? ' caract.' : EN ? ' chars' : ' car.');
       li.appendChild(b); li.appendChild(l);
       zone.appendChild(li);
     });
-    document.getElementById('messageSurnom').textContent = EN
+    document.getElementById('messageSurnom').textContent = LANG === 'es'
+      ? (p ? 'Ideas para ' + p[1] + ' (con sus tipos). Haz clic en un mote para copiarlo.'
+        : 'Consejo: escribe una especie para tener ideas según su nombre y sus tipos. Haz clic para copiar.')
+      : LANG === 'pt'
+      ? (p ? 'Ideias para ' + p[1] + ' (tipos incluídos). Clique em um apelido para copiá-lo.'
+        : 'Dica: digite uma espécie para ter ideias com base no nome e nos tipos. Clique para copiar.')
+      : EN
       ? (p ? 'Ideas for ' + p[1] + ' (types included). Click a nickname to copy it.'
         : 'Tip: type a species to get ideas based on its name and types. Click to copy.')
       : p

@@ -24,11 +24,35 @@
       perso: { nom: 'Custom', taux: null, fixe: null, plafond: null }
     };
   }
+  // ---- Espagnol (26/11/2026) : Cardmarket (mêmes règles qu'en français) et eBay.es vendeur particulier :
+  // 11,5 % de l'importe total (prix + envoi payé par l'acheteur) jusqu'à 2 000 €, 2 % au-delà, + 0,05 € par commande
+  // de moins de 10 € (0,35 € sinon) + tarifa por cumplimiento normativo 0,42 % du total (aide eBay.es id=4822).
+  // ---- Portugais du Brésil : pas de grille officielle unique pour Mercado Livre ni LigaPokémon -> « Personalizado »
+  // en reais ; Cardmarket (euros) et eBay.com (dollars) comme repères, montants dans la monnaie de la plateforme.
+  if (O.lang === 'es') {
+    PLATEFORMES = {
+      cardmarket: { nom: 'Cardmarket', taux: 0.05, fixe: 0, plafond: 100 },
+      ebay: { nom: 'eBay.es (particular)' },
+      perso: { nom: 'Personalizado', taux: null, fixe: null, plafond: null }
+    };
+  }
+  if (O.lang === 'pt') {
+    PLATEFORMES = {
+      perso: { nom: 'Personalizado', taux: null, fixe: null, plafond: null },
+      cardmarket: { nom: 'Cardmarket (Europa)', taux: 0.05, fixe: 0, plafond: 100 },
+      ebay: { nom: 'eBay.com (EUA)' }
+    };
+  }
+  var MONNAIE_PT = { perso: 'BRL', cardmarket: 'EUR', ebay: 'USD' };
   function cent(v) { return Math.round(v * 100) / 100; }
   function fraisEn(cle, vente, port) {
     var total = vente + port;
     if (cle === 'ebay') {
       return cent(0.1325 * Math.min(total, 7500) + 0.0235 * Math.max(total - 7500, 0)) + (total <= 10 ? 0.30 : 0.40);
+    }
+    if (cle === 'ebayes') {
+      return cent(0.115 * Math.min(total, 2000) + 0.02 * Math.max(total - 2000, 0)) + (total < 10 ? 0.05 : 0.35) +
+        cent(0.0042 * total);
     }
     if (cle === 'tcgplayer') {
       return Math.min(cent(0.1075 * vente), 75) + cent(0.025 * total) + 0.30;
@@ -49,6 +73,12 @@
     for (var i = 0; i < 60; i++) { var m = (bas + haut) / 2; if (calc(m).benef >= 0) { haut = m; } else { bas = m; } }
     x.seuil = Math.ceil(Math.round(haut * 10000) / 100) / 100;
     return x;
+  }
+  function bilanPour(cle, e) {
+    if (O.en) { return bilanEn(cle, e); }
+    if (cle === 'ebay' && O.lang === 'es') { return bilanEn('ebayes', e); }
+    if (cle === 'ebay' && O.lang === 'pt') { return bilanEn('ebay', e); }
+    return bilan(regles(cle), e);
   }
   function val(id, max) { var v = O.nombre(id, 0, max); return isFinite(v) ? v : 0; }
 
@@ -96,8 +126,9 @@
   function calculer() {
     var cle = document.getElementById('plateforme').value;
     document.getElementById('blocPerso').hidden = cle !== 'perso';
+    if (O.lang === 'pt') { O.monnaie = MONNAIE_PT[cle] || 'BRL'; }
     var e = entree();
-    var b = O.en ? bilanEn(cle, e) : bilan(regles(cle), e);
+    var b = bilanPour(cle, e);
     O.texte('rCommission', O.euros(b.com));
     O.texte('rNet', O.euros(b.net));
     O.texte('rBenefice', O.euros(b.benef));
@@ -109,11 +140,12 @@
     O.texte('rSeuil', O.euros(b.seuil));
 
     var corps = document.getElementById('comparaison');
+    if (!corps) { return; }   // pas de comparaison en portugais (monnaies différentes)
     while (corps.firstChild) { corps.removeChild(corps.firstChild); }
     var meilleur = null, lignes = [];
     (O.en ? ['ebay', 'tcgplayer', 'perso'] : ['cardmarket', 'ebay', 'perso']).forEach(function (k) {
       if (k === 'perso' && cle !== 'perso') { return; }
-      var r = O.en ? PLATEFORMES[k] : regles(k), x = O.en ? bilanEn(k, e) : bilan(r, e);
+      var r = O.en ? PLATEFORMES[k] : regles(k), x = bilanPour(k, e);
       lignes.push({ r: r, x: x });
       if (meilleur === null || x.benef > meilleur) { meilleur = x.benef; }
     });

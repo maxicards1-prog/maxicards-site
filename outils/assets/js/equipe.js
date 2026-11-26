@@ -3,8 +3,9 @@
   'use strict';
   if (!window.POKEDEX || !window.TYPES_POKE || !document.getElementById('genererEquipe')) { return; }
   var P = window.POKEDEX, T = window.TYPES_POKE;
-  var EN = document.documentElement.lang === 'en';   // version anglaise (24/11/2026)
-  function t(fr, en) { return EN ? en : fr; }
+  var LANG = String(document.documentElement.lang || 'fr').slice(0, 2);   // en 24/11, es et pt 26/11/2026
+  var EN = LANG === 'en';
+  function t(fr, en, es, pt) { return LANG === 'es' ? es : LANG === 'pt' ? pt : EN ? en : fr; }
   var equipe = [];          // entrées de POKEDEX
   var verrous = [];         // booléens par emplacement
 
@@ -60,7 +61,8 @@
       nom.textContent = p[1];
       var num = document.createElement('span');
       num.className = 'num';
-      num.textContent = EN ? '#' + p[0] + ' · Gen ' + p[2] : 'n° ' + p[0] + ' · ' + p[2] + (p[2] === 1 ? 're' : 'e') + ' génération';
+      num.textContent = LANG === 'es' ? 'n.º ' + p[0] + ' · ' + p[2] + '.ª generación'
+        : LANG === 'pt' ? 'nº ' + p[0] + ' · ' + p[2] + 'ª geração' : EN ? '#' + p[0] + ' · Gen ' + p[2] : 'n° ' + p[0] + ' · ' + p[2] + (p[2] === 1 ? 're' : 'e') + ' génération';
       var types = document.createElement('div');
       types.className = 'types';
       types.appendChild(puce(p[3]));
@@ -72,7 +74,7 @@
       cb.checked = !!verrous[i];
       cb.addEventListener('change', function () { verrous[i] = cb.checked; });
       lab.appendChild(cb);
-      lab.appendChild(document.createTextNode(t(' Garder', ' Keep')));
+      lab.appendChild(document.createTextNode(t(' Garder', ' Keep', ' Mantener', ' Manter')));
       li.appendChild(nom); li.appendChild(num); li.appendChild(types); li.appendChild(lab);
       zone.appendChild(li);
     });
@@ -83,7 +85,7 @@
     var n = Math.max(1, Math.min(6, Number(document.getElementById('tailleEquipe').value) || 6));
     var msg = '';
     if (f.gens.length === 0) {
-      document.getElementById('messageEquipe').textContent = t('Cochez au moins une génération.', 'Tick at least one generation.');
+      document.getElementById('messageEquipe').textContent = t('Cochez au moins une génération.', 'Tick at least one generation.', 'Marca al menos una generación.', 'Marque pelo menos uma geração.');
       return;
     }
     var gardes = [];
@@ -101,11 +103,15 @@
       typesPris[choix[3]] = true; if (choix[4] >= 0) { typesPris[choix[4]] = true; }
     }
     if (nouvelle.length < n) {
-      msg = EN ? 'Only ' + nouvelle.length + ' Pokémon match your filters: widen them (generations, type, legendaries).'
+      msg = LANG === 'es' ? 'Solo ' + nouvelle.length + ' Pokémon cumplen tus filtros: amplíalos (generaciones, tipo, legendarios).'
+        : LANG === 'pt' ? 'Só ' + nouvelle.length + ' Pokémon atendem aos seus filtros: amplie-os (gerações, tipo, lendários).'
+        : EN ? 'Only ' + nouvelle.length + ' Pokémon match your filters: widen them (generations, type, legendaries).'
         : 'Seulement ' + nouvelle.length + ' Pokémon correspondent à vos filtres : élargissez-les (générations, type, légendaires).';
     } else {
       var nb = P.filter(function (p) { return admis(p, f); }).length;
-      msg = EN ? 'Picked at random from ' + nb.toLocaleString('en-US') + ' Pokémon that match your filters.'
+      msg = LANG === 'es' ? 'Elegidos al azar entre ' + nb.toLocaleString('es-ES') + ' Pokémon que cumplen tus filtros.'
+        : LANG === 'pt' ? 'Sorteados entre ' + nb.toLocaleString('pt-BR') + ' Pokémon que atendem aos seus filtros.'
+        : EN ? 'Picked at random from ' + nb.toLocaleString('en-US') + ' Pokémon that match your filters.'
         : 'Tiré au hasard parmi ' + nb + ' Pokémon qui correspondent à vos filtres.';
     }
     equipe = nouvelle; verrous = nouveauxVerrous;
@@ -118,7 +124,7 @@
     var texte = equipe.map(function (p) {
       return p[1] + ' (' + T[p[3]].n + (p[4] >= 0 ? '/' + T[p[4]].n : '') + ')';
     }).join(', ');
-    var fini = function () { document.getElementById('messageEquipe').textContent = t('Équipe copiée : ', 'Team copied: ') + texte; };
+    var fini = function () { document.getElementById('messageEquipe').textContent = t('Équipe copiée : ', 'Team copied: ', 'Equipo copiado: ', 'Time copiado: ') + texte; };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(texte).then(fini, fini);
     } else { fini(); }

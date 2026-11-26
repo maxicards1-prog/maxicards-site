@@ -1,15 +1,27 @@
 /* Aides communes à tous les outils. Aucune donnée n'est envoyée : tout est calculé dans le navigateur. */
 (function () {
   'use strict';
-  // Langue de la page (<html lang="en"> = version anglaise : dollars, nombres 1,234.5) ; 24/11/2026
-  var EN = document.documentElement.lang === 'en';
+  // Langue de la page d'après <html lang> (24/11/2026 : en ; 26/11/2026 : es = Espagne, pt-BR = Brésil)
+  var LANG = String(document.documentElement.lang || 'fr').slice(0, 2).toLowerCase();
+  if (['fr', 'en', 'es', 'pt'].indexOf(LANG) < 0) { LANG = 'fr'; }
+  var EN = LANG === 'en';
+  var LOCALE = { fr: 'fr-FR', en: 'en-US', es: 'es-ES', pt: 'pt-BR' }[LANG];
+  // Monnaie des montants : euro (fr, es), dollar (en), real (pt) ; un outil peut la changer (O.monnaie = 'EUR')
+  var MONNAIE = { fr: 'EUR', en: 'USD', es: 'EUR', pt: 'BRL' }[LANG];
   var nf = function (dec) {
-    return new Intl.NumberFormat(EN ? 'en-US' : 'fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+    return new Intl.NumberFormat(LOCALE, { minimumFractionDigits: dec, maximumFractionDigits: dec });
   };
   var OCP = {
     en: EN,
-    // Texte selon la langue de la page : O.t('français', 'English')
-    t: function (fr, en) { return EN ? en : fr; },
+    lang: LANG,
+    monnaie: MONNAIE,
+    // Texte selon la langue de la page : O.t('français', 'English', 'español', 'português') ; sans es/pt : anglais
+    t: function (fr, en, es, pt) {
+      if (LANG === 'fr') { return fr; }
+      if (LANG === 'es' && typeof es === 'string') { return es; }
+      if (LANG === 'pt' && typeof pt === 'string') { return pt; }
+      return en;
+    },
     // Lit un nombre dans un champ ; renvoie NaN si vide ou invalide, borné entre min et max.
     nombre: function (id, min, max) {
       var el = document.getElementById(id);
@@ -24,13 +36,14 @@
     },
     euros: function (v) {
       if (!isFinite(v)) { return '–'; }
-      if (EN) { return (v < 0 ? '-$' : '$') + nf(2).format(Math.abs(v)); }
-      return nf(2).format(v) + ' €';
+      if (LANG === 'fr' && OCP.monnaie === 'EUR') { return nf(2).format(v) + ' €'; }
+      if (EN && OCP.monnaie === 'USD') { return (v < 0 ? '-$' : '$') + nf(2).format(Math.abs(v)); }
+      return new Intl.NumberFormat(LOCALE, { style: 'currency', currency: OCP.monnaie }).format(v);
     },
     pourcent: function (v, dec) {
       if (!isFinite(v)) { return '–'; }
       var d = typeof dec === 'number' ? dec : 1;
-      return nf(d).format(v * 100) + (EN ? '%' : ' %');
+      return nf(d).format(v * 100) + (EN || LANG === 'pt' ? '%' : ' %');
     },
     entier: function (v) {
       if (!isFinite(v)) { return '–'; }

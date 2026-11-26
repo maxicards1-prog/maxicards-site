@@ -47,16 +47,16 @@
     O.texte('r50', O.entier(O.essaisPour(p, 0.5)));
     O.texte('r90', O.entier(O.essaisPour(p, 0.9)));
     var statut;
-    if (etat.n === 0) { statut = O.t('Appuyez sur +1 (ou la barre Espace) à chaque reset ou rencontre.', 'Press +1 (or the Space bar) at every reset or encounter.'); }
-    else if (etat.n < 1 / p) { statut = O.t('Encore ', '') + O.entier(Math.ceil(1 / p - etat.n)) + O.t(' rencontres avant d’atteindre la moyenne (1 sur ', ' more encounters to reach the average (1 in ') + O.entier(Math.round(1 / p)) + ').'; }
-    else { statut = O.t('Vous avez dépassé la moyenne : seuls ', 'You are past the average: only ') + O.pourcent(1 - O.auMoinsUn(p, etat.n), 1) + O.t(' des chasseurs n’ont toujours rien à ce stade. Courage !', ' of hunters still have nothing at this point. Keep going!'); }
+    if (etat.n === 0) { statut = O.t('Appuyez sur +1 (ou la barre Espace) à chaque reset ou rencontre.', 'Press +1 (or the Space bar) at every reset or encounter.', 'Pulsa +1 (o la barra espaciadora) en cada reinicio o encuentro.', 'Aperte +1 (ou a barra de espaço) a cada reset ou encontro.'); }
+    else if (etat.n < 1 / p) { statut = O.t('Encore ', '', 'Faltan ', 'Faltam ') + O.entier(Math.ceil(1 / p - etat.n)) + O.t(' rencontres avant d’atteindre la moyenne (1 sur ', ' more encounters to reach the average (1 in ', ' encuentros para llegar a la media (1 de ', ' encontros para chegar à média (1 em ') + O.entier(Math.round(1 / p)) + ').'; }
+    else { statut = O.t('Vous avez dépassé la moyenne : seuls ', 'You are past the average: only ', 'Ya has pasado la media: solo el ', 'Você passou da média: só ') + O.pourcent(1 - O.auMoinsUn(p, etat.n), 1) + O.t(' des chasseurs n’ont toujours rien à ce stade. Courage !', ' of hunters still have nothing at this point. Keep going!', ' de los cazadores sigue sin nada a estas alturas. ¡Ánimo!', ' dos caçadores ainda não têm nada a esta altura. Força!'); }
     O.texte('rStatut', statut);
     document.getElementById('blocTauxPerso').hidden = etat.taux !== 'perso';
     var liste = document.getElementById('historique');
     while (liste.firstChild) { liste.removeChild(liste.firstChild); }
     etat.hist.forEach(function (h) {
       var li = document.createElement('li');
-      li.textContent = (h.cible || 'Shiny') + O.t(' : ', ': ') + O.entier(h.n) + O.t(' rencontres (', ' encounters (') + h.date + ')';
+      li.textContent = (h.cible || 'Shiny') + O.t(' : ', ': ', ': ', ': ') + O.entier(h.n) + O.t(' rencontres (', ' encounters (', ' encuentros (', ' encontros (') + h.date + ')';
       liste.appendChild(li);
     });
     document.getElementById('blocHistorique').hidden = etat.hist.length === 0;
@@ -77,7 +77,7 @@
   document.getElementById('plus').addEventListener('click', function () { ajouter(etat.pas); });
   document.getElementById('moins').addEventListener('click', function () { ajouter(-etat.pas); });
   document.getElementById('raz').addEventListener('click', function () {
-    if (etat.n === 0 || window.confirm(O.t('Remettre le compteur à zéro ?', 'Reset the counter to zero?'))) { etat.n = 0; sauver(); afficher(); }
+    if (etat.n === 0 || window.confirm(O.t('Remettre le compteur à zéro ?', 'Reset the counter to zero?', '¿Poner el contador a cero?', 'Zerar o contador?'))) { etat.n = 0; sauver(); afficher(); }
   });
   document.getElementById('trouve').addEventListener('click', function () {
     var d = new Date();

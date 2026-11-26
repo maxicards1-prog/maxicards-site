@@ -3,8 +3,9 @@
   'use strict';
   if (!window.TYPES_POKE || !window.TABLE_TYPES || !document.getElementById('type1')) { return; }
   var T = window.TYPES_POKE, M = window.TABLE_TYPES, P = window.POKEDEX || [];
-  var EN = document.documentElement.lang === 'en';   // version anglaise (24/11/2026)
-  function t(fr, en) { return EN ? en : fr; }
+  var LANG = String(document.documentElement.lang || 'fr').slice(0, 2);   // en 24/11, es et pt 26/11/2026
+  var EN = LANG === 'en';
+  function t(fr, en, es, pt) { return LANG === 'es' ? es : LANG === 'pt' ? pt : EN ? en : fr; }
   var s1 = document.getElementById('type1'), s2 = document.getElementById('type2');
   var champNom = document.getElementById('nomPokemon');
 
@@ -39,7 +40,7 @@
     var zone = document.getElementById(id);
     while (zone.firstChild) { zone.removeChild(zone.firstChild); }
     if (!liste.length) {
-      var v = document.createElement('span'); v.className = 'aide'; v.textContent = t('aucun', 'none');
+      var v = document.createElement('span'); v.className = 'aide'; v.textContent = t('aucun', 'none', 'ninguno', 'nenhum');
       zone.appendChild(v); return;
     }
     liste.forEach(function (i) { zone.appendChild(puce(i)); });
@@ -65,7 +66,13 @@
     var nomTypes = T[a].n + (b >= 0 ? ' / ' + T[b].n : '');
     var nbFaibles = groupes[4].length + groupes[2].length;
     var res = groupes[0.5].length + groupes[0.25].length + groupes[0].length;
-    document.getElementById('resumeTypes').textContent = EN
+    document.getElementById('resumeTypes').textContent = LANG === 'es'
+      ? 'Tipo ' + nomTypes + ': ' + nbFaibles + (nbFaibles === 1 ? ' debilidad, ' : ' debilidades, ') + res +
+        (res === 1 ? ' resistencia o inmunidad.' : ' resistencias o inmunidades.')
+      : LANG === 'pt'
+      ? 'Tipo ' + nomTypes + ': ' + nbFaibles + (nbFaibles === 1 ? ' fraqueza, ' : ' fraquezas, ') + res +
+        (res === 1 ? ' resistência ou imunidade.' : ' resistências ou imunidades.')
+      : EN
       ? nomTypes + ' type: ' + nbFaibles + (nbFaibles === 1 ? ' weakness, ' : ' weaknesses, ') + res +
         (res === 1 ? ' resistance or immunity.' : ' resistances or immunities.')
       : 'Type ' + nomTypes + ' : ' + nbFaibles +
@@ -77,9 +84,10 @@
     var p = index[normaliser(champNom.value)];
     var info = document.getElementById('infoNom');
     if (!champNom.value.trim()) { info.textContent = ''; return; }
-    if (!p) { info.textContent = t('Nom inconnu : choisissez dans la liste ou réglez les types à la main.', 'Unknown name: pick one from the list or set the types by hand.'); return; }
+    if (!p) { info.textContent = t('Nom inconnu : choisissez dans la liste ou réglez les types à la main.', 'Unknown name: pick one from the list or set the types by hand.', 'Nombre desconocido: elige uno de la lista o ajusta los tipos a mano.', 'Nome desconhecido: escolha um da lista ou ajuste os tipos manualmente.'); return; }
     s1.value = String(p[3]); s2.value = String(p[4]);
-    info.textContent = EN ? p[1] + ' (#' + p[0] + '): types loaded.' : p[1] + ' (n° ' + p[0] + ') : types chargés.';
+    info.textContent = LANG === 'es' ? p[1] + ' (n.º ' + p[0] + '): tipos cargados.'
+      : LANG === 'pt' ? p[1] + ' (nº ' + p[0] + '): tipos carregados.' : EN ? p[1] + ' (#' + p[0] + '): types loaded.' : p[1] + ' (n° ' + p[0] + ') : types chargés.';
     calculer();
   }
 

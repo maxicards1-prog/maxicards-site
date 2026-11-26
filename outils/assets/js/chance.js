@@ -11,16 +11,16 @@
     liste.forEach(function (r) {
       var o = document.createElement('option');
       o.value = prefixe + ':' + r.id;
-      o.textContent = r.nom + (r.unSur ? O.t(' (1 sur ', ' (1 in ') + O.entier(r.unSur) + ')' : '');
+      o.textContent = r.nom + (r.unSur ? O.t(' (1 sur ', ' (1 in ', ' (1 de ', ' (1 em ') + O.entier(r.unSur) + ')' : '');
       g.appendChild(o);
     });
     select.appendChild(g);
   }
-  groupe(O.t('Cartes physiques : Méga-Évolution', 'Physical cards: Mega Evolution'), D.megaEvolution, 'mega');
-  groupe(O.t('TCG Pocket : Puissance Génétique', 'TCG Pocket: Genetic Apex'), D.pocket, 'pocket');
+  groupe(O.t('Cartes physiques : Méga-Évolution', 'Physical cards: Mega Evolution', 'Cartas físicas: Mega Evolution', 'Cartas físicas: Mega Evolution'), D.megaEvolution, 'mega');
+  groupe(O.t('TCG Pocket : Puissance Génétique', 'TCG Pocket: Genetic Apex', 'TCG Pocket: Genetic Apex', 'TCG Pocket: Genetic Apex'), D.pocket, 'pocket');
   var perso = document.createElement('option');
   perso.value = 'perso';
-  perso.textContent = O.t('Autre : je saisis la chance moi-même', 'Other: I enter the odds myself');
+  perso.textContent = O.t('Autre : je saisis la chance moi-même', 'Other: I enter the odds myself', 'Otra: escribo yo la probabilidad', 'Outra: eu digito a chance');
   select.appendChild(perso);
   select.value = 'mega:sir';
 
@@ -59,7 +59,7 @@
       O.texte('rChanceux', '');
       return;
     }
-    O.texte('rParBooster', O.pourcent(p, 3) + O.t(' (1 sur ', ' (1 in ') + O.decimal(1 / p, 1) + ')');
+    O.texte('rParBooster', O.pourcent(p, 3) + O.t(' (1 sur ', ' (1 in ', ' (1 de ', ' (1 em ') + O.decimal(1 / p, 1) + ')');
     O.texte('rProba', O.pourcent(O.auMoinsUn(p, n), 1));
     O.texte('rEsperance', O.decimal(n * p, 2));
     O.texte('r50', O.entier(O.essaisPour(p, 0.5)));
@@ -71,13 +71,13 @@
       obtenu = Math.floor(obtenu);
       // Part des joueurs qui auraient attendu plus longtemps que vous.
       var plusLongs = 1 - O.auMoinsUn(p, obtenu);
-      var msg = O.t('Obtenue au booster n° ', 'Pulled in pack #') + O.entier(obtenu) + O.t(' : ', ': ');
+      var msg = O.t('Obtenue au booster n° ', 'Pulled in pack #', 'Conseguida en el sobre n.º ', 'Tirada no booster nº ') + O.entier(obtenu) + O.t(' : ', ': ', ': ', ': ');
       if (plusLongs >= 0.5) {
-        msg += O.t('chanceux ! Environ ', 'lucky! About ') + O.pourcent(plusLongs, 0) +
-          O.t(' des joueurs auraient dû ouvrir plus de boosters que vous.', ' of players would have had to open more packs than you.');
+        msg += O.t('chanceux ! Environ ', 'lucky! About ', '¡con suerte! Alrededor del ', 'sortudo! Cerca de ') + O.pourcent(plusLongs, 0) +
+          O.t(' des joueurs auraient dû ouvrir plus de boosters que vous.', ' of players would have had to open more packs than you.', ' de los jugadores habrían tenido que abrir más sobres que tú.', ' dos jogadores teriam que abrir mais boosters que você.');
       } else {
-        msg += O.t('un peu de malchance : environ ', 'a bit unlucky: about ') + O.pourcent(1 - plusLongs, 0) +
-          O.t(' des joueurs l’auraient eue plus tôt ou au même booster.', ' of players would have pulled it earlier or in the same pack.');
+        msg += O.t('un peu de malchance : environ ', 'a bit unlucky: about ', 'algo de mala suerte: alrededor del ', 'um pouco de azar: cerca de ') + O.pourcent(1 - plusLongs, 0) +
+          O.t(' des joueurs l’auraient eue plus tôt ou au même booster.', ' of players would have pulled it earlier or in the same pack.', ' de los jugadores la habrían conseguido antes o en el mismo sobre.', ' dos jogadores a teriam tirado antes ou no mesmo booster.');
       }
       O.texte('rChanceux', msg);
     } else {

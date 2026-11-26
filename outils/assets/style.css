@@ -429,7 +429,17 @@ ol.etapes li::before { background: var(--degrade); }
   .table-types { font-size: .78rem; }
 }
 
-/* Sélecteur de langue FR / EN (24/11/2026) : discret, à gauche du menu */
-.langue { margin-left: auto; padding: 8px 10px; min-width: 44px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--bord); border-radius: 10px; font-weight: 700; font-size: .9rem; letter-spacing: .04em; color: var(--texte-doux); text-decoration: none; transition: border-color .2s, color .2s, background .2s; }
-.langue:hover, .langue:focus-visible { border-color: var(--accent); color: var(--accent); background: var(--accent-doux); }
+/* Sélecteur de langue FR / EN / ES / PT (24/11, 4 langues le 26/11/2026) : discret, à gauche du menu, sans JavaScript */
+.langue { margin-left: auto; position: relative; }
+.langue > summary { list-style: none; cursor: pointer; padding: 8px 10px; min-width: 44px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid var(--bord); border-radius: 10px; font-weight: 700; font-size: .9rem; letter-spacing: .04em; color: var(--texte-doux); transition: border-color .2s, color .2s, background .2s; }
+.langue > summary::-webkit-details-marker { display: none; }
+.langue > summary::after { content: "▾"; font-size: .7em; opacity: .8; }
+.langue > summary:hover, .langue > summary:focus-visible, .langue[open] > summary { border-color: var(--accent); color: var(--accent); background: var(--accent-doux); }
+.langue ul { position: absolute; right: 0; top: calc(100% + 6px); z-index: 40; margin: 0; padding: 6px; list-style: none; min-width: 200px; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); box-shadow: var(--ombre); }
+.langue li a, .langue li span { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; border-radius: 8px; color: var(--texte); text-decoration: none; white-space: nowrap; }
+.langue li b { min-width: 24px; font-size: .8rem; letter-spacing: .05em; color: var(--texte-doux); }
+.langue li a:hover, .langue li a:focus-visible { background: var(--surface-2); color: var(--accent); }
+.langue li span[aria-current] { background: var(--surface-2); font-weight: 700; }
 .entete .conteneur > .langue + .menu { margin-left: 0; }
+/* Téléphone (26/11/2026) : les noms longs (es, pt) passent sur deux lignes pour garder le sélecteur et le menu visibles */
+@media (max-width: 480px) { .entete .conteneur { gap: 8px; } .marque { min-width: 0; } .marque-nom { white-space: normal; } .langue > summary { padding: 8px 8px; } }

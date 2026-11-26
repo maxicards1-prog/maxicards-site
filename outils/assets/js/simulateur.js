@@ -77,11 +77,11 @@
       div.className = 'booster';
       var t = document.createElement('div');
       t.className = 'titre';
-      t.textContent = O.t('Booster ', 'Pack ') + b;
+      t.textContent = O.t('Booster ', 'Pack ', 'Sobre ', 'Booster ') + b;
       div.appendChild(t);
       var c = document.createElement('div');
       c.className = 'cartes';
-      if (mode === 'pocket') { c.appendChild(carte(O.t('3 × 1 losange', '3 × 1 diamond'), 1)); }
+      if (mode === 'pocket') { c.appendChild(carte(O.t('3 × 1 losange', '3 × 1 diamond', '3 × 1 rombo', '3 × 1 losango'), 1)); }
       obtenues.forEach(function (r) { c.appendChild(carte(r.nom, r.niveau)); });
       div.appendChild(c);
       zone.appendChild(div);
@@ -91,17 +91,19 @@
       var attendu = mode === 'pocket' ? n * (r.slot4 + r.slot5) / 100 : n / r.unSur;
       ligneRecap(corps, r.nom, compte[r.id], attendu);
     });
-    var resume = O.en ? n + ' pack' + (n > 1 ? 's' : '') + ' opened. '
+    var resume = O.lang === 'es' ? n + (n > 1 ? ' sobres abiertos. ' : ' sobre abierto. ')
+      : O.lang === 'pt' ? n + (n > 1 ? ' boosters abertos. ' : ' booster aberto. ')
+      : O.en ? n + ' pack' + (n > 1 ? 's' : '') + ' opened. '
       : n + ' booster' + (n > 1 ? 's' : '') + ' ouvert' + (n > 1 ? 's' : '') + '. ';
     if (mode === 'mega') {
-      resume += vides + O.t(' sans carte Double Rare ou mieux (non affichés). ', ' with no Double Rare or better (not shown). ');
+      resume += vides + O.t(' sans carte Double Rare ou mieux (non affichés). ', ' with no Double Rare or better (not shown). ', ' sin Double Rare o mejor (no se muestran). ', ' sem Double Rare ou melhor (não exibidos). ');
       resume += compte.sir + compte.mhr > 0
-        ? O.t('Bravo, au moins une Illustration Spéciale Rare ou mieux !', 'Nice, at least one Special Illustration Rare or better!')
-        : O.t('Pas d’Illustration Spéciale Rare cette fois.', 'No Special Illustration Rare this time.');
+        ? O.t('Bravo, au moins une Illustration Spéciale Rare ou mieux !', 'Nice, at least one Special Illustration Rare or better!', '¡Bien, al menos una Special Illustration Rare o mejor!', 'Boa, pelo menos uma Special Illustration Rare ou melhor!')
+        : O.t('Pas d’Illustration Spéciale Rare cette fois.', 'No Special Illustration Rare this time.', 'Esta vez no ha salido ninguna Special Illustration Rare.', 'Nenhuma Special Illustration Rare desta vez.');
     } else {
       resume += (compte.e2 + compte.e3 + compte.cr) > 0
-        ? O.t('Au moins une carte 2 étoiles ou mieux !', 'At least one 2-star card or better!')
-        : O.t('Pas de carte 2 étoiles ou mieux cette fois.', 'No 2-star card or better this time.');
+        ? O.t('Au moins une carte 2 étoiles ou mieux !', 'At least one 2-star card or better!', '¡Al menos una carta de 2 estrellas o mejor!', 'Pelo menos uma carta de 2 estrelas ou melhor!')
+        : O.t('Pas de carte 2 étoiles ou mieux cette fois.', 'No 2-star card or better this time.', 'Esta vez no ha salido ninguna carta de 2 estrellas o mejor.', 'Nenhuma carta de 2 estrelas ou melhor desta vez.');
     }
     O.texte('rResume', resume);
   }
