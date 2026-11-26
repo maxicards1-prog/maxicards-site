@@ -1,7 +1,7 @@
 /* Test du clavier : touches qui s'allument, touches jamais pressées, touches simultanées (anti-ghosting), code de la touche. Rien n'est envoyé. */
 (function () {
   'use strict';
-  var TP = window.TP, $ = TP.$;
+  var TP = window.TP, $ = TP.$, T = TP.t;
   var suivi = TP.creerSuiviTouches();
   var actif = false, echapRecent = 0;
   var elems = {};   // code -> élément
@@ -18,7 +18,7 @@
           if (t.espace !== undefined) { var s = TP.creer('span', 'k-esp'); s.style.setProperty('--w', t.espace); ligne.appendChild(s); return; }
           var k = TP.creer('div', 'touche');
           k.style.setProperty('--w', t.w);
-          k.appendChild(TP.creer('span', 'k-lib', t.e));
+          k.appendChild(TP.creer('span', 'k-lib', T(t.e)));
           elems[t.c] = k; etiquettes[t.c] = t;
           ligne.appendChild(k);
         });
@@ -30,7 +30,7 @@
     var az = selDispo.value === 'azerty';
     Object.keys(elems).forEach(function (c) {
       var t = etiquettes[c], lib = az ? t.f : t.e;
-      elems[c].firstChild.textContent = lib;
+      elems[c].firstChild.textContent = T(lib);
       elems[c].title = c;
     });
     majManquantes();
@@ -49,21 +49,21 @@
     zones.pave.parentNode.hidden = t !== 'complet';
     majManquantes();
   }
-  function libelle(c) { var t = etiquettes[c]; var l = selDispo.value === 'azerty' ? t.f : t.e; return l || c; }
+  function libelle(c) { var t = etiquettes[c]; var l = selDispo.value === 'azerty' ? t.f : t.e; return l ? T(l) : c; }
   function majManquantes() {
     var codes = codesVisibles(), manquantes = codes.filter(function (c) { return !suivi.estPresse(c); });
-    eTest.textContent = (codes.length - manquantes.length) + ' sur ' + codes.length;
+    eTest.textContent = T('{n} sur {total}', { n: codes.length - manquantes.length, total: codes.length });
     TP.vider(eMan);
-    if (!suivi.etat().total) { eMan.textContent = 'Appuyez sur les touches : celles qui n’ont pas encore réagi resteront listées ici.'; return; }
-    if (!manquantes.length) { eMan.textContent = 'Toutes les touches affichées ont réagi.'; return; }
+    if (!suivi.etat().total) { eMan.textContent = T('Appuyez sur les touches : celles qui n’ont pas encore réagi resteront listées ici.'); return; }
+    if (!manquantes.length) { eMan.textContent = T('Toutes les touches affichées ont réagi.'); return; }
     manquantes.forEach(function (c) { eMan.appendChild(TP.creer('span', 'k-man', libelle(c))); });
   }
   function majStats() {
     var e = suivi.etat();
     eEnf.textContent = e.enfoncees; eMax.textContent = e.max;
     if (e.max >= 2) {
-      TP.verdict(verdict, 'info', 'Maximum de touches tenues en même temps : ' + e.max,
-        'Tenez plusieurs touches ensemble (par exemple Z, Q, D, Maj et Espace dans un jeu). Si ce nombre est plus petit que le nombre de touches que vous tenez vraiment, le clavier n’envoie pas toutes les touches : c’est la limite appelée « ghosting ».');
+      TP.verdict(verdict, 'info', T('Maximum de touches tenues en même temps : {n}', { n: e.max }),
+        T('Tenez plusieurs touches ensemble (par exemple Z, Q, D, Maj et Espace dans un jeu). Si ce nombre est plus petit que le nombre de touches que vous tenez vraiment, le clavier n’envoie pas toutes les touches : c’est la limite appelée « ghosting ».'));
     }
   }
   function marquer(code, enfoncee) {
@@ -78,7 +78,7 @@
     if (ev.code === 'Escape') { var t = Date.now(); if (t - echapRecent < 700) { arreter(); return; } echapRecent = t; }
     suivi.appui(ev.code);
     marquer(ev.code, true);
-    eKey.textContent = ev.key === ' ' ? 'Espace' : ev.key; eCode.textContent = ev.code;
+    eKey.textContent = ev.key === ' ' ? T('Espace') : ev.key; eCode.textContent = ev.code;
     if (!elems[ev.code]) { eMan.dataset.inconnue = ev.code; }
     majManquantes(); majStats();
   }
@@ -90,14 +90,14 @@
   function demarrer() {
     actif = true; btnD.disabled = true; btnA.disabled = false;
     if (document.activeElement && document.activeElement.blur) { document.activeElement.blur(); }
-    TP.verdict(verdict, 'ok', 'Le test écoute votre clavier', 'Appuyez sur n’importe quelle touche. Pour finir : double appui sur Échap, ou le bouton « Arrêter ».');
+    TP.verdict(verdict, 'ok', T('Le test écoute votre clavier'), T('Appuyez sur n’importe quelle touche. Pour finir : double appui sur Échap, ou le bouton « Arrêter ».'));
   }
   function arreter() {
     actif = false; btnD.disabled = false; btnA.disabled = true;
     suivi.toutRelacher();
     Object.keys(elems).forEach(function (c) { elems[c].classList.remove('enf'); });
     eEnf.textContent = '0';
-    TP.verdict(verdict, 'attente', 'Test en pause', 'Le clavier fonctionne de nouveau normalement dans cette page. Cliquez sur « Démarrer le test » pour reprendre.');
+    TP.verdict(verdict, 'attente', T('Test en pause'), T('Le clavier fonctionne de nouveau normalement dans cette page. Cliquez sur « Démarrer le test » pour reprendre.'));
   }
   function raz() {
     suivi.raz();

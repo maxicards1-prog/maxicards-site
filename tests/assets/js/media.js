@@ -24,7 +24,7 @@
       select.appendChild(o0);
       l.forEach(function (d, i) {
         if (!d.deviceId) { return; }
-        var o = TP.creer('option', '', d.label || ((type === 'videoinput' ? 'Caméra ' : 'Micro ') + (i + 1)));
+        var o = TP.creer('option', '', d.label || (type === 'videoinput' ? TP.t('Caméra {n}', { n: i + 1 }) : TP.t('Micro {n}', { n: i + 1 })));
         o.value = d.deviceId;
         select.appendChild(o);
       });

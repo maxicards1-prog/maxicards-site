@@ -1,13 +1,13 @@
 /* Écran plein en couleurs unies (pixel mort, uniformité). Couleurs fixes, changées seulement par l'utilisateur : aucun clignotement automatique. */
 (function () {
   'use strict';
-  var TP = window.TP;
+  var TP = window.TP, T = TP.t;
   var el = null, liste = [], i = 0, ouvreur = null, cache = 0;
   function appliquer() {
     var c = liste[i];
     el.style.backgroundColor = c.hex;
-    el.setAttribute('aria-label', 'Écran plein : ' + c.nom + ' (' + (i + 1) + ' sur ' + liste.length + ')');
-    el._aide.textContent = c.nom + ' · ' + (i + 1) + '/' + liste.length + ' · flèches ou clic : changer · Échap : quitter · I : afficher ou cacher ce texte';
+    el.setAttribute('aria-label', T('Écran plein : {couleur} ({n} sur {total})', { couleur: c.nom, n: i + 1, total: liste.length }));
+    el._aide.textContent = T('{couleur} · {n}/{total} · flèches ou clic : changer · Échap : quitter · I : afficher ou cacher ce texte', { couleur: c.nom, n: i + 1, total: liste.length });
   }
   function montrerAide() { el._aide.hidden = false; clearTimeout(cache); cache = setTimeout(function () { if (el) { el._aide.hidden = true; } }, 3000); }
   function suivant(d) { i = (i + d + liste.length) % liste.length; appliquer(); }

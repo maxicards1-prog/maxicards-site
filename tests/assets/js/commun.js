@@ -11,10 +11,12 @@
   };
   TP.vider = function (e) { while (e && e.firstChild) { e.removeChild(e.firstChild); } };
   var nfs = {};
+  // Nombres à la française (« 1,5 ») sauf sur les pages anglaises (<html lang="en"> : « 1.5 »).
+  var LOCALE = document.documentElement.lang === 'en' ? 'en-US' : 'fr-FR';
   TP.nf = function (v, dec) {
     if (!isFinite(v)) { return '–'; }
     dec = dec || 0;
-    if (!nfs[dec]) { nfs[dec] = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+    if (!nfs[dec]) { nfs[dec] = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
     return nfs[dec].format(v);
   };
   var ICONES = { ok: '✓', ko: '✕', attente: '…', info: 'i' };
@@ -34,9 +36,13 @@
       c.appendChild(ol);
     }
     if (lien) {
+      lien = TP.t(lien);   // adresse française -> adresse anglaise (dictionnaire, d'après en_carte.py)
+      if (!/^\/[^\/\\]/.test(lien)) { lien = ''; }   // chemins internes seulement (jamais javascript: ni //autre-site)
+    }
+    if (lien) {
       var p = TP.creer('p', 'v-lien');
-      var a = TP.creer('a', '', lienTexte || 'Voir l’aide détaillée');
-      a.href = (lien.charAt(0) === '/' ? (document.documentElement.getAttribute('data-base') || '') : '') + lien;
+      var a = TP.creer('a', '', lienTexte || TP.t('Voir l’aide détaillée'));
+      a.href = (document.documentElement.getAttribute('data-base') || '') + lien;
       p.appendChild(a);
       c.appendChild(p);
     }
@@ -48,7 +54,7 @@
     if (!b) { return; }
     b.addEventListener('click', function () {
       var url = location.href.split('#')[0];
-      var fin = function (ok) { if (s) { s.textContent = ok ? 'Lien copié.' : 'Copie impossible : copiez l’adresse du navigateur.'; } };
+      var fin = function (ok) { if (s) { s.textContent = ok ? TP.t('Lien copié.') : TP.t('Copie impossible : copiez l’adresse du navigateur.'); } };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function () { fin(true); }, function () { fin(false); });
       } else { fin(false); }

@@ -7,6 +7,17 @@
   'use strict';
   var TP = {};
 
+  /* ---------- langue (26/11/2026) ---------- */
+  // Dictionnaire de la page : null en français ; les pages anglaises chargent assets/js/en/textes.js juste après ce fichier.
+  // TP.t('Texte français exact {marqueur}', {marqueur: valeur}) : la clé est le texte français, renvoyé tel quel sans dictionnaire.
+  TP.DICO = null;
+  var aCle = Object.prototype.hasOwnProperty;
+  TP.t = function (s, v) {
+    var d = TP.DICO, r = (d && aCle.call(d, s) && typeof d[s] === 'string') ? d[s] : s;
+    if (v) { r = r.replace(/\{(\w+)\}/g, function (m, k) { return aCle.call(v, k) ? String(v[k]) : m; }); }
+    return r;
+  };
+
   /* ---------- statistiques ---------- */
   TP.moyenne = function (a) {
     if (!a.length) { return NaN; }
@@ -78,16 +89,16 @@
     return { n: n, moyenne: moy, max: max, mx: sx / n, my: sy / n, etat: etat };
   };
   var FAMILLES = {
-    xbox: ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', 'Vue', 'Menu', 'Stick G (clic)', 'Stick D (clic)', 'Croix haut', 'Croix bas', 'Croix gauche', 'Croix droite', 'Xbox'],
-    ps5: ['Croix', 'Rond', 'Carré', 'Triangle', 'L1', 'R1', 'L2', 'R2', 'Create', 'Options', 'L3', 'R3', 'Croix haut', 'Croix bas', 'Croix gauche', 'Croix droite', 'PS', 'Pavé tactile'],
-    ps4: ['Croix', 'Rond', 'Carré', 'Triangle', 'L1', 'R1', 'L2', 'R2', 'Share', 'Options', 'L3', 'R3', 'Croix haut', 'Croix bas', 'Croix gauche', 'Croix droite', 'PS', 'Pavé tactile'],
+    xbox: ['A', 'B', 'X', 'Y', 'LB', 'RB', 'LT', 'RT', TP.t('Vue'), 'Menu', TP.t('Stick G (clic)'), TP.t('Stick D (clic)'), TP.t('Croix haut'), TP.t('Croix bas'), TP.t('Croix gauche'), TP.t('Croix droite'), 'Xbox'],
+    ps5: [TP.t('Croix'), TP.t('Rond'), TP.t('Carré'), 'Triangle', 'L1', 'R1', 'L2', 'R2', 'Create', 'Options', 'L3', 'R3', TP.t('Croix haut'), TP.t('Croix bas'), TP.t('Croix gauche'), TP.t('Croix droite'), 'PS', TP.t('Pavé tactile')],
+    ps4: [TP.t('Croix'), TP.t('Rond'), TP.t('Carré'), 'Triangle', 'L1', 'R1', 'L2', 'R2', 'Share', 'Options', 'L3', 'R3', TP.t('Croix haut'), TP.t('Croix bas'), TP.t('Croix gauche'), TP.t('Croix droite'), 'PS', TP.t('Pavé tactile')],
     // Switch : par position, le bouton du bas porte la lettre B, celui de droite la lettre A (indices 0 à 3 de la disposition standard).
-    'switch': ['B', 'A', 'Y', 'X', 'L', 'R', 'ZL', 'ZR', '−', '+', 'Stick G (clic)', 'Stick D (clic)', 'Croix haut', 'Croix bas', 'Croix gauche', 'Croix droite', 'Home']
+    'switch': ['B', 'A', 'Y', 'X', 'L', 'R', 'ZL', 'ZR', '−', '+', TP.t('Stick G (clic)'), TP.t('Stick D (clic)'), TP.t('Croix haut'), TP.t('Croix bas'), TP.t('Croix gauche'), TP.t('Croix droite'), 'Home']
   };
   TP.FAMILLES_MANETTE = FAMILLES;
   TP.libelleBouton = function (famille, i) {
     var t = FAMILLES[famille] || FAMILLES.xbox;
-    return t[i] !== undefined ? t[i] : 'Bouton ' + i;
+    return t[i] !== undefined ? TP.t(t[i]) : TP.t('Bouton {n}', { n: i });
   };
   // Suggestion à partir de l'identifiant donné par le navigateur (Chrome et Edge écrivent « Vendor: 054c Product: 0ce6 »).
   TP.familleDepuisId = function (id) {
@@ -182,38 +193,38 @@
   };
   // Disposition : {c: code, w: largeur, e: étiquette QWERTY, f: étiquette AZERTY}. Les codes sont ceux de la POSITION physique
   // (KeyboardEvent.code) : sur un clavier français, la touche « A » renvoie le code KeyQ.
-  function T(c, w, e, f) { return { c: c, w: w, e: e, f: f === undefined ? e : f }; }
+  function Tc(c, w, e, f) { return { c: c, w: w, e: e, f: f === undefined ? e : f }; }
   function esp(w) { return { espace: w }; }
   var AZ = { KeyQ: 'A', KeyW: 'Z', KeyA: 'Q', KeyZ: 'W', KeyM: ',' };
-  function L(l) { var c = 'Key' + l; return T(c, 1, l, AZ[c] || l); }
-  function Fk(n) { return T('F' + n, 1, 'F' + n); }
+  function L(l) { var c = 'Key' + l; return Tc(c, 1, l, AZ[c] || l); }
+  function Fk(n) { return Tc('F' + n, 1, 'F' + n); }
   function rang(chaine) { return chaine.split('').map(L); }
   TP.CLAVIER = {
     principal: [
-      [T('Escape', 1, 'Échap'), esp(1), Fk(1), Fk(2), Fk(3), Fk(4), esp(0.5), Fk(5), Fk(6), Fk(7), Fk(8), esp(0.5), Fk(9), Fk(10), Fk(11), Fk(12)],
-      [T('Backquote', 1, '`', '²'), T('Digit1', 1, '1', '&'), T('Digit2', 1, '2', 'é'), T('Digit3', 1, '3', '"'), T('Digit4', 1, '4', "'"), T('Digit5', 1, '5', '('),
-        T('Digit6', 1, '6', '-'), T('Digit7', 1, '7', 'è'), T('Digit8', 1, '8', '_'), T('Digit9', 1, '9', 'ç'), T('Digit0', 1, '0', 'à'),
-        T('Minus', 1, '-', ')'), T('Equal', 1, '=', '='), T('Backspace', 2, '⌫')],
-      [T('Tab', 1.5, 'Tab')].concat(rang('QWERTYUIOP'), [T('BracketLeft', 1, '[', '^'), T('BracketRight', 1, ']', '$')]),
-      [T('CapsLock', 1.75, 'Verr. Maj')].concat(rang('ASDFGHJKL'), [T('Semicolon', 1, ';', 'M'), T('Quote', 1, "'", 'ù'), T('Backslash', 1, '#', '*'), T('Enter', 1.25, 'Entrée')]),
-      [T('ShiftLeft', 1.25, '⇧'), T('IntlBackslash', 1, '<', '<')].concat(rang('ZXCVBNM'), [T('Comma', 1, ',', ';'), T('Period', 1, '.', ':'), T('Slash', 1, '/', '!'), T('ShiftRight', 2.75, '⇧')]),
-      [T('ControlLeft', 1.25, 'Ctrl'), T('MetaLeft', 1.25, 'Win'), T('AltLeft', 1.25, 'Alt'), T('Space', 6.25, 'Espace'), T('AltRight', 1.25, 'Alt Gr'),
-        T('MetaRight', 1.25, 'Win'), T('ContextMenu', 1.25, '☰'), T('ControlRight', 1.25, 'Ctrl')]
+      [Tc('Escape', 1, TP.t('Échap')), esp(1), Fk(1), Fk(2), Fk(3), Fk(4), esp(0.5), Fk(5), Fk(6), Fk(7), Fk(8), esp(0.5), Fk(9), Fk(10), Fk(11), Fk(12)],
+      [Tc('Backquote', 1, '`', '²'), Tc('Digit1', 1, '1', '&'), Tc('Digit2', 1, '2', 'é'), Tc('Digit3', 1, '3', '"'), Tc('Digit4', 1, '4', "'"), Tc('Digit5', 1, '5', '('),
+        Tc('Digit6', 1, '6', '-'), Tc('Digit7', 1, '7', 'è'), Tc('Digit8', 1, '8', '_'), Tc('Digit9', 1, '9', 'ç'), Tc('Digit0', 1, '0', 'à'),
+        Tc('Minus', 1, '-', ')'), Tc('Equal', 1, '=', '='), Tc('Backspace', 2, '⌫')],
+      [Tc('Tab', 1.5, 'Tab')].concat(rang('QWERTYUIOP'), [Tc('BracketLeft', 1, '[', '^'), Tc('BracketRight', 1, ']', '$')]),
+      [Tc('CapsLock', 1.75, TP.t('Verr. Maj'))].concat(rang('ASDFGHJKL'), [Tc('Semicolon', 1, ';', 'M'), Tc('Quote', 1, "'", 'ù'), Tc('Backslash', 1, '#', '*'), Tc('Enter', 1.25, TP.t('Entrée'))]),
+      [Tc('ShiftLeft', 1.25, '⇧'), Tc('IntlBackslash', 1, '<', '<')].concat(rang('ZXCVBNM'), [Tc('Comma', 1, ',', ';'), Tc('Period', 1, '.', ':'), Tc('Slash', 1, '/', '!'), Tc('ShiftRight', 2.75, '⇧')]),
+      [Tc('ControlLeft', 1.25, 'Ctrl'), Tc('MetaLeft', 1.25, 'Win'), Tc('AltLeft', 1.25, 'Alt'), Tc('Space', 6.25, TP.t('Espace')), Tc('AltRight', 1.25, 'Alt Gr'),
+        Tc('MetaRight', 1.25, 'Win'), Tc('ContextMenu', 1.25, '☰'), Tc('ControlRight', 1.25, 'Ctrl')]
     ],
     navigation: [
-      [T('PrintScreen', 1, 'Impr'), T('ScrollLock', 1, 'Arrêt déf.'), T('Pause', 1, 'Pause')],
-      [T('Insert', 1, 'Inser'), T('Home', 1, 'Début'), T('PageUp', 1, 'Pg ↑')],
-      [T('Delete', 1, 'Suppr'), T('End', 1, 'Fin'), T('PageDown', 1, 'Pg ↓')],
+      [Tc('PrintScreen', 1, TP.t('Impr')), Tc('ScrollLock', 1, TP.t('Arrêt déf.')), Tc('Pause', 1, 'Pause')],
+      [Tc('Insert', 1, TP.t('Inser')), Tc('Home', 1, TP.t('Début')), Tc('PageUp', 1, TP.t('Pg ↑'))],
+      [Tc('Delete', 1, TP.t('Suppr')), Tc('End', 1, TP.t('Fin')), Tc('PageDown', 1, TP.t('Pg ↓'))],
       [esp(3)],
-      [esp(1), T('ArrowUp', 1, '↑'), esp(1)],
-      [T('ArrowLeft', 1, '←'), T('ArrowDown', 1, '↓'), T('ArrowRight', 1, '→')]
+      [esp(1), Tc('ArrowUp', 1, '↑'), esp(1)],
+      [Tc('ArrowLeft', 1, '←'), Tc('ArrowDown', 1, '↓'), Tc('ArrowRight', 1, '→')]
     ],
     pave: [
-      [T('NumLock', 1, 'Verr. Num'), T('NumpadDivide', 1, '/'), T('NumpadMultiply', 1, '*'), T('NumpadSubtract', 1, '-')],
-      [T('Numpad7', 1, '7'), T('Numpad8', 1, '8'), T('Numpad9', 1, '9'), T('NumpadAdd', 1, '+')],
-      [T('Numpad4', 1, '4'), T('Numpad5', 1, '5'), T('Numpad6', 1, '6'), esp(1)],
-      [T('Numpad1', 1, '1'), T('Numpad2', 1, '2'), T('Numpad3', 1, '3'), T('NumpadEnter', 1, 'Entrée')],
-      [T('Numpad0', 2, '0'), T('NumpadDecimal', 1, '.', ','), esp(1)]
+      [Tc('NumLock', 1, TP.t('Verr. Num')), Tc('NumpadDivide', 1, '/'), Tc('NumpadMultiply', 1, '*'), Tc('NumpadSubtract', 1, '-')],
+      [Tc('Numpad7', 1, '7'), Tc('Numpad8', 1, '8'), Tc('Numpad9', 1, '9'), Tc('NumpadAdd', 1, '+')],
+      [Tc('Numpad4', 1, '4'), Tc('Numpad5', 1, '5'), Tc('Numpad6', 1, '6'), esp(1)],
+      [Tc('Numpad1', 1, '1'), Tc('Numpad2', 1, '2'), Tc('Numpad3', 1, '3'), Tc('NumpadEnter', 1, TP.t('Entrée'))],
+      [Tc('Numpad0', 2, '0'), Tc('NumpadDecimal', 1, '.', ','), esp(1)]
     ]
   };
   TP.codesClavier = function () {
@@ -236,26 +247,48 @@
   };
 
   /* ---------- erreurs micro / caméra (getUserMedia) ---------- */
-  var AIDE = '/depannage/';
+  // type : 'micro' | 'camera' | autre valeur = les deux. Textes traduits par TP.t ; le lien reste l'adresse française
+  // (TP.verdict le passe par TP.t). Phrases complètes par type (26/11 : corrige « l’accès à le micro »).
   TP.erreurMedia = function (err, type) {
     var nom = err && err.name ? err.name : '';
-    var cible = type === 'camera' ? 'la caméra' : (type === 'micro' ? 'le micro' : 'le micro ou la caméra');
-    var Cible = cible.charAt(0).toUpperCase() + cible.slice(1);
-    var lienAutoriser = type === 'camera' ? AIDE + 'autoriser-la-camera-dans-le-navigateur/' : AIDE + 'autoriser-le-micro-dans-chrome-edge-firefox/';
-    var lienAbsent = type === 'camera' ? AIDE + 'webcam-non-detectee/' : AIDE + 'micro-ne-fonctionne-pas-windows-11/';
+    var k = type === 'micro' ? 0 : (type === 'camera' ? 1 : 2);
+    var X = function (micro, camera, deux) { return k === 0 ? micro : (k === 1 ? camera : deux); };
+    var lienAutoriser = type === 'camera' ? '/depannage/autoriser-la-camera-dans-le-navigateur/' : '/depannage/autoriser-le-micro-dans-chrome-edge-firefox/';
+    var lienAbsent = type === 'camera' ? '/depannage/webcam-non-detectee/' : '/depannage/micro-ne-fonctionne-pas-windows-11/';
     if (nom === 'NotAllowedError' || nom === 'SecurityError' || nom === 'PermissionDeniedError') {
-      return { code: 'refuse', titre: 'Accès refusé', texte: 'Le navigateur ou le système a refusé l’accès à ' + cible + '. Autorisez-le pour ce site, puis cliquez de nouveau sur « Démarrer ».', lien: lienAutoriser, lienTexte: 'Comment autoriser l’accès' };
+      return { code: 'refuse', titre: TP.t('Accès refusé'), texte: X(
+        TP.t('Le navigateur ou le système a refusé l’accès au micro. Autorisez-le pour ce site, puis cliquez de nouveau sur « Démarrer ».'),
+        TP.t('Le navigateur ou le système a refusé l’accès à la caméra. Autorisez-le pour ce site, puis cliquez de nouveau sur « Démarrer ».'),
+        TP.t('Le navigateur ou le système a refusé l’accès au micro ou à la caméra. Autorisez-le pour ce site, puis cliquez de nouveau sur « Démarrer ».')),
+        lien: lienAutoriser, lienTexte: TP.t('Comment autoriser l’accès') };
     }
     if (nom === 'NotFoundError' || nom === 'DevicesNotFoundError' || nom === 'OverconstrainedError') {
-      return { code: 'absent', titre: 'Aucun appareil trouvé', texte: Cible + ' est introuvable. Vérifiez le branchement, le choix de l’appareil dans la liste et les réglages de confidentialité du système.', lien: lienAbsent, lienTexte: 'Que faire si l’appareil n’est pas détecté' };
+      return { code: 'absent', titre: TP.t('Aucun appareil trouvé'), texte: X(
+        TP.t('Le micro est introuvable. Vérifiez le branchement, le choix de l’appareil dans la liste et les réglages de confidentialité du système.'),
+        TP.t('La caméra est introuvable. Vérifiez le branchement, le choix de l’appareil dans la liste et les réglages de confidentialité du système.'),
+        TP.t('Le micro ou la caméra est introuvable. Vérifiez le branchement, le choix de l’appareil dans la liste et les réglages de confidentialité du système.')),
+        lien: lienAbsent, lienTexte: TP.t('Que faire si l’appareil n’est pas détecté') };
     }
     if (nom === 'NotReadableError' || nom === 'TrackStartError' || nom === 'AbortError') {
-      return { code: 'occupe', titre: 'Appareil déjà utilisé ou bloqué', texte: Cible + ' est peut-être utilisé par une autre application (visio, enregistreur, autre onglet) ou bloqué par le système. Fermez les autres applications qui l’utilisent, puis réessayez.', lien: lienAbsent, lienTexte: 'Que faire si l’appareil est occupé' };
+      return { code: 'occupe', titre: TP.t('Appareil déjà utilisé ou bloqué'), texte: X(
+        TP.t('Le micro est peut-être utilisé par une autre application (visio, enregistreur, autre onglet) ou bloqué par le système. Fermez les autres applications qui l’utilisent, puis réessayez.'),
+        TP.t('La caméra est peut-être utilisée par une autre application (visio, enregistreur, autre onglet) ou bloquée par le système. Fermez les autres applications qui l’utilisent, puis réessayez.'),
+        TP.t('Le micro ou la caméra est peut-être utilisé par une autre application (visio, enregistreur, autre onglet) ou bloqué par le système. Fermez les autres applications qui l’utilisent, puis réessayez.')),
+        lien: lienAbsent, lienTexte: TP.t('Que faire si l’appareil est occupé') };
     }
     if (nom === 'NoApiError') {
-      return { code: 'api', titre: 'Navigateur non compatible', texte: 'Ce navigateur ou cette page ne permet pas d’accéder à ' + cible + ' (il faut une page sécurisée en https et un navigateur récent).', lien: lienAutoriser, lienTexte: 'Aide' };
+      return { code: 'api', titre: TP.t('Navigateur non compatible'), texte: X(
+        TP.t('Ce navigateur ou cette page ne permet pas d’accéder au micro (il faut une page sécurisée en https et un navigateur récent).'),
+        TP.t('Ce navigateur ou cette page ne permet pas d’accéder à la caméra (il faut une page sécurisée en https et un navigateur récent).'),
+        TP.t('Ce navigateur ou cette page ne permet pas d’accéder au micro ou à la caméra (il faut une page sécurisée en https et un navigateur récent).')),
+        lien: lienAutoriser, lienTexte: TP.t('Aide') };
     }
-    return { code: 'autre', titre: 'Erreur inattendue', texte: 'Impossible d’ouvrir ' + cible + (nom ? ' (' + nom + ')' : '') + '. Rechargez la page, vérifiez l’appareil et réessayez.', lien: lienAbsent, lienTexte: 'Aide' };
+    var v = { nom: nom ? ' (' + nom + ')' : '' };
+    return { code: 'autre', titre: TP.t('Erreur inattendue'), texte: X(
+      TP.t('Impossible d’ouvrir le micro{nom}. Rechargez la page, vérifiez l’appareil et réessayez.', v),
+      TP.t('Impossible d’ouvrir la caméra{nom}. Rechargez la page, vérifiez l’appareil et réessayez.', v),
+      TP.t('Impossible d’ouvrir le micro ou la caméra{nom}. Rechargez la page, vérifiez l’appareil et réessayez.', v)),
+      lien: lienAbsent, lienTexte: TP.t('Aide') };
   };
 
   /* ---------- temps de réaction ---------- */
