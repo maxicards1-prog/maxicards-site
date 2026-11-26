@@ -18,3 +18,7 @@ Sitemap: https://maxicards.net/roblox/sitemap.xml
 Sitemap: https://maxicards.net/roblox/sitemap-en.xml
 Sitemap: https://maxicards.net/roblox/sitemap-es.xml
 Sitemap: https://maxicards.net/roblox/sitemap-pt.xml
+Sitemap: https://maxicards.net/cuisine/sitemap.xml
+Sitemap: https://maxicards.net/tests/sitemap.xml
+Sitemap: https://maxicards.net/bricolage/sitemap.xml
+Sitemap: https://maxicards.net/jeux/sitemap.xml
