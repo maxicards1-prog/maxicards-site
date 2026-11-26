@@ -24,3 +24,6 @@ Sitemap: https://maxicards.net/bricolage/sitemap.xml
 Sitemap: https://maxicards.net/jeux/sitemap.xml
 Sitemap: https://maxicards.net/tailles/sitemap.xml
 Sitemap: https://maxicards.net/animaux/sitemap.xml
+Sitemap: https://maxicards.net/mots/sitemap.xml
+Sitemap: https://maxicards.net/texte/sitemap.xml
+Sitemap: https://maxicards.net/web/sitemap.xml

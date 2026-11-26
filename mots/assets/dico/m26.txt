@@ -1,0 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was
+# not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# Liste tirée du Lexique Grammalecte v7.7 (Olivier R. et contributeurs, https://grammalecte.net/), adaptée par
+# MAXICARDS (noms propres et symboles retirés, une forme par ligne, des plus courantes aux plus rares).
+désinstitutionnalisassions
+désinstitutionnaliseraient
+oligoasthénotératospermies
+électroconvulsivothérapies

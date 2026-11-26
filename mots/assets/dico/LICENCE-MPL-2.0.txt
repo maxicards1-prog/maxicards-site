@@ -1,0 +1,3 @@
+Les fichiers mNN.txt de ce dossier sont tirés du Lexique Grammalecte v7.7 (Olivier R. et contributeurs,
+https://grammalecte.net/) et restent sous Mozilla Public License 2.0 : https://mozilla.org/MPL/2.0/
+Ils sont publiés en clair (forme source). Original : https://grammalecte.net/dic/lexique-grammalecte-fr-v7.7.zip
