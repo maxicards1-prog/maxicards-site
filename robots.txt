@@ -22,3 +22,5 @@ Sitemap: https://maxicards.net/cuisine/sitemap.xml
 Sitemap: https://maxicards.net/tests/sitemap.xml
 Sitemap: https://maxicards.net/bricolage/sitemap.xml
 Sitemap: https://maxicards.net/jeux/sitemap.xml
+Sitemap: https://maxicards.net/tailles/sitemap.xml
+Sitemap: https://maxicards.net/animaux/sitemap.xml
