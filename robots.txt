@@ -36,3 +36,4 @@ Sitemap: https://maxicards.net/france/sitemap.xml
 Sitemap: https://maxicards.net/codes/sitemap.xml
 Sitemap: https://maxicards.net/science/sitemap.xml
 Sitemap: https://maxicards.net/fetes/sitemap.xml
+Sitemap: https://maxicards.net/pays/sitemap.xml
