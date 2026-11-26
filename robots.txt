@@ -27,3 +27,4 @@ Sitemap: https://maxicards.net/animaux/sitemap.xml
 Sitemap: https://maxicards.net/mots/sitemap.xml
 Sitemap: https://maxicards.net/texte/sitemap.xml
 Sitemap: https://maxicards.net/web/sitemap.xml
+Sitemap: https://maxicards.net/prenoms/sitemap.xml
