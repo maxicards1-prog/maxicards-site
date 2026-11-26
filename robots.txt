@@ -29,3 +29,4 @@ Sitemap: https://maxicards.net/texte/sitemap.xml
 Sitemap: https://maxicards.net/web/sitemap.xml
 Sitemap: https://maxicards.net/prenoms/sitemap.xml
 Sitemap: https://maxicards.net/heure/sitemap.xml
+Sitemap: https://maxicards.net/musique/sitemap.xml
